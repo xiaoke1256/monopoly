@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>大富翁 Demo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section id="start-screen" class="screen card">
+      <h1>大富翁 Demo</h1>
+      <p class="muted">轻量可玩版：掷骰、买地、收租、事件、问答、AI、结算与本地存档</p>
+      <div class="grid-two">
+        <label>
+          玩家人数
+          <select id="player-count">
+            <option value="2">2 人</option>
+            <option value="3" selected>3 人</option>
+            <option value="4">4 人</option>
+          </select>
+        </label>
+        <label>
+          AI 数量
+          <select id="ai-count">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+          </select>
+        </label>
+        <label>
+          初始资金
+          <input id="initial-cash" type="number" min="500" step="100" value="2000" />
+        </label>
+        <label>
+          回合上限
+          <input id="max-turns" type="number" min="10" step="5" value="30" />
+        </label>
+      </div>
+      <div class="actions">
+        <button id="start-game">开始新对局</button>
+        <button id="load-game" class="secondary">恢复最近存档</button>
+      </div>
+    </section>
+
+    <section id="game-screen" class="screen hidden">
+      <div class="layout">
+        <div class="left-panel card">
+          <h2>棋盘</h2>
+          <div id="board" class="board"></div>
+          <div id="event-feed" class="event-feed"></div>
+        </div>
+
+        <div class="right-panel">
+          <div class="card">
+            <h2>回合信息</h2>
+            <p id="turn-info"></p>
+            <p id="dice-info"></p>
+            <div class="actions">
+              <button id="roll-btn">掷骰</button>
+              <button id="buy-btn" class="secondary" disabled>购买地产</button>
+              <button id="upgrade-btn" class="secondary" disabled>升级地产</button>
+              <button id="end-turn-btn" class="secondary" disabled>结束回合</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>玩家面板</h2>
+            <ul id="player-list" class="player-list"></ul>
+          </div>
+
+          <div class="card">
+            <h2>统计</h2>
+            <p id="stats-info"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="result-screen" class="screen hidden card">
+      <h2>对局结算</h2>
+      <ol id="result-list"></ol>
+      <div class="actions">
+        <button id="restart-btn">返回首页</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="quiz-modal" class="modal hidden">
+    <div class="modal-content card">
+      <h3>问答打卡</h3>
+      <p id="quiz-category" class="muted"></p>
+      <p id="quiz-question"></p>
+      <div id="quiz-options" class="quiz-options"></div>
+      <p id="quiz-timer"></p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>大富翁 Demo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section id="start-screen" class="screen card">
+      <h1>大富翁 Demo</h1>
+      <p class="muted">轻量可玩版：掷骰、买地、收租、事件、问答、AI、结算与本地存档</p>
+      <div class="grid-two">
+        <label>
+          玩家人数
+          <select id="player-count">
+            <option value="2">2 人</option>
+            <option value="3" selected>3 人</option>
+            <option value="4">4 人</option>
+          </select>
+        </label>
+        <label>
+          AI 数量
+          <select id="ai-count">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+          </select>
+        </label>
+        <label>
+          初始资金
+          <input id="initial-cash" type="number" min="500" step="100" value="2000" />
+        </label>
+        <label>
+          回合上限
+          <input id="max-turns" type="number" min="10" step="5" value="30" />
+        </label>
+      </div>
+      <div class="actions">
+        <button id="start-game">开始新对局</button>
+        <button id="load-game" class="secondary">恢复最近存档</button>
+      </div>
+    </section>
+
+    <section id="game-screen" class="screen hidden">
+      <div class="layout">
+        <div class="left-panel card">
+          <h2>棋盘</h2>
+          <div id="board" class="board"></div>
+          <div id="event-feed" class="event-feed"></div>
+        </div>
+
+        <div class="right-panel">
+          <div class="card">
+            <h2>回合信息</h2>
+            <p id="turn-info"></p>
+            <p id="dice-info"></p>
+            <div class="actions">
+              <button id="roll-btn">掷骰</button>
+              <button id="buy-btn" class="secondary" disabled>购买地产</button>
+              <button id="upgrade-btn" class="secondary" disabled>升级地产</button>
+              <button id="end-turn-btn" class="secondary" disabled>结束回合</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>玩家面板</h2>
+            <ul id="player-list" class="player-list"></ul>
+          </div>
+
+          <div class="card">
+            <h2>统计</h2>
+            <p id="stats-info"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="result-screen" class="screen hidden card">
+      <h2>对局结算</h2>
+      <ol id="result-list"></ol>
+      <div class="actions">
+        <button id="restart-btn">返回首页</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="quiz-modal" class="modal hidden">
+    <div class="modal-content card">
+      <h3>问答打卡</h3>
+      <p id="quiz-category" class="muted"></p>
+      <p id="quiz-question"></p>
+      <div id="quiz-options" class="quiz-options"></div>
+      <p id="quiz-timer"></p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
