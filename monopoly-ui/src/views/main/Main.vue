@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="mid-row" >
-                    <div class="side">
+                    <div class="side left-side">
                         <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
                             <div class="empty-land" >
                                 <div class="notice">空地</div>
@@ -87,7 +87,16 @@ export default {
         position: relative;
         .empty-land {
             position: absolute;
+            width:100%;
             top: 0;
+        }
+        .road-bg {
+            background-image: url('@/assets/road.svg');
+            background-size: cover; // 或 contain，按需
+            width:100%;
+            aspect-ratio: 1 / 1;
+            position: absolute;
+            bottom: 0;
         }
     }
 }
@@ -107,6 +116,22 @@ export default {
             display: flex;
             direction: row;
             justify-content: space-between;
+            position: relative;
+        }
+    }
+    .left-side {
+        .block {
+            .empty-land {
+                position: absolute;
+                height:100%;
+                left: 0;
+            }
+            .road-bg-v {
+                position: absolute;
+                right: 0;
+                height:100%;
+                aspect-ratio: 1 / 1;
+            }
         }
     }
     .center {
@@ -117,24 +142,15 @@ export default {
     
 }
 
-.road-bg {
-  background-image: url('@/assets/road.svg');
-  background-size: cover; // 或 contain，按需
-  width:100%;
-  aspect-ratio: 1 / 1;
-  position: absolute;
-  bottom: 0;
-}
+
 .road-bg-v {
   background-image: url('@/assets/road_v.svg');
   background-size: cover; // 或 contain，按需
-  width:100%;
   aspect-ratio: 1 / 1;
 }
 .empty-land{
     background-image: url('@/assets/emptyland.svg');
     background-size: cover; // 或 contain，按需 
-    width:100%;
     aspect-ratio: 1 / 1;
     display: flex;
     direction: column;
