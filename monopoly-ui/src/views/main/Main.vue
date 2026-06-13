@@ -4,15 +4,19 @@
         <div class="map-container">
             <div class="map-div">
                 <div class="end-row" >
-                    <div></div>
+                    <div style="width: 15%; height: 100%;">
+                        <div class="corner-top-left"></div>
+                    </div>
                     <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
-                        <div class="empty-land" style="width:100%;height:47%;" >
+                        <div class="empty-land" >
                             <div class="notice">空地</div>
                         </div>
                         <div class="road-bg" style="" >
                         </div>
                     </div>
-                    <div></div>
+                    <div style="width: 15%; height: 100%;" >
+                        <div class="corner-top-right"></div>
+                    </div>
                 </div>
                 <div class="mid-row" >
                     <div class="side">
@@ -38,7 +42,7 @@
                 <div class="end-row" >
                     <div></div>
                     <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
-                        <div class="empty-land" style="width:100%;height:47%;" >
+                        <div class="empty-land" >
                             <div class="notice">空地</div>
                         </div>
                         <div class="road-bg" style="" >
@@ -80,6 +84,11 @@ export default {
         width: 7.78%;
         height: 100%;
         background-color: chocolate;
+        position: relative;
+        .empty-land {
+            position: absolute;
+            top: 0;
+        }
     }
 }
 .mid-row {
@@ -97,6 +106,7 @@ export default {
             background-color: chocolate;
             display: flex;
             direction: row;
+            justify-content: space-between;
         }
     }
     .center {
@@ -112,6 +122,8 @@ export default {
   background-size: cover; // 或 contain，按需
   width:100%;
   aspect-ratio: 1 / 1;
+  position: absolute;
+  bottom: 0;
 }
 .road-bg-v {
   background-image: url('@/assets/road_v.svg');
@@ -133,5 +145,22 @@ export default {
         font-size: 10px;
         color: #333;
     }
+}
+.corner-top-right {
+    width:100%;
+    height: 100%;
+    background-image: url('@/assets/road-corner.svg');
+    background-size: 51.5% 51.5%;
+    background-repeat: no-repeat;
+    background-position: bottom left;
+}
+.corner-top-left {
+    width:100%;
+    height: 100%;
+    background-image: url('@/assets/road-corner.svg');
+    transform: scaleX(-1);
+    background-size: 51.5% 51.5%;
+    background-repeat: no-repeat;
+    background-position: bottom left;
 }
 </style>
