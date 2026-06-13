@@ -6,13 +6,11 @@
                 <div class="end-row" >
                     <div></div>
                     <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
-                        <div style="width:100%;height:47%;" >
-
+                        <div class="empty-land" style="width:100%;height:47%;" >
+                            <div class="notice">空地</div>
                         </div>
                         <div class="road-bg" style="" >
-
                         </div>
-                        <!-- <img src="@/assets/road.svg" style="width: 100%;"> -->
                     </div>
                     <div></div>
                 </div>
@@ -43,15 +41,13 @@
                 </div>
                 <div class="end-row" >
                     <div></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
+                    <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
+                        <div class="empty-land" style="width:100%;height:47%;" >
+                            <div class="notice">空地</div>
+                        </div>
+                        <div class="road-bg" style="" >
+                        </div>
+                    </div>
                     <div></div>
                 </div>
             </div>
@@ -118,5 +114,20 @@ export default {
   background-size: cover; // 或 contain，按需
   width:100%;
   aspect-ratio: 1 / 1;
+}
+.empty-land{
+    background-image: url('@/assets/emptyland.svg');
+    background-size: cover; // 或 contain，按需 
+    width:100%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    direction: column;
+    justify-content: center;
+    align-items: center;
+    .notice{
+        margin-top: 5px;
+        font-size: 10px;
+        color: #333;
+    }
 }
 </style>

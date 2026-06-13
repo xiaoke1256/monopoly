@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px"
+	 height="100px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+
+<g id="bg">
+	<defs>
+		<radialGradient id="landAndGrass" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+		<stop offset="0%" style="stop-color:#F3E29F;stop-opacity:1" />
+		<stop offset="50%" style="stop-color:#F3E29F;stop-opacity:1" />
+		<stop offset="90%" style="stop-color:#D3E6A1;stop-opacity:1" />
+		<stop offset="100%" style="stop-color:#D3E6A1;stop-opacity:1" />
+		</radialGradient>
+	</defs>
+	<rect x="0" y="0" width="100" height="100" fill="url(#landAndGrass)"/>
+</g>
+<g id="北">
+	<rect x="15.125" y="16.208" fill="#592F17" width="73.375" height="1.352"/>
+	<rect x="15.125" y="17.561" fill="#371307" width="73.375" height="1.177"/>
+	<rect x="12.244" y="10.976" fill="#451F11" width="79.867" height="3.179"/>
+	<rect x="12.244" y="12.896" fill="#230706" width="79.867" height="1.656"/>
+	<polygon fill="#6B4F3F" points="62.675,21.638 61.351,21.638 62.212,8.062 63.536,8.062 	"/>
+	<polygon fill="#4A2C1C" points="64.893,21.638 61.979,21.638 62.974,8.062 65.887,8.062 	"/>
+	<rect x="62.443" y="8.062" fill="#7F604C" width="3.443" height="1.722"/>
+	<polygon fill="#4A2C1C" points="38.822,21.638 41.735,21.638 40.674,8.062 37.761,8.062 	"/>
+	<polygon fill="#2F0906" points="41.072,21.638 42.396,21.638 41.337,8.062 40.013,8.062 	"/>
+	<rect x="37.761" y="8.062" fill="#7F604C" width="3.443" height="1.722"/>
+	<polygon fill="#4A2C1C" points="18.193,21.638 20.75,21.638 17.663,8.062 15.131,9.783 	"/>
+	<polygon fill="#2F0906" points="20.212,21.638 21.317,20.749 18.193,8.062 16.869,8.062 	"/>
+	<polygon fill="#7F604C" points="15.186,9.906 17.323,9.906 18.193,8.062 16.167,8.062 	"/>
+	<polygon fill="#4A2C1C" points="85.611,21.638 82.698,21.638 85.91,8.062 88.822,8.062 	"/>
+	<polygon fill="#754C34" points="83.36,21.638 82.036,21.638 85.379,8.062 86.703,8.062 	"/>
+	<rect x="85.379" y="8.062" fill="#7F604C" width="3.443" height="1.722"/>
+</g>
+<g id="边">
+	<rect x="15.256" y="17.464" fill="#765A49" width="0.944" height="67.544"/>
+	<rect x="16.2" y="18.279" fill="#62371E" width="0.772" height="64.768"/>
+	<rect x="12.971" y="13.339" fill="#765A49" width="0.944" height="67.544"/>
+	<rect x="13.916" y="14.154" fill="#62371E" width="1.171" height="64.768"/>
+	<polygon fill="#312823" points="17.896,23.583 12.708,15.365 12.708,12.943 17.896,21.638 	"/>
+	<polygon fill="#4A2C1C" points="17.896,23.583 17.042,23.583 11.854,15.458 12.708,15.458 	"/>
+	<polygon fill="#7F604C" points="12.866,15.5 11.854,15.629 11.76,13.167 12.7,12.997 	"/>
+	<polygon fill="#312823" points="18,37.875 13.065,31.383 13.065,28.961 17.896,36.246 	"/>
+	<polygon fill="#4A2C1C" points="18,37.875 17.145,37.875 12.211,31.647 13.223,31.519 	"/>
+	<polygon fill="#7F604C" points="13.221,31.454 12.208,31.582 12.115,28.961 13.054,28.95 	"/>
+	<polygon fill="#312823" points="17.663,52.91 12.676,47.227 12.676,44.805 17.559,51.281 	"/>
+	<polygon fill="#4A2C1C" points="17.663,52.91 16.807,52.91 11.821,47.491 12.833,47.362 	"/>
+	<polygon fill="#7F604C" points="12.833,47.362 11.819,47.426 11.725,44.805 12.665,44.793 	"/>
+	<polygon fill="#312823" points="16.948,68.504 12.261,64.227 12.261,61.805 16.844,66.875 	"/>
+	<polygon fill="#4A2C1C" points="16.844,68.504 15.988,68.504 11.407,64.49 12.419,64.362 	"/>
+	<polygon fill="#7F604C" points="12.419,64.362 11.404,64.426 11.311,61.805 12.25,61.793 	"/>
+	<rect x="87.445" y="16.363" fill="#765A49" width="0.943" height="67.544"/>
+	<rect x="86.672" y="17.179" fill="#62371E" width="0.773" height="64.768"/>
+	<rect x="89.729" y="12.238" fill="#765A49" width="0.944" height="67.544"/>
+	<rect x="88.559" y="13.054" fill="#62371E" width="1.171" height="64.768"/>
+	<polygon fill="#312823" points="85.748,22.483 90.936,14.265 90.936,11.843 85.748,20.537 	"/>
+	<polygon fill="#4A2C1C" points="85.748,22.483 86.604,22.483 91.791,14.358 90.936,14.358 	"/>
+	<polygon fill="#7F604C" points="90.779,14.4 91.791,14.528 91.885,12.066 90.945,11.896 	"/>
+	<polygon fill="#312823" points="85.808,38.059 90.743,31.567 90.743,29.145 85.911,36.429 	"/>
+	<polygon fill="#4A2C1C" points="85.808,38.059 86.663,38.059 91.597,31.831 90.585,31.702 	"/>
+	<polygon fill="#7F604C" points="90.587,31.637 91.599,31.766 91.692,29.145 90.753,29.133 	"/>
+	<polygon fill="#312823" points="85.33,52.54 90.316,46.857 90.316,44.436 85.434,50.911 	"/>
+	<polygon fill="#4A2C1C" points="85.33,52.54 86.186,52.54 91.172,47.121 90.158,46.993 	"/>
+	<polygon fill="#7F604C" points="90.158,46.993 91.174,47.056 91.268,44.436 90.328,44.424 	"/>
+	<polygon fill="#312823" points="85.325,68.51 90.011,64.232 90.011,61.811 85.429,66.881 	"/>
+	<polygon fill="#4A2C1C" points="85.429,68.51 86.284,68.51 90.866,64.496 89.854,64.368 	"/>
+	<polygon fill="#7F604C" points="89.854,64.368 90.868,64.432 90.962,61.811 90.022,61.799 	"/>
+</g>
+<g id="南">
+	<polygon fill="#592F17" points="91.719,86.997 15.125,86.997 15.125,85.646 91.354,85.646 	"/>
+	<polygon fill="#371307" points="91.458,87.892 15.125,87.892 15.125,87.008 91.719,87.008 	"/>
+	<polygon fill="#451F11" points="93.053,83.332 11.021,83.332 11.667,81.412 92.354,81.412 	"/>
+	<polygon fill="#230706" points="92.521,84.988 11.396,84.988 11,83.332 93.031,83.332 	"/>
+	<polygon fill="#6B4F3F" points="62.443,89.719 61.438,89.059 62.063,77.498 63.261,77.498 	"/>
+	<polygon fill="#4A2C1C" points="65.356,89.719 62.443,89.719 62.974,79.566 65.887,79.566 	"/>
+	<polygon fill="#7F604C" points="65.887,79.566 62.884,79.566 62.063,77.498 65.125,77.498 	"/>
+	<polygon fill="#4A2C1C" points="37.994,89.25 40.907,89.25 40,79.22 37.199,79.186 	"/>
+	<polygon fill="#2F0906" points="40.51,89.25 41.76,88.434 40.774,77.498 39.45,77.498 	"/>
+	<polygon fill="#7F604C" points="37.199,79.186 39.605,79.22 40.774,77.498 38.5,77.498 	"/>
+	<polygon fill="#4A2C1C" points="13.668,89.375 16.582,89.375 14.375,78.922 11.25,78.922 	"/>
+	<polygon fill="#2F0906" points="16.125,89.25 17.293,88.569 14.693,77.2 13.369,77.2 	"/>
+	<polygon fill="#7F604C" points="11.25,78.922 13.916,78.922 14.693,77.2 12.344,77.2 	"/>
+	<polygon fill="#4A2C1C" points="89.5,90.063 86.587,90.063 89.098,79.186 92.01,79.186 	"/>
+	<polygon fill="#754C34" points="87.249,90.188 86.132,89.262 88.722,77.654 90.046,77.654 	"/>
+	<polygon fill="#7F604C" points="92.01,79.22 89.5,79.22 88.75,77.498 90.969,77.498 	"/>
+</g>
+<g id="板">
+	<linearGradient id="woodStripe" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#A37C58;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ECCFB1;stop-opacity:1" />
+	  <stop offset="100%" style="stop-color:#A37C58;stop-opacity:1" />
+    </linearGradient>
+	<path fill="#E9CAA9" stroke="#C9A063" stroke-miterlimit="10" d="M71.926,63.827c0,1.105-0.896,2-2,2H34.478c-1.104,0-2-0.895-2-2
+		V41.826c0-1.104,0.896-2,2-2h35.448c1.104,0,2,0.896,2,2V63.827z"/>
+	<rect x="32.922" y="48.164" fill="url(#woodStripe)" width="38.495" height="1"/>
+	<rect x="32.954" y="56.266" fill="url(#woodStripe)" width="38.495" height="1"/>
+	<path fill="none" stroke="#B28247" stroke-miterlimit="10" d="M69.926,39.826c1.104,0,2,0.896,2,2v22.002c0,1.105-0.896,2-2,2
+		H34.478c-1.104,0-2-0.895-2-2V41.826"/>
+	<path fill="none" stroke="#947D68" stroke-miterlimit="10" d="M71.926,41.845v22.002c0,1.105-0.896,2-2,2H34.478"/>
+</g>
+</svg>
