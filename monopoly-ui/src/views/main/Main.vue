@@ -16,27 +16,23 @@
                 </div>
                 <div class="mid-row" >
                     <div class="side">
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
+                        <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
+                            <div class="empty-land" >
+                                <div class="notice">空地</div>
+                            </div>
+                            <div class="road-bg-v" style="" >
+                            </div>
+                        </div>
                     </div>
                     <div class="center"></div>
                     <div class="side">
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
-                        <div class="block"></div>
+                        <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
+                            <div class="road-bg-v" style="" >
+                            </div>
+                            <div class="empty-land" >
+                                <div class="notice">空地</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="end-row" >
@@ -99,6 +95,8 @@ export default {
             height: 11.11%;
             width: 100%;
             background-color: chocolate;
+            display: flex;
+            direction: row;
         }
     }
     .center {
@@ -111,6 +109,12 @@ export default {
 
 .road-bg {
   background-image: url('@/assets/road.svg');
+  background-size: cover; // 或 contain，按需
+  width:100%;
+  aspect-ratio: 1 / 1;
+}
+.road-bg-v {
+  background-image: url('@/assets/road_v.svg');
   background-size: cover; // 或 contain，按需
   width:100%;
   aspect-ratio: 1 / 1;
