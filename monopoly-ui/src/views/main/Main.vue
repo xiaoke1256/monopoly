@@ -3,52 +3,57 @@
         
         <div class="map-container">
             <div class="map-div">
-                <div class="end-row" >
-                    <div style="width: 15%; height: 100%;">
-                        <div class="corner-top-left"></div>
-                    </div>
+                <!-- 上边一行 -->
+                <div>
+                    <div class="corner-top-left"></div>
+                </div>
+                <div class="top-side">
                     <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
                         <div class="empty-land" >
-                            <div class="notice">空地</div>
+                            <div class="notice">空地<br/>800文</div>
                         </div>
                         <div class="road-bg" style="" >
                         </div>
                     </div>
-                    <div style="width: 15%; height: 100%;" >
-                        <div class="corner-top-right"></div>
-                    </div>
                 </div>
-                <div class="mid-row" >
-                    <div class="side left-side">
-                        <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
-                            <div class="empty-land" >
-                                <div class="notice">空地</div>
-                            </div>
-                            <div class="road-bg-v" style="" >
-                            </div>
-                        </div>
-                    </div>
-                    <div class="center"></div>
-                    <div class="side">
-                        <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
-                            <div class="road-bg-v" style="" >
-                            </div>
-                            <div class="empty-land" >
-                                <div class="notice">空地</div>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <div class="corner-top-right"></div>
                 </div>
-                <div class="end-row" >
-                    <div></div>
+                <!-- 中间一行 -->
+                <div class="side left-side">
                     <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
                         <div class="empty-land" >
-                            <div class="notice">空地</div>
+                            <div class="notice">空地<br/>800文</div>
+                        </div>
+                        <div class="road-bg-v" style="" >
+                        </div>
+                    </div>
+                </div>
+                <div class="center"></div>
+                <div class="side right-side">
+                    <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
+                        <div class="road-bg-v" style="" >
+                        </div>
+                        <div class="empty-land" >
+                            <div class="notice">空地<br/>800文</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 下边一行 -->
+                <div>
+                    <div class="corner-bottom-left"></div>
+                </div>
+                <div class="bottom-side">
+                    <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
+                        <div class="empty-land" >
+                            <div class="notice">空地<br/>800文</div>
                         </div>
                         <div class="road-bg" style="" >
                         </div>
                     </div>
-                    <div></div>
+                </div>
+                <div>
+                    <div class="corner-bottom-right"></div>
                 </div>
             </div>
         </div>    
@@ -74,14 +79,16 @@ export default {
     height: 100%;
     aspect-ratio: 1 / 1; /* 例如，16:9 的长宽比 */
     background-color: lightblue; 
+    display: grid;
+    grid-template-columns: 15% 70% 15%;
+    grid-template-rows: 15% 70% 15%;
 }
-.end-row {
+.top-side,.bottom-side {
     display: flex;
-    direction: row;
+    flex-direction: row;
     justify-content: center;
-    height: 15%;
     .block {
-        width: 7.78%;
+        width: 11.11%;
         height: 100%;
         background-color: chocolate;
         position: relative;
@@ -100,46 +107,54 @@ export default {
         }
     }
 }
-.mid-row {
-    display: flex;
-    direction: row;
-    justify-content: center;
-    height: 70%;
-    .side {
-        width: 15%;
-        height: 100%;
-        background-color: lightgray;
-        .block {
-            height: 11.11%;
-            width: 100%;
-            background-color: chocolate;
-            display: flex;
-            direction: row;
-            justify-content: space-between;
-            position: relative;
+
+.side {
+    background-color: lightgray;
+    .block {
+        height: 11.11%;
+        width: 100%;
+        background-color: chocolate;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        position: relative;
+    }
+}
+.left-side {
+    .block {
+        .empty-land {
+            position: absolute;
+            height:100%;
+            left: 0;
+        }
+        .road-bg-v {
+            position: absolute;
+            right: 0;
+            height:100%;
+            aspect-ratio: 1 / 1;
         }
     }
-    .left-side {
-        .block {
-            .empty-land {
-                position: absolute;
-                height:100%;
-                left: 0;
-            }
-            .road-bg-v {
-                position: absolute;
-                right: 0;
-                height:100%;
-                aspect-ratio: 1 / 1;
-            }
+}
+.right-side {
+    .block {
+        .empty-land {
+            position: absolute;
+            height:100%;
+            right: 0;
+        }
+        .road-bg-v {
+            position: absolute;
+            left: 0;
+            height:100%;
+            aspect-ratio: 1 / 1;
         }
     }
+}
+
+.map-div{
     .center {
-        width: 70%;
-        height: 100%;
         background-color: lavenderblush;
     }
-    
 }
 
 
@@ -153,7 +168,7 @@ export default {
     background-size: cover; // 或 contain，按需 
     aspect-ratio: 1 / 1;
     display: flex;
-    direction: column;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     .notice{
@@ -179,4 +194,22 @@ export default {
     background-repeat: no-repeat;
     background-position: bottom left;
 }
+.corner-bottom-right {
+    width:100%;
+    height: 100%;
+    background-image: url('@/assets/road-bottom-corner.svg');
+    background-size: 50% 100%;
+    background-repeat: no-repeat;
+    background-position: center left;
+}
+.corner-bottom-left {
+    width:100%;
+    height: 100%;
+    background-image: url('@/assets/road-bottom-corner.svg');
+    transform: scaleX(-1);
+    background-size: 50% 100%;
+    background-repeat: no-repeat;
+    background-position: center left;
+}
+
 </style>

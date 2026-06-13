@@ -85,7 +85,7 @@
 	<polygon fill="#754C34" points="87.249,90.188 86.132,89.262 88.722,77.654 90.046,77.654 	"/>
 	<polygon fill="#7F604C" points="92.01,79.22 89.5,79.22 88.75,77.498 90.969,77.498 	"/>
 </g>
-<g id="板">
+<!-- <g id="板">
 	<linearGradient id="woodStripe" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" style="stop-color:#A37C58;stop-opacity:1" />
       <stop offset="50%" style="stop-color:#ECCFB1;stop-opacity:1" />
@@ -98,5 +98,5 @@
 	<path fill="none" stroke="#B28247" stroke-miterlimit="10" d="M69.926,39.826c1.104,0,2,0.896,2,2v22.002c0,1.105-0.896,2-2,2
 		H34.478c-1.104,0-2-0.895-2-2V41.826"/>
 	<path fill="none" stroke="#947D68" stroke-miterlimit="10" d="M71.926,41.845v22.002c0,1.105-0.896,2-2,2H34.478"/>
-</g>
+</g> -->
 </svg>
