@@ -5,15 +5,15 @@
             <div class="map-div">
                 <div class="end-row" >
                     <div></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
+                    <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
+                        <div style="width:100%;height:47%;" >
+
+                        </div>
+                        <div class="road-bg" style="" >
+
+                        </div>
+                        <!-- <img src="@/assets/road.svg" style="width: 100%;"> -->
+                    </div>
                     <div></div>
                 </div>
                 <div class="mid-row" >
@@ -87,7 +87,7 @@ export default {
     .block {
         width: 7.78%;
         height: 100%;
-        background-color: red;
+        background-color: chocolate;
     }
 }
 .mid-row {
@@ -102,7 +102,7 @@ export default {
         .block {
             height: 11.11%;
             width: 100%;
-            background-color: red;
+            background-color: chocolate;
         }
     }
     .center {
@@ -111,5 +111,12 @@ export default {
         background-color: lavenderblush;
     }
     
+}
+
+.road-bg {
+  background-image: url('@/assets/road.svg');
+  background-size: cover; // 或 contain，按需
+  width:100%;
+  aspect-ratio: 1 / 1;
 }
 </style>
