@@ -9,7 +9,7 @@
                         <div class="background" >
                             <img src="@/assets/building.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                         </div>
-                        <div style="z-index: 1;position: absolute;left: 65%;top: 25%;font-size: 1.5vh;">柜坊</div>
+                        <div style="position: absolute;left: 65%;top: 25%;font-size: 1.5vh;">柜坊</div>
                         
                     </div>
                     
@@ -28,7 +28,7 @@
                         <div class="background" >
                             <img src="@/assets/building.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                         </div>
-                        <div style="z-index: 1;position: absolute;left: 15%;top: 25%;font-size: 1.5vh;">医馆</div>
+                        <div style="position: absolute;left: 15%;top: 25%;font-size: 1.5vh;">医馆</div>
                     </div>
                 </div>
                 <!-- 中间一行 -->
@@ -57,7 +57,7 @@
                         <div class="background" >
                             <img src="@/assets/building2.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                         </div>
-                        <div style="z-index: 1;position: absolute;left: 45%;top: 83%;font-size: 1.5vh;">镖局</div>
+                        <div style="position: absolute;left: 45%;top: 83%;font-size: 1.5vh;">镖局</div>
                     </div>
                 </div>
                 <div class="bottom-side">
@@ -74,7 +74,7 @@
                         <div class="background" >
                             <img src="@/assets/building2.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                         </div>
-                        <div style="z-index: 1;position: absolute;left: 35%;top: 83%;font-size: 1.5vh;">大理寺</div>
+                        <div style="position: absolute;left: 35%;top: 83%;font-size: 1.5vh;">大理寺</div>
                     </div>
                 </div>
             </div>
