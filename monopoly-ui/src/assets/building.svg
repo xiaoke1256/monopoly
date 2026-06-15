@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="200px"
+	 height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
+<g id="图层_2">
+	<rect x="23.25" y="47.792" fill="#F7F0DC" stroke="#C9A66A" stroke-miterlimit="10" width="142" height="45.711"/>
+	<rect x="8.833" y="93.503" fill="#C9A66A" stroke="#C9A66A" stroke-miterlimit="10" width="171.167" height="6.497"/>
+	<rect x="17.333" y="47.792" fill="none" stroke="#000000" stroke-miterlimit="10" width="153.833" height="45.711"/>
+	<path fill="#1C1106" stroke="#000000" stroke-miterlimit="10" d="M176,43.5H12.333V18.67c0,0,23.885,3.463,86.792,3.463
+		c53.448,0,76.874-3.463,76.874-3.463V43.5z"/>
+	<path fill="#1C1106" stroke="#000000" stroke-miterlimit="10" d="M174.661,10.155L180,10.094l-5.75,8.577
+		c0,0-30.319,3.463-75.124,3.463c-54.264,0-84.728-3.206-84.728-3.206L9.875,9.375H15.5l2.615,4.075c0,0,17.837,2.96,81.011,2.96
+		c53.98,0,72.041-3.073,72.041-3.073L174.661,10.155z"/>
+	<path fill="none" stroke="#000000" stroke-miterlimit="10" d="M181.875,7.208"/>
+	<path fill="none" stroke="#000000" stroke-miterlimit="10" d="M181.875,11.375"/>
+	<rect x="15.542" y="43.5" fill="#502928" stroke="#331415" stroke-miterlimit="10" width="157.75" height="4.292"/>
+	<rect x="17.333" y="47.792" fill="#7DA9B1" stroke="#514352" stroke-miterlimit="10" width="5.917" height="45.711"/>
+	<rect x="165.25" y="47.792" fill="#7DA9B1" stroke="#514352" stroke-miterlimit="10" width="5.917" height="45.711"/>
+	<rect x="70.458" y="47.792" fill="#7DA9B1" stroke="#514352" stroke-miterlimit="10" width="5.917" height="45.711"/>
+	<rect x="113.209" y="47.792" fill="#7DA9B1" stroke="#514352" stroke-miterlimit="10" width="5.916" height="45.711"/>
+	<rect x="77.875" y="43.5" fill="#A26123" stroke="#000000" stroke-miterlimit="10" width="34.375" height="12.75"/>
+	<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="75.875" y1="74.125" x2="113.709" y2="74.125">
+		<stop  offset="0" style="stop-color:#5E4A1A"/>
+		<stop  offset="0.2133" style="stop-color:#3C2B13"/>
+		<stop  offset="0.4267" style="stop-color:#24150A"/>
+		<stop  offset="0.6332" style="stop-color:#130102"/>
+		<stop  offset="0.8283" style="stop-color:#060000"/>
+		<stop  offset="1" style="stop-color:#040000"/>
+	</linearGradient>
+	<rect x="76.375" y="57.375" fill="#B28C63" stroke="url(#SVGID_1_)" stroke-miterlimit="10" width="36.834" height="33.5"/>
+	<rect x="121.591" y="108.298" fill="none" stroke="#000000" stroke-miterlimit="10" width="58.409" height="83.644"/>
+	<rect x="98.718" y="191.941" fill="#C9A66A" stroke="#C9A66A" stroke-miterlimit="10" width="81.282" height="5.852"/>
+	<rect x="98.718" y="108.298" fill="#E8D589" stroke="#C9A66A" stroke-miterlimit="10" width="22.873" height="83.644"/>
+	<polyline fill="#B0B6A2" points="121.591,134.229 121.591,191.543 180,191.543 180,134.229 	"/>
+	<path fill="#1E1204" stroke="#000000" stroke-miterlimit="10" d="M185.42,153.245c0,0-8.559-2.375-19.415-8.656
+		c-8.519-4.929-15.212-11.649-15.212-11.649s-3.463,4.803-14.54,11.243c-12.042,7-20.086,9.063-20.086,9.063V70
+		c0,0,8.044-2.063,20.086-9.063c11.077-6.44,14.54-11.243,14.54-11.243s6.693,6.721,15.212,11.649
+		C176.861,67.625,185.42,70,185.42,70V153.245z"/>
+	<linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="144.5625" y1="162.0547" x2="155.9328" y2="173.425">
+		<stop  offset="0" style="stop-color:#5E4A1A"/>
+		<stop  offset="0.2133" style="stop-color:#3C2B13"/>
+		<stop  offset="0.4267" style="stop-color:#24150A"/>
+		<stop  offset="0.6332" style="stop-color:#130102"/>
+		<stop  offset="0.8283" style="stop-color:#060000"/>
+		<stop  offset="1" style="stop-color:#040000"/>
+	</linearGradient>
+	<rect x="144.063" y="162.553" fill="url(#SVGID_2_)" stroke="#B28C63" stroke-miterlimit="10" width="12.367" height="10.373"/>
+	<rect x="119.125" y="153.245" fill="#502928" stroke="#331415" stroke-miterlimit="10" width="64.034" height="5.318"/>
+	<rect x="147.868" y="135.559" fill="#502928" stroke="#331415" stroke-miterlimit="10" width="5.238" height="17.687"/>
+	<rect x="147.868" y="46.194" fill="#1D1206" stroke="#000000" stroke-miterlimit="10" width="5.851" height="89.364"/>
+</g>
+</svg>

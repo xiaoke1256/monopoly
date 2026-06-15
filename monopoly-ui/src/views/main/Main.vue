@@ -5,7 +5,14 @@
             <div class="map-div">
                 <!-- 上边一行 -->
                 <div>
-                    <div class="corner-top-left"></div>
+                    <div class="corner-top-left">
+                        <div class="background" >
+                            <img src="@/assets/building.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
+                        </div>
+                        <div style="z-index: 1;position: absolute;left: 65%;top: 25%;font-size: 1.5vh;">柜坊</div>
+                        
+                    </div>
+                    
                 </div>
                 <div class="top-side">
                     <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
@@ -17,7 +24,12 @@
                     </div>
                 </div>
                 <div>
-                    <div class="corner-top-right"></div>
+                    <div class="corner-top-right">
+                        <div class="background" >
+                            <img src="@/assets/building.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
+                        </div>
+                        <div style="z-index: 1;position: absolute;left: 15%;top: 25%;font-size: 1.5vh;">医馆</div>
+                    </div>
                 </div>
                 <!-- 中间一行 -->
                 <div class="side left-side">
@@ -41,7 +53,12 @@
                 </div>
                 <!-- 下边一行 -->
                 <div>
-                    <div class="corner-bottom-left"></div>
+                    <div class="corner-bottom-left">
+                        <div class="background" >
+                            <img src="@/assets/building2.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
+                        </div>
+                        <div style="z-index: 1;position: absolute;left: 45%;top: 83%;font-size: 1.5vh;">镖局</div>
+                    </div>
                 </div>
                 <div class="bottom-side">
                     <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
@@ -53,7 +70,12 @@
                     </div>
                 </div>
                 <div>
-                    <div class="corner-bottom-right"></div>
+                    <div class="corner-bottom-right">
+                        <div class="background" >
+                            <img src="@/assets/building2.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
+                        </div>
+                        <div style="z-index: 1;position: absolute;left: 35%;top: 83%;font-size: 1.5vh;">大理寺</div>
+                    </div>
                 </div>
             </div>
         </div>    
@@ -110,6 +132,9 @@ export default {
 
 .side {
     background-color: lightgray;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     .block {
         height: 11.11%;
         width: 100%;
@@ -180,6 +205,8 @@ export default {
 .corner-top-right {
     width:100%;
     height: 100%;
+    position: relative;
+    background-color: #D3E6A1;
     background-image: url('@/assets/road-corner.svg');
     background-size: 51.5% 51.5%;
     background-repeat: no-repeat;
@@ -188,28 +215,42 @@ export default {
 .corner-top-left {
     width:100%;
     height: 100%;
-    background-image: url('@/assets/road-corner.svg');
-    transform: scaleX(-1);
-    background-size: 51.5% 51.5%;
-    background-repeat: no-repeat;
-    background-position: bottom left;
+    position: relative;
+    .background{
+        width:100%;
+        height: 100%;
+        background-color: #D3E6A1;
+        background-image: url('@/assets/road-corner.svg');
+        transform: scaleX(-1);
+        background-size: 51.5% 51.5%;
+        background-repeat: no-repeat;
+        background-position: bottom left; 
+    }
 }
 .corner-bottom-right {
     width:100%;
     height: 100%;
+    position: relative;
+    background-color: #D3E6A1;
     background-image: url('@/assets/road-bottom-corner.svg');
-    background-size: 50% 100%;
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: center left;
 }
 .corner-bottom-left {
     width:100%;
     height: 100%;
-    background-image: url('@/assets/road-bottom-corner.svg');
-    transform: scaleX(-1);
-    background-size: 50% 100%;
-    background-repeat: no-repeat;
-    background-position: center left;
+    position: relative;
+    .background{
+        width:100%;
+        height: 100%;
+        background-color: #D3E6A1;
+        background-image: url('@/assets/road-bottom-corner.svg');
+        transform: scaleX(-1);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center left;
+    }
 }
 
 </style>
