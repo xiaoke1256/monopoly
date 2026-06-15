@@ -15,11 +15,11 @@
                     
                 </div>
                 <div class="top-side">
-                    <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
+                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+1)}`" class="block">
                         <div class="empty-land" >
                             <div class="notice">空地<br/>800文</div>
                         </div>
-                        <div class="road-bg" style="" >
+                        <div class="road road-bg" style="" >
                         </div>
                     </div>
                 </div>
@@ -33,18 +33,18 @@
                 </div>
                 <!-- 中间一行 -->
                 <div class="side left-side">
-                    <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
+                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+10)}`" class="block">
                         <div class="empty-land" >
                             <div class="notice">空地<br/>800文</div>
                         </div>
-                        <div class="road-bg-v" style="" >
+                        <div class="road road-bg-v" style="" >
                         </div>
                     </div>
                 </div>
                 <div class="center"></div>
                 <div class="side right-side">
-                    <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
-                        <div class="road-bg-v" style="" >
+                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(39-key)}`" class="block">
+                        <div class="road road-bg-v" style="" >
                         </div>
                         <div class="empty-land" >
                             <div class="notice">空地<br/>800文</div>
@@ -61,11 +61,11 @@
                     </div>
                 </div>
                 <div class="bottom-side">
-                    <div v-for="key in [...Array(9).keys()]" :key="key" class="block">
+                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(29-key)}`" class="block">
                         <div class="empty-land" >
                             <div class="notice">空地<br/>800文</div>
                         </div>
-                        <div class="road-bg" style="" >
+                        <div class="road road-bg" style="" >
                         </div>
                     </div>
                 </div>
@@ -79,12 +79,33 @@
                 </div>
             </div>
         </div>    
+        <div id="player1" style="z-index: 10;;position: absolute;font-size: 1.5vh;">
+            <img src="@/assets/player1.svg" width="5vh" height="5vh" style="width:5vh;height:5vh;"/>
+        </div>
     </div>
 </template>
 <script>
 export default {
   name: 'MainIndex',
   props: {
+  },
+  mounted() {
+    this.$nextTick(() => {
+        let player1 = document.getElementById('player1');
+        let road = document.getElementById('block-1').getElementsByClassName('road')[0];
+        if (player1&&road) {
+            const rect = road.getBoundingClientRect();
+            const top = rect.top + window.scrollY; // 绝对顶部位置
+            const left = rect.left + window.scrollX; // 绝对左侧位置
+            const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
+            const height = road.offsetHeight;
+            // 对player1进行操作
+            console.log("top:", top, "left:", left);
+            player1.style.position = 'absolute';
+            player1.style.top = (top-height*0.2)+'px';
+            player1.style.left = (left+width*0.3)+'px';
+        }
+    });
   }
 }
 </script>
