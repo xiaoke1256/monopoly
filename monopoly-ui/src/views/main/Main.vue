@@ -91,15 +91,21 @@ export default {
 <style lang="scss" scoped>
 .main{
     height: 100%;
+    overflow: hidden;
 }
 .map-container{
     height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 .map-div {
-    height: 100%;
-    aspect-ratio: 1 / 1; /* 例如，16:9 的长宽比 */
+    max-width: 100vw;
+    max-height: 100vh;
+    width: 100vmin;
+    height: 100vmin;
     background-color: lightblue; 
     display: grid;
     grid-template-columns: 15% 70% 15%;
