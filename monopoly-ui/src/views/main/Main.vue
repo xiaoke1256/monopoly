@@ -74,13 +74,13 @@
                         <div class="background" >
                             <img src="@/assets/building2.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                         </div>
-                        <div style="position: absolute;left: 35%;top: 83%;font-size: 1.5vh;">大理寺</div>
+                        <div style="position: absolute;left: 32%;top: 82%;font-size: 1.5vh;">大理寺</div>
                     </div>
                 </div>
             </div>
         </div>    
         <div id="player1" style="z-index: 10;position: absolute;font-size: 1.5vh;">
-            <img src="@/assets/player1.svg" width="5vh" height="5vh" style="width:5vh;height:5vh;"/>
+            <img src="@/assets/player1.svg" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
         </div>
     </div>
 </template>
@@ -90,7 +90,7 @@ export default {
   props: {
   },
   mounted() {
-    this.playerMoveToBlock(1, 40);
+    this.playerMoveToBlock(1, 41);
   },
   methods: {
     playerMoveToBlock(playerId,blockId) {
