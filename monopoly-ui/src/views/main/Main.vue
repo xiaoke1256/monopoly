@@ -82,6 +82,9 @@
         <div id="player1" style="z-index: 10;position: absolute;font-size: 1.5vh;">
             <img src="@/assets/player1.svg" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
         </div>
+        <div id="player2" style="z-index: 10;position: absolute;font-size: 1.5vh;">
+            <img src="@/assets/player2.png" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
+        </div>
     </div>
 </template>
 <script>
@@ -90,7 +93,8 @@ export default {
   props: {
   },
   mounted() {
-    this.playerMoveToBlock(1, 41);
+    this.playerMoveToBlock(1, 29);
+    this.playerMoveToBlock(2, 29);
   },
   methods: {
     playerMoveToBlock(playerId,blockId) {
@@ -110,8 +114,11 @@ export default {
                     left = rect.left + window.scrollX; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
-                    dWidth = width*(0.5+0.3*0.5);
-                    dHeight = height*(0.5-0.2*0.5);
+                    const pDWidth = width*0.5*0.2*(playerId-1);
+                    const pDHeight = height*0.5*0.2*(playerId-1);
+                    dWidth = width*(0.5+0.2*0.5)+pDWidth;
+                    dHeight = height*(0.5-0.5*0.5)+pDHeight;
+
                     // 对player1进行操作
                     console.log("top:", top, "left:", left);
                 }else if(blockId==10){
@@ -121,8 +128,10 @@ export default {
                     left = rect.left + window.scrollX; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
-                    dWidth = width*(0.3*0.5);
-                    dHeight = height*(0.5-0.2*0.5);
+                    const pDWidth = width*0.5*0.2*(playerId-1);
+                    const pDHeight = height*0.5*0.2*(playerId-1);
+                    dWidth = width*(0.2*0.5)+pDWidth;
+                    dHeight = height*(0.5-0.5*0.5)+pDHeight;
                     // 对player1进行操作
                     console.log("top:", top, "left:", left);
                 }else if(blockId==20){
@@ -132,8 +141,10 @@ export default {
                     left = rect.left + window.scrollX; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
-                    dWidth = width*(0.3*0.5);
-                    dHeight = height*(0.5-0.2*0.5);
+                    const pDWidth = width*0.5*0.2*(playerId-1);
+                    const pDHeight = height*0.5*0.2*(playerId-1);
+                    dWidth = width*(0.2*0.5)+pDWidth;
+                    dHeight = height*(0.5-0.5*0.5)+pDHeight;
                     // 对player1进行操作
                     console.log("top:", top, "left:", left);
                 }else if(blockId==30){
@@ -143,8 +154,10 @@ export default {
                     left = rect.left + window.scrollX; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
-                    dWidth = width*(0.5+0.3*0.5);
-                    dHeight = height*(0.5-0.2*0.5);
+                    const pDWidth = width*0.5*0.2*(playerId-1);
+                    const pDHeight = height*0.5*0.2*(playerId-1);
+                    dWidth = width*(0.5+0.2*0.5)+pDWidth;
+                    dHeight = height*(0.5-0.5*0.5)+pDHeight;
                     // 对player1进行操作
                     console.log("top:", top, "left:", left);
                 }
@@ -161,11 +174,13 @@ export default {
                 const left = rect.left + window.scrollX; // 绝对左侧位置
                 const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                 const height = road.offsetHeight;
+                const pDWidth = width*0.2*(playerId-1);
+                const pDHeight = height*0.2*(playerId-1);
                 // 对player1进行操作
                 console.log("top:", top, "left:", left);
                 player1.style.position = 'absolute';
-                player1.style.top = (top-height*0.2)+'px';
-                player1.style.left = (left+width*0.3)+'px';
+                player1.style.top = (top-height*0.5+pDHeight)+'px';
+                player1.style.left = (left+width*0.2+pDWidth)+'px';
             }
         });
     }
