@@ -17,6 +17,7 @@
                 <div class="top-side">
                     <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+1)}`" class="block">
                         <div class="empty-land" >
+                            <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                             <div class="notice">空地<br/>800文</div>
                         </div>
                         <div class="road road-bg" style="" >
@@ -35,6 +36,7 @@
                 <div class="side left-side">
                     <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(39-key)}`" class="block">
                         <div class="empty-land" >
+                            <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                             <div class="notice">空地<br/>800文</div>
                         </div>
                         <div class="road road-bg-v" style="" >
@@ -47,6 +49,7 @@
                         <div class="road road-bg-v" style="" >
                         </div>
                         <div class="empty-land" >
+                            <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                             <div class="notice">空地<br/>800文</div>
                         </div>
                     </div>
@@ -63,6 +66,7 @@
                 <div class="bottom-side">
                     <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(29-key)}`" class="block">
                         <div class="empty-land" >
+                            <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                             <div class="notice">空地<br/>800文</div>
                         </div>
                         <div class="road road-bg" style="" >
@@ -82,7 +86,7 @@
         <div id="player1" style="z-index: 10;position: absolute;font-size: 1.5vh;">
             <img src="@/assets/player1.svg" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
         </div>
-        <div id="player2" style="z-index: 10;position: absolute;font-size: 1.5vh;">
+        <div id="player2" style="z-index: 11;position: absolute;font-size: 1.5vh;">
             <img src="@/assets/player2.png" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
         </div>
     </div>
@@ -302,6 +306,9 @@ export default {
     justify-content: center;
     align-items: center;
     .notice{
+        position: absolute;
+        left:0;
+        right:0;
         margin-top: 5px;
         font-size: 10px;
         color: #333;

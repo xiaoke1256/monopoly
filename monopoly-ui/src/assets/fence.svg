@@ -4,18 +4,7 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px"
 	 height="100px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
 
-<g id="bg">
-	<defs>
-		<radialGradient id="landAndGrass" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-			<stop offset="0%" style="stop-color:#F3E29F;stop-opacity:1" />
-			<stop offset="60%" style="stop-color:#F3E29F;stop-opacity:1" />
-			<stop offset="98%" style="stop-color:#D3E6A1;stop-opacity:1" />
-			<stop offset="100%" style="stop-color:#D3E6A1;stop-opacity:1" />
-		</radialGradient>
-	</defs>
-	<rect x="0" y="0" width="100" height="100" fill="url(#landAndGrass)"/>
-</g>
-<!-- <g id="北">
+<g id="北">
 	<rect x="15.125" y="16.208" fill="#592F17" width="73.375" height="1.352"/>
 	<rect x="15.125" y="17.561" fill="#371307" width="73.375" height="1.177"/>
 	<rect x="12.244" y="10.976" fill="#451F11" width="79.867" height="3.179"/>
@@ -84,19 +73,5 @@
 	<polygon fill="#4A2C1C" points="89.5,90.063 86.587,90.063 89.098,79.186 92.01,79.186 	"/>
 	<polygon fill="#754C34" points="87.249,90.188 86.132,89.262 88.722,77.654 90.046,77.654 	"/>
 	<polygon fill="#7F604C" points="92.01,79.22 89.5,79.22 88.75,77.498 90.969,77.498 	"/>
-</g> -->
-<!-- <g id="板">
-	<linearGradient id="woodStripe" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#A37C58;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#ECCFB1;stop-opacity:1" />
-	  <stop offset="100%" style="stop-color:#A37C58;stop-opacity:1" />
-    </linearGradient>
-	<path fill="#E9CAA9" stroke="#C9A063" stroke-miterlimit="10" d="M71.926,63.827c0,1.105-0.896,2-2,2H34.478c-1.104,0-2-0.895-2-2
-		V41.826c0-1.104,0.896-2,2-2h35.448c1.104,0,2,0.896,2,2V63.827z"/>
-	<rect x="32.922" y="48.164" fill="url(#woodStripe)" width="38.495" height="1"/>
-	<rect x="32.954" y="56.266" fill="url(#woodStripe)" width="38.495" height="1"/>
-	<path fill="none" stroke="#B28247" stroke-miterlimit="10" d="M69.926,39.826c1.104,0,2,0.896,2,2v22.002c0,1.105-0.896,2-2,2
-		H34.478c-1.104,0-2-0.895-2-2V41.826"/>
-	<path fill="none" stroke="#947D68" stroke-miterlimit="10" d="M71.926,41.845v22.002c0,1.105-0.896,2-2,2H34.478"/>
-</g> -->
+</g>
 </svg>
