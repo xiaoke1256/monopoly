@@ -1,14 +1,10 @@
 import { Router } from 'express';
-
-import { getAllMaps } from '../controllers/mapController.js';
+import { getAllMaps, getMapById, getDefaultMap } from '../controllers/mapController.js';
 
 const mapRouter = new Router();
 
-// {
-// 	const router = new Router();
-// 	router.get('/all',  getAllMaps);
-// 	mapRouter.use('/', router);
-// }
-mapRouter.get('/all',  getAllMaps);
+mapRouter.get('/all', getAllMaps);
+mapRouter.get('/:id', getMapById);
+mapRouter.get('/', getDefaultMap);
 
 export default mapRouter;
