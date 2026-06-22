@@ -15,7 +15,7 @@
                     
                 </div>
                 <div class="top-side">
-                    <div v-for="key in [...Array(10).keys()]" :key="key" :id="`block-${(key+1)}`" class="block">
+                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+1)}`" class="block">
                         <div class="empty-land" >
                             <!-- <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/> -->
                             <div class="notice">空地<br/>800文</div>
@@ -34,7 +34,7 @@
                 </div>
                 <!-- 中间一行 -->
                 <div class="side left-side">
-                    <div v-for="key in [...Array(10).keys()]" :key="key" :id="`block-${(39-key)}`" class="block">
+                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(39-key)}`" class="block">
                         <div class="road road-bg-v" style="" >
                         </div>
                         <div class="empty-land" >
@@ -46,7 +46,7 @@
                 </div>
                 <div class="center"></div>
                 <div class="side right-side">
-                    <div v-for="key in [...Array(10).keys()]" :key="key" :id="`block-${(key+11)}`" class="block">
+                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+11)}`" class="block">
                         <div class="road road-bg-v" style="" >
                         </div>
                         <div class="empty-land" >
@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <div class="bottom-side">
-                    <div v-for="key in [...Array(10).keys()]" :key="key" :id="`block-${(29-key)}`" class="block">
+                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(29-key)}`" class="block">
                         <div class="empty-land" >
                             <!-- <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/> -->
                             <div class="notice">空地<br/>800文</div>
@@ -102,8 +102,8 @@ export default {
   props: {
   },
   mounted() {
-    this.playerMoveToBlock(1, 29);
-    this.playerMoveToBlock(2, 29);
+    this.playerMoveToBlock(1, 20);
+    this.playerMoveToBlock(2, 30);
   },
   methods: {
     playerMoveToBlock(playerId,blockId) {
@@ -117,6 +117,7 @@ export default {
             let player1 = document.getElementById(`player${playerId}`);
             let block = document.getElementById(`block-${blockId}`);
             if (player1&&!block) {
+                const playerHeight = player1.offsetHeight;
                 let top = 0; 
                 let left = 0; 
                 let dWidth = 0; 
@@ -128,10 +129,10 @@ export default {
                     left = rect.left + window.scrollX; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
-                    const pDWidth = width*0.5*0.2*(playerId-1);
-                    const pDHeight = height*0.5*0.2*(playerId-1);
-                    dWidth = width*(0.5+0.2*0.5)+pDWidth;
-                    dHeight = height*(0.5-0.5*0.5)+pDHeight;
+                    const pDWidth = width*0.67*0.2*(playerId-1);
+                    const pDHeight = height*0.33*0.2*(playerId-1);
+                    dWidth = width*(0.33+0.2*0.33)+pDWidth;
+                    dHeight = height*(0.67+0.2*0.67)+pDHeight;
 
                     // 对player1进行操作
                     console.log("top:", top, "left:", left);
@@ -142,10 +143,10 @@ export default {
                     left = rect.left + window.scrollX; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
-                    const pDWidth = width*0.5*0.2*(playerId-1);
-                    const pDHeight = height*0.5*0.2*(playerId-1);
-                    dWidth = width*(0.2*0.5)+pDWidth;
-                    dHeight = height*(0.5-0.5*0.5)+pDHeight;
+                    const pDWidth = width*0.67*0.2*(playerId-1);
+                    const pDHeight = height*0.33*0.2*(playerId-1);
+                    dWidth = width*(0.2)+pDWidth;
+                    dHeight = height*(0.67+0.67*0.2)+pDHeight;
                     // 对player1进行操作
                     console.log("top:", top, "left:", left);
                 }else if(blockId==20){
@@ -155,10 +156,10 @@ export default {
                     left = rect.left + window.scrollX; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
-                    const pDWidth = width*0.5*0.2*(playerId-1);
-                    const pDHeight = height*0.5*0.2*(playerId-1);
-                    dWidth = width*(0.2*0.5)+pDWidth;
-                    dHeight = height*(0.5-0.5*0.5)+pDHeight;
+                    const pDWidth = width*0.67*0.2*(playerId-1);
+                    const pDHeight = height*0.33*0.2*(playerId-1);
+                    dWidth = width*(0.2)+pDWidth;
+                    dHeight = height*(0.67+0.67*0.2)+pDHeight;
                     // 对player1进行操作
                     console.log("top:", top, "left:", left);
                 }else if(blockId==30){
@@ -168,15 +169,16 @@ export default {
                     left = rect.left + window.scrollX; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
-                    const pDWidth = width*0.5*0.2*(playerId-1);
-                    const pDHeight = height*0.5*0.2*(playerId-1);
-                    dWidth = width*(0.5+0.2*0.5)+pDWidth;
-                    dHeight = height*(0.5-0.5*0.5)+pDHeight;
+                    const pDWidth = width*0.67*0.2*(playerId-1);
+                    const pDHeight = height*0.33*0.2*(playerId-1);
+                    dWidth = width*(0.33+0.2*0.33)+pDWidth;
+                    dHeight = height*(0.67+0.67*0.2)+pDHeight;
                     // 对player1进行操作
                     console.log("top:", top, "left:", left);
                 }
                 player1.style.position = 'absolute';
-                player1.style.top = (top+dHeight)+'px';
+                console.log("即将重新定位","top:",top,"skyHeight:",skyHeight,"playerHeight:",playerHeight,"dHeight:",dHeight);
+                player1.style.top = (top-skyHeight-playerHeight+dHeight)+'px';
                 player1.style.left = (left+dWidth)+'px';
                 return;
             }
@@ -233,7 +235,7 @@ export default {
     flex-direction: row;
     justify-content: center;
     .block {
-        width: 10%;
+        width: 11.11%;
         height: 100%;
         background-color: chocolate;
         position: relative;
