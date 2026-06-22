@@ -7,9 +7,9 @@
                 <div>
                     <div class="corner-top-left">
                         <div class="background" >
-                            <img src="@/assets/building.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
+                            <img src="@/assets/building3.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                         </div>
-                        <div style="position: absolute;left: 65%;top: 25%;font-size: 1.5vh;">柜坊</div>
+                        <div style="position: absolute;left: 44%;top: 0%;font-size: 1.5vh;">柜坊</div>
                         
                     </div>
                     
@@ -27,9 +27,9 @@
                 <div>
                     <div class="corner-top-right">
                         <div class="background" >
-                            <!-- <img src="@/assets/building.svg" width="100%" height="100%" style="width:100%;height:100%;"/> -->
+                            <img src="@/assets/building3.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                         </div>
-                        <div style="position: absolute;left: 15%;top: 25%;font-size: 1.5vh;">医馆</div>
+                        <div style="position: absolute;left: 44%;top: 0%;font-size: 1.5vh;">医馆</div>
                     </div>
                 </div>
                 <!-- 中间一行 -->
@@ -59,9 +59,9 @@
                 <div>
                     <div class="corner-bottom-left">
                         <div class="background" >
-                            <img src="@/assets/building2.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
+                            <img src="@/assets/building4.svg" width="66.67%" height="100%" />
                         </div>
-                        <div style="position: absolute;left: 45%;top: 83%;font-size: 1.5vh;">镖局</div>
+                        <div style="position: absolute;left: 60%;top: 0%;font-size: 1.5vh;">镖局</div>
                     </div>
                 </div>
                 <div class="bottom-side">
@@ -77,9 +77,9 @@
                 <div>
                     <div class="corner-bottom-right">
                         <div class="background" >
-                            <img src="@/assets/building2.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
+                            <img src="@/assets/building4.svg" width="66.67%" height="100%"/>
                         </div>
-                        <div style="position: absolute;left: 32%;top: 82%;font-size: 1.5vh;">大理寺</div>
+                        <div style="position: absolute;left: 22%;top: 0%;font-size: 1.5vh;">大理寺</div>
                     </div>
                 </div>
             </div>
@@ -342,6 +342,11 @@ export default {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: bottom left;
+    img{
+        position: absolute;
+        left: 0;
+        bottom: 33.33%;
+    }
 }
 .corner-top-left {
     width:100%;
@@ -356,6 +361,11 @@ export default {
         background-size: contain;
         background-repeat: no-repeat;
         background-position: bottom left; 
+        img{
+            position: absolute;
+            left: 0;
+            bottom: 33.33%;
+        }
     }
 }
 .corner-bottom-right {
@@ -367,6 +377,11 @@ export default {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center left;
+    img{
+        position: absolute;
+        left: 0;
+        bottom: 33.33%;
+    }
 }
 .corner-bottom-left {
     width:100%;
@@ -381,6 +396,11 @@ export default {
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center left;
+        img{
+            position: absolute;
+            left: 0;
+            bottom: 33.33%;
+        }
     }
 }
 
