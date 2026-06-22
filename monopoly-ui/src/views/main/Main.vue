@@ -15,9 +15,9 @@
                     
                 </div>
                 <div class="top-side">
-                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+1)}`" class="block">
+                    <div v-for="key in [...Array(10).keys()]" :key="key" :id="`block-${(key+1)}`" class="block">
                         <div class="empty-land" >
-                            <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
+                            <!-- <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/> -->
                             <div class="notice">空地<br/>800文</div>
                         </div>
                         <div class="road road-bg" style="" >
@@ -27,29 +27,30 @@
                 <div>
                     <div class="corner-top-right">
                         <div class="background" >
-                            <img src="@/assets/building.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
+                            <!-- <img src="@/assets/building.svg" width="100%" height="100%" style="width:100%;height:100%;"/> -->
                         </div>
                         <div style="position: absolute;left: 15%;top: 25%;font-size: 1.5vh;">医馆</div>
                     </div>
                 </div>
                 <!-- 中间一行 -->
                 <div class="side left-side">
-                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(39-key)}`" class="block">
-                        <div class="empty-land" >
-                            <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
-                            <div class="notice">空地<br/>800文</div>
-                        </div>
+                    <div v-for="key in [...Array(10).keys()]" :key="key" :id="`block-${(39-key)}`" class="block">
                         <div class="road road-bg-v" style="" >
                         </div>
+                        <div class="empty-land" >
+                            <!-- <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/> -->
+                            <div class="notice">空地<br/>800文</div>
+                        </div>
+                        
                     </div>
                 </div>
                 <div class="center"></div>
                 <div class="side right-side">
-                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+11)}`" class="block">
+                    <div v-for="key in [...Array(10).keys()]" :key="key" :id="`block-${(key+11)}`" class="block">
                         <div class="road road-bg-v" style="" >
                         </div>
                         <div class="empty-land" >
-                            <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
+                            <!-- <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/> -->
                             <div class="notice">空地<br/>800文</div>
                         </div>
                     </div>
@@ -64,9 +65,9 @@
                     </div>
                 </div>
                 <div class="bottom-side">
-                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(29-key)}`" class="block">
+                    <div v-for="key in [...Array(10).keys()]" :key="key" :id="`block-${(29-key)}`" class="block">
                         <div class="empty-land" >
-                            <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
+                            <!-- <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/> -->
                             <div class="notice">空地<br/>800文</div>
                         </div>
                         <div class="road road-bg" style="" >
@@ -194,49 +195,64 @@ export default {
 <style lang="scss" scoped>
 .main{
     height: 100%;
-    overflow: hidden;
+    overflow-y: hidden;
 }
 .map-container{
     height: 100%;
-    width: 100%;
+    aspect-ratio: 100 / 53;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-end;
     align-items: center;
-    overflow: hidden;
+    //overflow-y: hidden;
 }
 .map-div {
-    max-width: 100vw;
-    max-height: 100vh;
-    width: 100vmin;
-    height: 100vmin;
+    // max-width: 100vw;
+    // max-height: 100vh;
+    // width: 100vmin;
+    width: 100%;
+    height: 94.34%;
     background-color: lightblue; 
     display: grid;
-    grid-template-columns: 15% 70% 15%;
-    grid-template-rows: 15% 70% 15%;
+    grid-template-columns: 11.53% 76.94% 11.53%;
+    grid-template-rows: 11.53% 76.94% 11.53%;
 }
 .top-side,.bottom-side {
     display: flex;
     flex-direction: row;
     justify-content: center;
     .block {
-        width: 11.11%;
+        width: 10%;
         height: 100%;
         background-color: chocolate;
         position: relative;
         .empty-land {
             position: absolute;
             width:100%;
+            aspect-ratio: 2 / 1;
             top: 0;
+            left: 0;
         }
         .road-bg {
-            background-image: url('@/assets/road.svg');
             background-size: cover; // 或 contain，按需
             width:100%;
-            aspect-ratio: 1 / 1;
+            aspect-ratio: 4 / 1;
             position: absolute;
             bottom: 0;
         }
     }
+}
+
+.top-side {
+    .road-bg {
+            background-image: url('@/assets/road2.svg');
+    }
+}
+
+.bottom-side {
+    .road-bg {
+            background-image: url('@/assets/road-bottom.svg');
+    }   
 }
 
 .side {
@@ -259,11 +275,12 @@ export default {
         .empty-land {
             position: absolute;
             height:100%;
-            left: 0;
+            aspect-ratio: 2 / 1;
+            right: 0;
         }
         .road-bg-v {
             position: absolute;
-            right: 0;
+            left: 0;
             height:100%;
             aspect-ratio: 1 / 1;
         }
@@ -274,13 +291,15 @@ export default {
         .empty-land {
             position: absolute;
             height:100%;
-            right: 0;
+            aspect-ratio: 2 / 1;
+            left: 0;
         }
         .road-bg-v {
             position: absolute;
-            left: 0;
+            right: 0;
             height:100%;
             aspect-ratio: 1 / 1;
+            transform: scaleX(-1);
         }
     }
 }
@@ -299,8 +318,8 @@ export default {
 }
 .empty-land{
     background-image: url('@/assets/emptyland.svg');
-    background-size: cover; // 或 contain，按需 
-    aspect-ratio: 1 / 1;
+    background-size: 100% 100%; // 或 contain，按需 
+    background-repeat: cover;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -319,8 +338,8 @@ export default {
     height: 100%;
     position: relative;
     background-color: #D3E6A1;
-    background-image: url('@/assets/road-corner.svg');
-    background-size: 51.5% 51.5%;
+    background-image: url('@/assets/road-corner2.svg');
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: bottom left;
 }
@@ -332,9 +351,9 @@ export default {
         width:100%;
         height: 100%;
         background-color: #D3E6A1;
-        background-image: url('@/assets/road-corner.svg');
+        background-image: url('@/assets/road-corner2.svg');
         transform: scaleX(-1);
-        background-size: 51.5% 51.5%;
+        background-size: contain;
         background-repeat: no-repeat;
         background-position: bottom left; 
     }
@@ -344,7 +363,7 @@ export default {
     height: 100%;
     position: relative;
     background-color: #D3E6A1;
-    background-image: url('@/assets/road-bottom-corner.svg');
+    background-image: url('@/assets/road-bottom-corner2.svg');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center left;
@@ -357,7 +376,7 @@ export default {
         width:100%;
         height: 100%;
         background-color: #D3E6A1;
-        background-image: url('@/assets/road-bottom-corner.svg');
+        background-image: url('@/assets/road-bottom-corner2.svg');
         transform: scaleX(-1);
         background-size: contain;
         background-repeat: no-repeat;
