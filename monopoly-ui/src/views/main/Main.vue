@@ -97,15 +97,40 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
+
 export default {
   name: 'MainIndex',
   props: {
   },
+  data() {
+    return {
+      mapData: null,
+      loading: false,
+      error: null
+    };
+  },
   mounted() {
+    //从后台读取地图数据
+    this.fetchMapData();
     this.playerMoveToBlock(1, 20);
     this.playerMoveToBlock(2, 30);
   },
   methods: {
+    async fetchMapData() {
+      this.loading = true;
+      this.error = null;
+      try {
+        const response = await axios.get('/api/maps/default');
+        this.mapData = response.data.map;
+        console.log('地图数据已读取:', this.mapData);
+      } catch (err) {
+        this.error = err.message;
+        console.error('读取地图数据失败:', err);
+      } finally {
+        this.loading = false;
+      }
+    },
     playerMoveToBlock(playerId,blockId) {
         blockId = blockId%40;
         this.$nextTick(() => {
