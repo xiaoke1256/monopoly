@@ -226,8 +226,8 @@ export default {
     height: 94.34%;
     background-color: lightblue; 
     display: grid;
-    grid-template-columns: 11.53% 76.94% 11.53%;
-    grid-template-rows: 11.53% 76.94% 11.53%;
+    grid-template-columns: 12.5% 75% 12.5%;
+    grid-template-rows: 12.5% 75% 12.5%;
     position: relative;
 }
 .top-side,.bottom-side {
