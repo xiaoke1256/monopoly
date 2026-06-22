@@ -1,8 +1,8 @@
 <template>
     <div class="main">
         
-        <div class="map-container">
-            <div class="map-div">
+        <div id="map-container" class="map-container">
+            <div id="map-div" class="map-div">
                 <!-- 上边一行 -->
                 <div>
                     <div class="corner-top-left">
@@ -82,14 +82,18 @@
                         <div style="position: absolute;left: 22%;top: 0%;font-size: 1.5vh;">大理寺</div>
                     </div>
                 </div>
+                <div id="other">
+                     <div id="player1" style="z-index: 10;position: absolute;font-size: 1.5vh;">
+                        <img src="@/assets/player1.svg" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
+                    </div>
+                    <div id="player2" style="z-index: 11;position: absolute;font-size: 1.5vh;">
+                        <img src="@/assets/player2.png" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
+                    </div>
+                </div>
+               
             </div>
+            
         </div>    
-        <div id="player1" style="z-index: 10;position: absolute;font-size: 1.5vh;">
-            <img src="@/assets/player1.svg" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
-        </div>
-        <div id="player2" style="z-index: 11;position: absolute;font-size: 1.5vh;">
-            <img src="@/assets/player2.png" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
-        </div>
     </div>
 </template>
 <script>
@@ -105,6 +109,11 @@ export default {
     playerMoveToBlock(playerId,blockId) {
         blockId = blockId%40;
         this.$nextTick(() => {
+            
+            let mapContainer = document.getElementById('map-container');
+            let mapDiv = document.getElementById('map-div');
+            const skyHeight = mapContainer.offsetHeight-mapDiv.offsetHeight
+
             let player1 = document.getElementById(`player${playerId}`);
             let block = document.getElementById(`block-${blockId}`);
             if (player1&&!block) {
@@ -183,9 +192,9 @@ export default {
                 const pDHeight = height*0.2*(playerId-1)+height*0.4;
                 const playerHeight = player1.offsetHeight;
                 // 对player1进行操作
-                console.log("top:", top, "left:", left);
+                console.log("top:", top, "left:", left,"playerHeight:",playerHeight);
                 player1.style.position = 'absolute';
-                player1.style.top = (top-playerHeight+pDHeight)+'px';
+                player1.style.top = (top-skyHeight-playerHeight+pDHeight)+'px';
                 player1.style.left = (left+width*0.2+pDWidth)+'px';
             }
         });
@@ -217,6 +226,7 @@ export default {
     display: grid;
     grid-template-columns: 11.53% 76.94% 11.53%;
     grid-template-rows: 11.53% 76.94% 11.53%;
+    position: relative;
 }
 .top-side,.bottom-side {
     display: flex;
