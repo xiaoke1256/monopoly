@@ -180,11 +180,12 @@ export default {
                 const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                 const height = road.offsetHeight;
                 const pDWidth = width*0.2*(playerId-1);
-                const pDHeight = height*0.2*(playerId-1);
+                const pDHeight = height*0.2*(playerId-1)+height*0.4;
+                const playerHeight = player1.offsetHeight;
                 // 对player1进行操作
                 console.log("top:", top, "left:", left);
                 player1.style.position = 'absolute';
-                player1.style.top = (top-height*0.5+pDHeight)+'px';
+                player1.style.top = (top-playerHeight+pDHeight)+'px';
                 player1.style.left = (left+width*0.2+pDWidth)+'px';
             }
         });
