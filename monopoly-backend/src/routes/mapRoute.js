@@ -4,7 +4,7 @@ import { getAllMaps, getMapById, getDefaultMap } from '../controllers/mapControl
 const mapRouter = new Router();
 
 mapRouter.get('/all', getAllMaps);
+mapRouter.get('/default', getDefaultMap);
 mapRouter.get('/:id', getMapById);
-mapRouter.get('/', getDefaultMap);
 
 export default mapRouter;
