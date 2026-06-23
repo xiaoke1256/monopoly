@@ -17,7 +17,7 @@
                 <div class="top-side">
                     <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+1)}`" class="block">
                         <div class="empty-land" >
-                            <!-- <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/> -->
+                            <img src="@/assets/shop.svg" width="100%" height="100%" />
                             <div class="notice">空地<br/>800文</div>
                         </div>
                         <div class="road road-bg" style="" >
@@ -38,7 +38,7 @@
                         <div class="road road-bg-v" style="" >
                         </div>
                         <div class="empty-land" >
-                            <!-- <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/> -->
+                            <img src="@/assets/shop2.svg" width="100%" height="100%"/>
                             <div class="notice">空地<br/>800文</div>
                         </div>
                         
@@ -50,7 +50,7 @@
                         <div class="road road-bg-v" style="" >
                         </div>
                         <div class="empty-land" >
-                            <!-- <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/> -->
+                            <img src="@/assets/shop2.svg" width="100%" height="100%"/>
                             <div class="notice">空地<br/>800文</div>
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                 <div class="bottom-side">
                     <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(29-key)}`" class="block">
                         <div class="empty-land" >
-                            <!-- <img src="@/assets/fence.svg" width="100%" height="100%" style="width:100%;height:100%;"/> -->
+                            <img src="@/assets/shop.svg" width="100%" height="100%" />
                             <div class="notice">空地<br/>800文</div>
                         </div>
                         <div class="road road-bg" style="" >
@@ -79,7 +79,7 @@
                         <div class="background" >
                             <img src="@/assets/building4.svg" width="66.67%" height="100%"/>
                         </div>
-                        <div style="position: absolute;left: 22%;top: 0%;font-size: 1.5vh;">大理寺</div>
+                        <div style="position: absolute;left: 23%;top: 0%;font-size: 1.5vh;">大理寺</div>
                     </div>
                 </div>
                 <div id="other">
@@ -105,7 +105,7 @@ export default {
   },
   data() {
     return {
-      mapData: null,
+      cells: [],
       loading: false,
       error: null
     };
@@ -113,7 +113,8 @@ export default {
   mounted() {
     //从后台读取地图数据
     this.fetchMapData();
-    this.playerMoveToBlock(1, 20);
+
+    this.playerMoveToBlock(1, 13);
     this.playerMoveToBlock(2, 30);
   },
   methods: {
@@ -121,9 +122,9 @@ export default {
       this.loading = true;
       this.error = null;
       try {
-        const response = await axios.get('/api/maps/default');
-        this.mapData = response.data.map;
-        console.log('地图数据已读取:', this.mapData);
+        const response = await axios.get('/api/map/default');
+        this.cells = response.data.map.cells;
+        console.log('地图数据已读取:', this.cells);
       } catch (err) {
         this.error = err.message;
         console.error('读取地图数据失败:', err);
@@ -242,6 +243,7 @@ export default {
     justify-content: flex-end;
     align-items: center;
     //overflow-y: hidden;
+    background: skyblue;
 }
 .map-div {
     // max-width: 100vw;
@@ -270,6 +272,13 @@ export default {
             aspect-ratio: 2 / 1;
             top: 0;
             left: 0;
+            img {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width:100%;
+                height: auto;
+            }
         }
         .road-bg {
             background-size: cover; // 或 contain，按需
@@ -315,6 +324,14 @@ export default {
             height:100%;
             aspect-ratio: 2 / 1;
             right: 0;
+            img {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                width:110%;
+                height: auto;
+                transform: scaleX(-1);
+            }
         }
         .road-bg-v {
             position: absolute;
@@ -331,6 +348,13 @@ export default {
             height:100%;
             aspect-ratio: 2 / 1;
             left: 0;
+            img {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width:110%;
+                height: auto;
+            }
         }
         .road-bg-v {
             position: absolute;
@@ -366,7 +390,7 @@ export default {
         position: absolute;
         left:0;
         right:0;
-        margin-top: 5px;
+        margin-top: 0;
         font-size: 10px;
         color: #333;
     }
