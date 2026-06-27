@@ -3,30 +3,31 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="200px" height="150px" viewBox="0 0 200 150" enable-background="new 0 0 200 150" xml:space="preserve">
-<polygon fill="#E8D589" stroke="#C9A66A" stroke-miterlimit="10" points="164.789,77.156 175.014,85.586 183.864,88.779 
-	183.864,143.316 164.789,143.316 "/>
+<rect x="4.168" y="101.427" fill="#F4ECAD" stroke="#C9A66A" stroke-miterlimit="10" width="186.345" height="41.866"/>
+<polygon fill="#E8D589" stroke="#C9A66A" stroke-miterlimit="10" points="163.907,74.016 173.445,81.688 182.86,86.932 
+	182.86,136.188 163.785,136.188 "/>
 <rect x="164.789" y="89.057" fill="#502928" stroke="#331415" stroke-miterlimit="10" width="20.181" height="2.83"/>
 <polyline fill="#1C1106" stroke="#000000" stroke-miterlimit="10" points="164.535,73.112 177.038,83.357 190.392,88.381 
 	190.392,90.791 175.014,85.244 164.535,76.908 "/>
 <rect x="168.102" y="101.928" fill="#A26123" stroke="#000000" stroke-miterlimit="10" width="11.546" height="22.59"/>
-<polygon fill="#E8D589" stroke="#C9A66A" stroke-miterlimit="10" points="29.872,77.342 19.647,85.771 10.795,88.964 
-	10.795,143.502 29.872,143.502 "/>
+<polygon fill="#E8D589" stroke="#C9A66A" stroke-miterlimit="10" points="29.872,77.342 19.647,84.708 10.795,87.5 10.795,135.168 
+	29.872,135.168 "/>
 <rect x="9.691" y="89.241" fill="#502928" stroke="#331415" stroke-miterlimit="10" width="20.18" height="2.831"/>
-<rect x="35.558" y="54.623" fill="#E8D589" stroke="#C9A66A" stroke-miterlimit="10" width="123.818" height="88.879"/>
+<rect x="35.558" y="54.623" fill="#ECE3C3" stroke="#C9A66A" stroke-miterlimit="10" width="123.818" height="88.879"/>
 <rect x="4.269" y="143.595" fill="#C9A66A" stroke="#C9A66A" stroke-miterlimit="10" width="186.123" height="6.405"/>
 <rect x="30.4" y="53.864" fill="none" stroke="#000000" stroke-miterlimit="10" width="134.135" height="89.638"/>
-<rect x="26.04" y="22.563" fill="#1C1106" stroke="#000000" stroke-miterlimit="10" width="142.71" height="23.726"/>
-<path fill="#1C1106" stroke="#000000" stroke-miterlimit="10" d="M167.582,8.801l4.654-0.099l-5.014,13.86L27.84,22.979
+<rect x="26.04" y="22.563" fill="#1D1206" stroke="#000000" stroke-miterlimit="10" width="142.71" height="23.726"/>
+<path fill="#1D1206" stroke="#000000" stroke-miterlimit="10" d="M167.582,8.801l4.654-0.099l-5.014,13.86L27.84,22.979
 	L23.897,7.541h4.904l2.279,6.585c0,0,15.554,4.784,70.638,4.784c47.068,0,62.816-4.966,62.816-4.966L167.582,8.801z"/>
 <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M173.872,4.04"/>
 <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M173.872,10.773"/>
 <polyline fill="#1C1106" stroke="#000000" stroke-miterlimit="10" points="30.125,73.297 17.623,83.543 4.269,88.566 4.269,90.976 
 	19.646,85.429 30.125,77.094 "/>
 <rect x="28.621" y="46.927" fill="#502928" stroke="#331415" stroke-miterlimit="10" width="137.548" height="6.937"/>
-<rect x="30.4" y="54.623" fill="#7DA9B1" stroke="#514352" stroke-miterlimit="10" width="5.158" height="88.879"/>
-<rect x="159.376" y="54.623" fill="#7DA9B1" stroke="#514352" stroke-miterlimit="10" width="5.159" height="88.879"/>
-<rect x="76.722" y="84.17" fill="#7DA9B1" stroke="#514352" stroke-miterlimit="10" width="5.159" height="59.332"/>
-<rect x="113.999" y="85.113" fill="#7DA9B1" stroke="#514352" stroke-miterlimit="10" width="5.158" height="58.389"/>
+<rect x="30.4" y="54.623" fill="#973D23" stroke="#514352" stroke-miterlimit="10" width="5.158" height="88.879"/>
+<rect x="159.376" y="54.623" fill="#973D23" stroke="#514352" stroke-miterlimit="10" width="5.159" height="88.879"/>
+<rect x="76.722" y="84.17" fill="#973D23" stroke="#514352" stroke-miterlimit="10" width="5.159" height="59.332"/>
+<rect x="113.999" y="85.113" fill="#973D23" stroke="#514352" stroke-miterlimit="10" width="5.158" height="58.389"/>
 <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="81.3813" y1="112.1836" x2="114.499" y2="112.1836">
 	<stop  offset="0" style="stop-color:#5E4A1A"/>
 	<stop  offset="0.2133" style="stop-color:#3C2B13"/>
@@ -47,4 +48,8 @@
 <rect x="44.895" y="99.603" fill="#A26123" stroke="#000000" stroke-miterlimit="10" width="31.827" height="43.899"/>
 <rect x="119.538" y="99.602" fill="#A26123" stroke="#000000" stroke-miterlimit="10" width="31.827" height="43.9"/>
 <rect x="15.012" y="102.112" fill="#A26123" stroke="#000000" stroke-miterlimit="10" width="11.546" height="22.591"/>
+<polyline fill="#1C1106" stroke="#000000" stroke-miterlimit="10" points="30.374,54.839 19.028,64.779 5.574,71.205 3.968,88.775 
+	17.422,83.956 29.856,73.516 "/>
+<polyline fill="#1C1106" stroke="#000000" stroke-miterlimit="10" points="165.013,54.94 176.357,64.879 189.912,71.707 
+	190.987,88.081 177.534,83.262 165.101,72.821 "/>
 </svg>

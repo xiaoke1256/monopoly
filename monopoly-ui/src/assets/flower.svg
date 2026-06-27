@@ -1,0 +1,123 @@
+<svg width="800" height="800" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- 浅蓝色背景 -->
+  <rect width="800" height="800" fill="#c6e8ff"/>
+  
+  <!-- 树干定义 -->
+  <g fill="#5c3317">
+    <path d="M340 680 C360 620 310 550 380 480 C450 410 330 380 390 320 C450 260 470 180 480 160 C480 160 460 260 510 300 C560 340 580 240 610 190 C610 190 610 280 650 300 C690 320 730 310 730 310" 
+          stroke="#4b2912" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <path d="M360 690 C380 630 350 560 420 500 C490 440 540 470 590 410 C640 350 670 390 700 420" 
+          stroke="#4b2912" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <path d="M380 650 C430 640 510 660 580 670 C650 680 750 690 790 690" 
+          stroke="#4b2912" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <path d="M280 580 C310 560 350 590 390 530 C430 470 390 420 400 360 C410 300 440 240 450 210" 
+          stroke="#4b2912" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <path d="M120 420 C150 430 180 450 220 490 C260 530 290 560 320 590" 
+          stroke="#4b2912" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path d="M160 340 C180 370 200 410 210 450" 
+          stroke="#4b2912" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path d="M230 590 C180 560 140 540 120 520" 
+          stroke="#4b2912" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M270 450 C280 480 290 510 310 530" 
+          stroke="#4b2912" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path d="M600 580 C640 550 680 520 750 590" 
+          stroke="#4b2912" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M650 500 C680 460 740 420 810 430" 
+          stroke="#4b2912" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M290 270 C310 300 340 350 370 390" 
+          stroke="#4b2912" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M410 240 C430 270 450 300 470 330" 
+          stroke="#4b2912" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path d="M640 420 C660 450 670 480 690 510" 
+          stroke="#4b2912" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <!-- 树干主体填充 -->
+    <path d="M350 500 C320 560 340 620 360 680 L450 830 L340 830 L290 690 C280 640 310 600 320 560 C330 520 300 540 350 500Z" fill="#5c3317"/>
+    <path d="M360 500 C380 440 400 380 450 320 C500 260 480 160 480 160" fill="none"/>
+  </g>
+  <g fill="#703817">
+    <path d="M370 520 C340 580 360 640 380 700 L460 830 L390 830 L320 700 C310 650 340 610 350 570 C360 530 330 550 370 520Z" fill="#502e16"/>
+  </g>
+
+  <!-- 梅花定义 -->
+  <g>
+    <!-- 绘制一朵梅花的辅助函数 -->
+    <defs>
+      <g id="plum-blossom">
+        <circle cx="0" cy="0" r="18" fill="#ff6b5e"/>
+        <circle cx="-18" cy="-10" r="14" fill="#ff6b5e"/>
+        <circle cx="12" cy="-16" r="14" fill="#ff6b5e"/>
+        <circle cx="18" cy="12" r="14" fill="#ff6b5e"/>
+        <circle cx="-12" cy="16" r="14" fill="#ff6b5e"/>
+        <circle cx="0" cy="0" r="8" fill="#88bb77"/>
+        <line x1="-5" y1="-5" x2="-10" y2="-10" stroke="#2d7d32" stroke-width="1" stroke-linecap="round"/>
+        <line x1="5" y1="-5" x2="10" y2="-10" stroke="#2d7d32" stroke-width="1" stroke-linecap="round"/>
+        <line x1="5" y1="5" x2="10" y2="10" stroke="#2d7d32" stroke-width="1" stroke-linecap="round"/>
+        <line x1="-5" y1="5" x2="-10" y2="10" stroke="#2d7d32" stroke-width="1" stroke-linecap="round"/>
+        <line x1="0" y1="-8" x2="0" y2="-14" stroke="#2d7d32" stroke-width="1" stroke-linecap="round"/>
+        <line x1="0" y1="8" x2="0" y2="14" stroke="#2d7d32" stroke-width="1" stroke-linecap="round"/>
+        <line x1="8" y1="0" x2="14" y2="0" stroke="#2d7d32" stroke-width="1" stroke-linecap="round"/>
+        <line x1="-8" y1="0" x2="-14" y2="0" stroke="#2d7d32" stroke-width="1" stroke-linecap="round"/>
+      </g>
+      <g id="plum-bud">
+        <ellipse cx="0" cy="0" rx="12" ry="10" fill="#ff5a50"/>
+        <path d="0,-8 C 5,-5 5,5 0,8 C -5,5 -5,-5 0,-8z" fill="#70a960"/>
+      </g>
+    </defs>
+
+    <!-- 开放梅花 -->
+    <use href="#plum-blossom" x="293" y="298" transform="scale(0.9)"/>
+    <use href="#plum-blossom" x="390" y="262"/>
+    <use href="#plum-blossom" x="516" y="232" transform="scale(0.9)"/>
+    <use href="#plum-blossom" x="583" y="268"/>
+    <use href="#plum-blossom" x="592" y="320" transform="scale(0.95)"/>
+    <use href="#plum-blossom" x="672" y="345" transform="scale(0.85)"/>
+    <use href="#plum-blossom" x="352" y="385"/>
+    <use href="#plum-blossom" x="567" y="412"/>
+    <use href="#plum-blossom" x="442" y="480"/>
+    <use href="#plum-blossom" x="647" y="508"/>
+    <use href="#plum-blossom" x="757" y="462"/>
+    <use href="#plum-blossom" x="832" y="472" transform="scale(0.85)"/>
+    <use href="#plum-blossom" x="310" y="465" transform="scale(0.8)"/>
+    <use href="#plum-blossom" x="440" y="282"/>
+    <use href="#plum-blossom" x="526" y="566"/>
+    <use href="#plum-blossom" x="670" y="612" transform="scale(0.9)"/>
+    <use href="#plum-blossom" x="702" y="680"/>
+    <use href="#plum-blossom" x="782" y="622" transform="scale(0.8)"/>
+    <use href="#plum-blossom" x="195" y="505"/>
+    <use href="#plum-blossom" x="308" y="528"/>
+    <use href="#plum-blossom" x="222" y="622"/>
+    <use href="#plum-blossom" x="512" y="232"/>
+    <use href="#plum-blossom" x="132" y="462" transform="scale(0.75)"/>
+    <use href="#plum-blossom" x="202" y="408" transform="scale(0.8)"/>
+    <use href="#plum-blossom" x="792" y="392" transform="scale(0.75)"/>
+  </g>
+
+  <!-- 花苞 -->
+  <g>
+    <use href="#plum-bud" x="255" y="243"/>
+    <use href="#plum-bud" x="312" y="192"/>
+    <use href="#plum-bud" x="423" y="198"/>
+    <use href="#plum-bud" x="482" y="245"/>
+    <use href="#plum-bud" x="693" y="202"/>
+    <use href="#plum-bud" x="722" y="335"/>
+    <use href="#plum-bud" x="845" y="368"/>
+    <use href="#plum-bud" x="822" y="332"/>
+    <use href="#plum-bud" x="652" y="425"/>
+    <use href="#plum-bud" x="682" y="445"/>
+    <use href="#plum-bud" x="552" y="532"/>
+    <use href="#plum-bud" x="702" y="562"/>
+    <use href="#plum-bud" x="832" y="635"/>
+    <use href="#plum-bud" x="752" y="712"/>
+    <use href="#plum-bud" x="272" y="465"/>
+    <use href="#plum-bud" x="375" y="338"/>
+    <use href="#plum-bud" x="452" y="362"/>
+    <use href="#plum-bud" x="258" y="465"/>
+    <use href="#plum-bud" x="262" y="465"/>
+    <use href="#plum-bud" x="162" y="375"/>
+    <use href="#plum-bud" x="260" y="465"/>
+    <use href="#plum-bud" x="160" y="595"/>
+    <use href="#plum-bud" x="192" y="572"/>
+    <use href="#plum-bud" x="485" y="175"/>
+    <use href="#plum-bud" x="690" y="200"/>
+  </g>
+</svg>

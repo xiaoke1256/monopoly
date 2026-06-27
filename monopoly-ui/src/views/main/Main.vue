@@ -17,8 +17,10 @@
                 <div class="top-side">
                     <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+1)}`" class="block">
                         <div class="empty-land" >
-                            <img src="@/assets/shop.svg" width="100%" height="100%" />
-                            <div class="notice">空地<br/>800文</div>
+                            <img v-if="cells[key+1]?.type==='property'" src="@/assets/shop.svg" width="100%" height="100%" />
+                            <img v-if="cells[key+1]?.type==='utility'" src="@/assets/qifu1.svg" width="100%" height="100%"/>
+                            <img v-if="cells[key+1]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
+                            <div class="notice"><!--空地<br/>800文--></div>
                         </div>
                         <div class="road road-bg" style="" >
                         </div>
@@ -38,8 +40,10 @@
                         <div class="road road-bg-v" style="" >
                         </div>
                         <div class="empty-land" >
-                            <img src="@/assets/shop2.svg" width="100%" height="100%"/>
-                            <div class="notice">空地<br/>800文</div>
+                            <img v-if="cells[39-key]?.type==='property'" src="@/assets/shop2.svg" width="100%" height="100%"/>
+                            <img v-if="cells[39-key]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
+                            <img v-if="cells[39-key]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
+                            <div class="notice"><!--空地<br/>800文--></div>
                         </div>
                         
                     </div>
@@ -50,8 +54,10 @@
                         <div class="road road-bg-v" style="" >
                         </div>
                         <div class="empty-land" >
-                            <img src="@/assets/shop2.svg" width="100%" height="100%"/>
-                            <div class="notice">空地<br/>800文</div>
+                            <img v-if="cells[key+11]?.type==='property'" src="@/assets/shop2.svg" width="100%" height="100%"/>
+                            <img v-if="cells[key+11]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
+                            <img v-if="cells[key+11]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
+                            <div class="notice"><!--空地<br/>800文--></div>
                         </div>
                     </div>
                 </div>
@@ -67,8 +73,10 @@
                 <div class="bottom-side">
                     <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(29-key)}`" class="block">
                         <div class="empty-land" >
-                            <img src="@/assets/shop.svg" width="100%" height="100%" />
-                            <div class="notice">空地<br/>800文</div>
+                            <img v-if="cells[29-key]?.type==='property'" src="@/assets/shop.svg" width="100%" height="100%" />
+                            <img v-if="cells[29-key]?.type==='utility'" src="@/assets/qifu1.svg" width="100%" height="100%"/>
+                            <img v-if="cells[29-key]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
+                            <div class="notice"><!--空地<br/>800文--></div>
                         </div>
                         <div class="road road-bg" style="" >
                         </div>
@@ -243,7 +251,7 @@ export default {
     justify-content: flex-end;
     align-items: center;
     //overflow-y: hidden;
-    background: skyblue;
+    background: #355197;
 }
 .map-div {
     // max-width: 100vw;
