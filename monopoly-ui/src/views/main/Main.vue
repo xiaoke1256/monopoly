@@ -21,7 +21,7 @@
                             <img v-if="cells[key+1]?.type==='utility'" src="@/assets/qifu1.svg" width="100%" height="100%"/>
                             <img v-if="cells[key+1]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
                             <img v-if="cells[key+1]?.type==='question'" src="@/assets/question.svg" width="100%" height="100%"/>
-                            <div class="notice"><!--空地<br/>800文--></div>
+                            <div style="top:-2%;margin-top:11% ;" class="notice">{{cells[key+1]?.name}}</div>
                         </div>
                         <div class="road road-bg" style="" >
                         </div>
@@ -45,7 +45,7 @@
                             <img v-if="cells[39-key]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
                             <img v-if="cells[39-key]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
                             <img v-if="cells[39-key]?.type==='question'" src="@/assets/question.svg" width="100%" height="100%"/>
-                            <div class="notice"><!--空地<br/>800文--></div>
+                            <div style="writing-mode: vertical-rl;margin-right:93%;margin-top:-5%" class="notice">{{cells[39-key]?.name}}</div>
                         </div>
                         
                     </div>
@@ -60,7 +60,7 @@
                             <img v-if="cells[key+11]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
                             <img v-if="cells[key+11]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
                             <img v-if="cells[key+11]?.type==='question'" src="@/assets/question.svg" width="100%" height="100%"/>
-                            <div class="notice"><!--空地<br/>800文--></div>
+                            <div style="writing-mode: vertical-rl;margin-left:103%;margin-top:-5%" class="notice">{{cells[key+11]?.name}}</div>
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
                             <img v-if="cells[29-key]?.type==='utility'" src="@/assets/qifu1.svg" width="100%" height="100%"/>
                             <img v-if="cells[29-key]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
                             <img v-if="cells[29-key]?.type==='question'" src="@/assets/question.svg" width="100%" height="100%"/>
-                            <div class="notice"><!--空地<br/>800文--></div>
+                            <div style="top:-2%;margin-top:11% ;" class="notice">{{cells[29-key]?.name}}</div>
                         </div>
                         <div class="road road-bg" style="" >
                         </div>
