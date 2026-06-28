@@ -149,7 +149,7 @@ export default {
     this.fetchMapData();
 
     this.playerMoveToBlock(1, 13);
-    this.playerMoveToBlock(2, 30);
+    this.playerMoveToBlock(2, 32);
   },
   methods: {
     async fetchMapData() {
@@ -173,6 +173,7 @@ export default {
             let mapContainer = document.getElementById('map-container');
             let mapDiv = document.getElementById('map-div');
             const skyHeight = mapContainer.offsetHeight-mapDiv.offsetHeight
+            const mapContainerRect = mapContainer.getBoundingClientRect();
 
             let player1 = document.getElementById(`player${playerId}`);
             let block = document.getElementById(`block-${blockId}`);
@@ -186,7 +187,7 @@ export default {
                     let road = document.getElementsByTagName('body')[0].getElementsByClassName('corner-top-left')[0];
                     const rect = road.getBoundingClientRect();
                     top = rect.top + window.scrollY; // 绝对顶部位置
-                    left = rect.left + window.scrollX; // 绝对左侧位置
+                    left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
                     const pDWidth = width*0.67*0.2*(playerId-1);
@@ -200,7 +201,7 @@ export default {
                     let road = document.getElementsByTagName('body')[0].getElementsByClassName('corner-top-right')[0];
                     const rect = road.getBoundingClientRect();
                     top = rect.top + window.scrollY; // 绝对顶部位置
-                    left = rect.left + window.scrollX; // 绝对左侧位置
+                    left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
                     const pDWidth = width*0.67*0.2*(playerId-1);
@@ -213,7 +214,7 @@ export default {
                     let road = document.getElementsByTagName('body')[0].getElementsByClassName('corner-bottom-right')[0];
                     const rect = road.getBoundingClientRect();
                     top = rect.top + window.scrollY; // 绝对顶部位置
-                    left = rect.left + window.scrollX; // 绝对左侧位置
+                    left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
                     const pDWidth = width*0.67*0.2*(playerId-1);
@@ -226,7 +227,7 @@ export default {
                     let road = document.getElementsByTagName('body')[0].getElementsByClassName('corner-bottom-left')[0];
                     const rect = road.getBoundingClientRect();
                     top = rect.top + window.scrollY; // 绝对顶部位置
-                    left = rect.left + window.scrollX; // 绝对左侧位置
+                    left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
                     const pDWidth = width*0.67*0.2*(playerId-1);
@@ -247,7 +248,7 @@ export default {
             if (player1&&road) {
                 const rect = road.getBoundingClientRect();
                 const top = rect.top + window.scrollY; // 绝对顶部位置
-                const left = rect.left + window.scrollX; // 绝对左侧位置
+                const left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
                 const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                 const height = road.offsetHeight;
                 const pDWidth = width*0.2*(playerId-1);
@@ -255,6 +256,7 @@ export default {
                 const playerHeight = player1.offsetHeight;
                 // 对player1进行操作
                 console.log("top:", top, "left:", left,"playerHeight:",playerHeight);
+                //alert("top:"+top+ " left:"+left+" playerHeight:"+playerHeight);
                 player1.style.position = 'absolute';
                 player1.style.top = (top-skyHeight-playerHeight+pDHeight)+'px';
                 player1.style.left = (left+width*0.2+pDWidth)+'px';
