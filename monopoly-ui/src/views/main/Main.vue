@@ -108,14 +108,20 @@
         </div>   
 
     </div>
+    <Button v-if="!showModal" style="position:absolute;bottom:0;right:0" type="primary" @click="showModal=true" size="large">Continue</Button>
     <Modal
-        title="Title"
         v-model="showModal"
         :closable="false">
-        <Dice/>
+        <template #header>
+            <div>
+                <img src="@/assets/player1.svg"  style="width:50px;height:50px;object-fit: cover;margin: 0 auto;"/>
+            </div>
+        </template>
+        <div style="text-align:center">
+            <Dice/>
+        </div>
         <template #footer>
             <div></div>
-            <!-- <Button type="error" size="large" long :loading="modal_loading" @click="del">Delete</Button> -->
         </template>
     </Modal> 
 </template>
@@ -272,6 +278,7 @@ export default {
     align-items: center;
     //overflow-y: hidden;
     background: #355197;
+    margin: auto;
 }
 .map-div {
     // max-width: 100vw;
