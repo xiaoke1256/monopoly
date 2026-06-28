@@ -105,18 +105,34 @@
                
             </div>
             
-        </div>    
+        </div>   
+
     </div>
+    <Modal
+        title="Title"
+        v-model="showModal"
+        :closable="false">
+        <Dice/>
+        <template #footer>
+            <div></div>
+            <!-- <Button type="error" size="large" long :loading="modal_loading" @click="del">Delete</Button> -->
+        </template>
+    </Modal> 
 </template>
 <script>
 import axios from 'axios';
+import Dice from './Dice.vue';
 
 export default {
   name: 'MainIndex',
+  components: {
+    Dice
+  },
   props: {
   },
   data() {
     return {
+      showModal:true,
       cells: [],
       loading: false,
       error: null
