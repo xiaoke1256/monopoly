@@ -1,6 +1,6 @@
 <template>
     <div class="diceContainner">
-        <div class="dice" @click="doDice" >
+        <div class="dice" disabled="true" @click="doDice" >
           <img v-if="dice===1" style="width:100%;height: 100%;" src="@/assets/dice/one.svg"/>
           <img v-if="dice===2" style="width:100%;height: 100%;" src="@/assets/dice/two.svg"/>
           <img v-if="dice===3" style="width:100%;height: 100%;" src="@/assets/dice/three.svg"/>
@@ -12,22 +12,33 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
+
 export default {
   name: 'DiceComponent ',
   props: {
   },
   data(){
     return {
-      dice:6
+      dice:6,
+      isRolling:false
     }
   },
   methods:{
-    doDice(limit){
+    async doDice(limit){
       if(!limit && limit!==0){
+        if(this.isRolling){
+          return;
+        }
+        this.isRolling = true;
         limit=7;
       }
       console.log("limit:",limit);
       if(limit===0){
+        await axios.get('/api/game/current');
+        this.dice = (await axios.get('/api/game/dice')).data.dice;
+        this.isRolling = false;
+        //关掉窗口，触发下一步事件
         return;
       }
       this.$nextTick(()=>{
