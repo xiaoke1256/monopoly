@@ -37,8 +37,15 @@ export default {
       if(limit===0){
         await axios.get('/api/game/current');
         this.dice = (await axios.get('/api/game/dice')).data.dice;
-        this.isRolling = false;
-        //关掉窗口，触发下一步事件
+        setTimeout(
+          ()=>{
+            this.isRolling = false;
+            //关掉窗口，触发下一步事件
+            this.$emit('diceRolled',this.dice);
+          }
+          ,
+          1000
+        );
         return;
       }
       this.$nextTick(()=>{

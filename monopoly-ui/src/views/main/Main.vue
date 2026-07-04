@@ -95,10 +95,10 @@
                     </div>
                 </div>
                 <div id="other">
-                     <div id="player1" style="z-index: 10;position: absolute;font-size: 1.5vh;">
+                     <div id="player0" style="z-index: 10;position: absolute;font-size: 1.5vh;">
                         <img src="@/assets/player1.svg" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
                     </div>
-                    <div id="player2" style="z-index: 11;position: absolute;font-size: 1.5vh;">
+                    <div id="player1" style="z-index: 11;position: absolute;font-size: 1.5vh;">
                         <img src="@/assets/player2.png" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
                     </div>
                 </div>
@@ -118,7 +118,7 @@
             </div>
         </template>
         <div style="text-align:center">
-            <Dice/>
+            <Dice @diceRolled="handleDiceRolled"/>
         </div>
         <template #footer>
             <div></div>
@@ -128,11 +128,14 @@
 <script>
 import axios from 'axios';
 import Dice from './Dice.vue';
+import { Modal, Button } from 'view-ui-plus';
 
 export default {
   name: 'MainIndex',
   components: {
-    Dice
+    Dice,
+    Modal,
+    Button
   },
   props: {
   },
@@ -140,6 +143,8 @@ export default {
     return {
       showModal:true,
       cells: [],
+      players: [],
+      currentPlayerIndex: 0,
       loading: false,
       error: null
     };
@@ -147,9 +152,13 @@ export default {
   mounted() {
     //从后台读取地图数据
     this.fetchMapData();
+    this.players = [
+      { id: 0, name: '舞姬', position: 0 },
+      { id: 1, name: '大理寺卿', position: 0 }
+    ];
 
-    this.playerMoveToBlock(1, 13);
-    this.playerMoveToBlock(2, 32);
+    this.playerMoveToBlock(0, 30);
+    this.playerMoveToBlock(1, 30);
   },
   methods: {
     async fetchMapData() {
@@ -166,7 +175,7 @@ export default {
         this.loading = false;
       }
     },
-    playerMoveToBlock(playerId,blockId) {
+    playerMoveToBlock(playerIdx,blockId) {
         blockId = blockId%40;
         this.$nextTick(() => {
             
@@ -175,7 +184,7 @@ export default {
             const skyHeight = mapContainer.offsetHeight-mapDiv.offsetHeight
             const mapContainerRect = mapContainer.getBoundingClientRect();
 
-            let player1 = document.getElementById(`player${playerId}`);
+            let player1 = document.getElementById(`player${playerIdx}`);
             let block = document.getElementById(`block-${blockId}`);
             if (player1&&!block) {
                 const playerHeight = player1.offsetHeight;
@@ -190,8 +199,8 @@ export default {
                     left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
-                    const pDWidth = width*0.67*0.2*(playerId-1);
-                    const pDHeight = height*0.33*0.2*(playerId-1);
+                    const pDWidth = width*0.67*0.2*(playerIdx);
+                    const pDHeight = height*0.33*0.2*(playerIdx)+height*0.33*0.2;
                     dWidth = width*(0.33+0.2*0.33)+pDWidth;
                     dHeight = height*(0.67+0.2*0.67)+pDHeight;
 
@@ -204,8 +213,8 @@ export default {
                     left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
-                    const pDWidth = width*0.67*0.2*(playerId-1);
-                    const pDHeight = height*0.33*0.2*(playerId-1);
+                    const pDWidth = width*0.67*0.2*(playerIdx);
+                    const pDHeight = height*0.33*0.2*(playerIdx)+height*0.33*0.2;
                     dWidth = width*(0.2)+pDWidth;
                     dHeight = height*(0.67+0.67*0.2)+pDHeight;
                     // 对player1进行操作
@@ -217,8 +226,8 @@ export default {
                     left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
-                    const pDWidth = width*0.67*0.2*(playerId-1);
-                    const pDHeight = height*0.33*0.2*(playerId-1);
+                    const pDWidth = width*0.67*0.2*(playerIdx);
+                    const pDHeight = height*0.33*0.2*(playerIdx);
                     dWidth = width*(0.2)+pDWidth;
                     dHeight = height*(0.67+0.67*0.2)+pDHeight;
                     // 对player1进行操作
@@ -230,8 +239,8 @@ export default {
                     left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
                     const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                     const height = road.offsetHeight;
-                    const pDWidth = width*0.67*0.2*(playerId-1);
-                    const pDHeight = height*0.33*0.2*(playerId-1);
+                    const pDWidth = width*0.67*0.2*(playerIdx);
+                    const pDHeight = height*0.33*0.2*(playerIdx);
                     dWidth = width*(0.33+0.2*0.33)+pDWidth;
                     dHeight = height*(0.67+0.67*0.2)+pDHeight;
                     // 对player1进行操作
@@ -249,10 +258,10 @@ export default {
                 const rect = road.getBoundingClientRect();
                 const top = rect.top + window.scrollY; // 绝对顶部位置
                 const left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
-                const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
+                const width = road.offsetWidth; 
                 const height = road.offsetHeight;
-                const pDWidth = width*0.2*(playerId-1);
-                const pDHeight = height*0.2*(playerId-1)+height*0.4;
+                const pDWidth = width*0.2*(playerIdx);
+                const pDHeight = height*0.2*(playerIdx)+height*0.5;
                 const playerHeight = player1.offsetHeight;
                 // 对player1进行操作
                 console.log("top:", top, "left:", left,"playerHeight:",playerHeight);
@@ -262,6 +271,25 @@ export default {
                 player1.style.left = (left+width*0.2+pDWidth)+'px';
             }
         });
+    },
+    async handleDiceRolled() {
+        // 在这里处理骰子掷出的点数，例如移动玩家等
+        const response = await axios.get('/api/game/dice-value')
+        const diceValue = response.data.dice;
+        console.log('骰子点数:', diceValue);
+        const currentPlayer = this.players[this.currentPlayerIndex];
+        axios.post(`/api/game/player/${this.currentPlayerIndex}/move`, {
+            steps: diceValue
+        }).then(response => {
+            const newPosition = response.data.newPosition;
+            console.log(`玩家 ${currentPlayer.name} 移动到位置 ${newPosition}`);
+            this.playerMoveToBlock(currentPlayer.id, newPosition);
+            // 切换到下一个玩家
+            this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+        }).catch(error => {
+            console.error('移动玩家失败:', error);
+        });
+        this.showModal = false; // 关闭模态框
     }
   }
 }

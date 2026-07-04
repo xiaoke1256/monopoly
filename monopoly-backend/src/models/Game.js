@@ -18,6 +18,13 @@ const CellSchema = new mongoose.Schema({
   level: { type: Number, default: 0 }
 });
 
+const PlayerSchema = new mongoose.Schema({
+  roleId: { type: Number, required: false },
+  name: { type: String, required: true },
+  position: { type: Number, default: 0 },
+  money: { type: Number, default: 1500 }
+});
+
 const GameSchema = new mongoose.Schema({
   roomNo: { type: String, required: true },
   name: { type: String, required: true, default: 'My Monopoly Game' },
@@ -26,6 +33,7 @@ const GameSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   currentDice: { type: Number, default: null },
+  players: [PlayerSchema],
 });
 
 export default mongoose.model('Game', GameSchema);
