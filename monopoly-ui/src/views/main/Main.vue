@@ -129,6 +129,7 @@
 import axios from 'axios';
 import Dice from './Dice.vue';
 import { Modal, Button } from 'view-ui-plus';
+import { animate } from 'animejs';
 
 export default {
   name: 'MainIndex',
@@ -277,7 +278,6 @@ export default {
         });
     },
     async handleDiceRolled() {
-        // 在这里处理骰子掷出的点数，例如移动玩家等
         const response = await axios.get('/api/game/dice-value')
         const diceValue = response.data.dice;
         console.log('骰子点数:', diceValue);
@@ -287,11 +287,35 @@ export default {
         }).then(response => {
             const newPosition = response.data.newPosition;
             console.log(`玩家 ${currentPlayer.name} 移动到位置 ${newPosition}`);
-            this.locatePlayerToBlock(this.currentPlayerIndex, newPosition);
+            const location = this.getLocationOfPlayer(this.currentPlayerIndex, newPosition);
+            const playerDiv = document.getElementById(`player${this.currentPlayerIndex}`);
+            if (playerDiv) {
+                playerDiv.style.position = 'absolute';
+                animate(`#player${this.currentPlayerIndex}`, {
+                    top: location.top + 'px',
+                    left: location.left + 'px',
+                    duration: 1000,
+                    easing: 'easeInOutQuad',
+                    onBegin: (/*animation*/) => {
+                        console.log('动画开始');
+                    },
+                    onUpdate: (/*animation*/) => {
+                        // 动画每一帧执行
+                    },
+                    onComplete: (/*animation*/) => {
+                        this.onPlayerMoveComplete(newPosition);
+                    }
+                });
+            }
         }).catch(error => {
             console.error('移动玩家失败:', error);
         });
-        this.showModal = false; // 关闭模态框
+        this.showModal = false;
+    },
+    onPlayerMoveComplete(newPosition) {
+        console.log('玩家移动完成，新位置:', newPosition);
+        this.players[this.currentPlayerIndex].position = newPosition;
+        // TODO: 在此处添加移动完成后的业务逻辑
     }
   }
 }
