@@ -8,6 +8,7 @@ const movePlayer = async (req, res ) => {
         if(playerIndex<0 || playerIndex>=4){
             throw new Error('Invalid player index');
         }
+        console.log(`Moving player at index ${playerIndex}`);
         const { steps } = req.body;
         const game = await queryCurrentGame();
         const player = game.players[playerIndex];
@@ -18,6 +19,7 @@ const movePlayer = async (req, res ) => {
         game.save();
         return res.json({ newPosition: player.position });
     } catch (error) {
+        console.error('Error moving player:', error);
         return res.status(500).json({ error: error.message });
     }
 }

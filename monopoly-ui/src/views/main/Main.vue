@@ -283,9 +283,7 @@ export default {
         }).then(response => {
             const newPosition = response.data.newPosition;
             console.log(`玩家 ${currentPlayer.name} 移动到位置 ${newPosition}`);
-            this.playerMoveToBlock(currentPlayer.id, newPosition);
-            // 切换到下一个玩家
-            this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+            this.playerMoveToBlock(this.currentPlayerIndex, newPosition);
         }).catch(error => {
             console.error('移动玩家失败:', error);
         });
