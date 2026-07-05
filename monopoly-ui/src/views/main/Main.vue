@@ -157,8 +157,8 @@ export default {
       { id: 1, name: '大理寺卿', position: 0 }
     ];
 
-    this.playerMoveToBlock(0, 30);
-    this.playerMoveToBlock(1, 30);
+    this.locatePlayerToBlock(0, 30);
+    this.locatePlayerToBlock(1, 30);
   },
   methods: {
     async fetchMapData() {
@@ -175,101 +175,105 @@ export default {
         this.loading = false;
       }
     },
-    playerMoveToBlock(playerIdx,blockId) {
+    getLocationOfPlayer(playerIdx,blockId) {
         blockId = blockId%40;
-        this.$nextTick(() => {
-            
-            let mapContainer = document.getElementById('map-container');
-            let mapDiv = document.getElementById('map-div');
-            const skyHeight = mapContainer.offsetHeight-mapDiv.offsetHeight
-            const mapContainerRect = mapContainer.getBoundingClientRect();
+        let mapContainer = document.getElementById('map-container');
+        let mapDiv = document.getElementById('map-div');
+        const skyHeight = mapContainer.offsetHeight-mapDiv.offsetHeight
+        const mapContainerRect = mapContainer.getBoundingClientRect();
 
-            let player1 = document.getElementById(`player${playerIdx}`);
-            let block = document.getElementById(`block-${blockId}`);
-            if (player1&&!block) {
-                const playerHeight = player1.offsetHeight;
-                let top = 0; 
-                let left = 0; 
-                let dWidth = 0; 
-                let dHeight = 0;
-                if(blockId==0){
-                    let road = document.getElementsByTagName('body')[0].getElementsByClassName('corner-top-left')[0];
-                    const rect = road.getBoundingClientRect();
-                    top = rect.top + window.scrollY; // 绝对顶部位置
-                    left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
-                    const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
-                    const height = road.offsetHeight;
-                    const pDWidth = width*0.67*0.2*(playerIdx);
-                    const pDHeight = height*0.33*0.2*(playerIdx)+height*0.33*0.2;
-                    dWidth = width*(0.33+0.2*0.33)+pDWidth;
-                    dHeight = height*(0.67+0.2*0.67)+pDHeight;
-
-                    // 对player1进行操作
-                    console.log("top:", top, "left:", left);
-                }else if(blockId==10){
-                    let road = document.getElementsByTagName('body')[0].getElementsByClassName('corner-top-right')[0];
-                    const rect = road.getBoundingClientRect();
-                    top = rect.top + window.scrollY; // 绝对顶部位置
-                    left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
-                    const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
-                    const height = road.offsetHeight;
-                    const pDWidth = width*0.67*0.2*(playerIdx);
-                    const pDHeight = height*0.33*0.2*(playerIdx)+height*0.33*0.2;
-                    dWidth = width*(0.2)+pDWidth;
-                    dHeight = height*(0.67+0.67*0.2)+pDHeight;
-                    // 对player1进行操作
-                    console.log("top:", top, "left:", left);
-                }else if(blockId==20){
-                    let road = document.getElementsByTagName('body')[0].getElementsByClassName('corner-bottom-right')[0];
-                    const rect = road.getBoundingClientRect();
-                    top = rect.top + window.scrollY; // 绝对顶部位置
-                    left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
-                    const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
-                    const height = road.offsetHeight;
-                    const pDWidth = width*0.67*0.2*(playerIdx);
-                    const pDHeight = height*0.33*0.2*(playerIdx);
-                    dWidth = width*(0.2)+pDWidth;
-                    dHeight = height*(0.67+0.67*0.2)+pDHeight;
-                    // 对player1进行操作
-                    console.log("top:", top, "left:", left);
-                }else if(blockId==30){
-                    let road = document.getElementsByTagName('body')[0].getElementsByClassName('corner-bottom-left')[0];
-                    const rect = road.getBoundingClientRect();
-                    top = rect.top + window.scrollY; // 绝对顶部位置
-                    left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
-                    const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
-                    const height = road.offsetHeight;
-                    const pDWidth = width*0.67*0.2*(playerIdx);
-                    const pDHeight = height*0.33*0.2*(playerIdx);
-                    dWidth = width*(0.33+0.2*0.33)+pDWidth;
-                    dHeight = height*(0.67+0.67*0.2)+pDHeight;
-                    // 对player1进行操作
-                    console.log("top:", top, "left:", left);
-                }
-                player1.style.position = 'absolute';
-                console.log("即将重新定位","top:",top,"skyHeight:",skyHeight,"playerHeight:",playerHeight,"dHeight:",dHeight);
-                player1.style.top = (top-skyHeight-playerHeight+dHeight)+'px';
-                player1.style.left = (left+dWidth)+'px';
-                return;
-            }
-            let road = block.getElementsByClassName('road')[0];
-            
-            if (player1&&road) {
+        let playerDiv = document.getElementById(`player${playerIdx}`);
+        let block = document.getElementById(`block-${blockId}`);
+        if (playerDiv&&!block) {
+            const playerHeight = playerDiv.offsetHeight;
+            let top = 0; 
+            let left = 0; 
+            let dWidth = 0; 
+            let dHeight = 0;
+            if(blockId==0){
+                let road = document.getElementsByTagName('body')[0].getElementsByClassName('corner-top-left')[0];
                 const rect = road.getBoundingClientRect();
-                const top = rect.top + window.scrollY; // 绝对顶部位置
-                const left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
-                const width = road.offsetWidth; 
+                top = rect.top + window.scrollY; // 绝对顶部位置
+                left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
+                const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
                 const height = road.offsetHeight;
-                const pDWidth = width*0.2*(playerIdx);
-                const pDHeight = height*0.2*(playerIdx)+height*0.5;
-                const playerHeight = player1.offsetHeight;
+                const pDWidth = width*0.67*0.2*(playerIdx);
+                const pDHeight = height*0.33*0.2*(playerIdx)+height*0.33*0.2;
+                dWidth = width*(0.33+0.2*0.33)+pDWidth;
+                dHeight = height*(0.67+0.2*0.67)+pDHeight;
+
                 // 对player1进行操作
-                console.log("top:", top, "left:", left,"playerHeight:",playerHeight);
-                //alert("top:"+top+ " left:"+left+" playerHeight:"+playerHeight);
-                player1.style.position = 'absolute';
-                player1.style.top = (top-skyHeight-playerHeight+pDHeight)+'px';
-                player1.style.left = (left+width*0.2+pDWidth)+'px';
+                console.log("top:", top, "left:", left);
+            }else if(blockId==10){
+                let road = document.getElementsByTagName('body')[0].getElementsByClassName('corner-top-right')[0];
+                const rect = road.getBoundingClientRect();
+                top = rect.top + window.scrollY; // 绝对顶部位置
+                left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
+                const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
+                const height = road.offsetHeight;
+                const pDWidth = width*0.67*0.2*(playerIdx);
+                const pDHeight = height*0.33*0.2*(playerIdx)+height*0.33*0.2;
+                dWidth = width*(0.2)+pDWidth;
+                dHeight = height*(0.67+0.67*0.2)+pDHeight;
+                // 对player1进行操作
+                console.log("top:", top, "left:", left);
+            }else if(blockId==20){
+                let road = document.getElementsByTagName('body')[0].getElementsByClassName('corner-bottom-right')[0];
+                const rect = road.getBoundingClientRect();
+                top = rect.top + window.scrollY; // 绝对顶部位置
+                left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
+                const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
+                const height = road.offsetHeight;
+                const pDWidth = width*0.67*0.2*(playerIdx);
+                const pDHeight = height*0.33*0.2*(playerIdx);
+                dWidth = width*(0.2)+pDWidth;
+                dHeight = height*(0.67+0.67*0.2)+pDHeight;
+                // 对player1进行操作
+                console.log("top:", top, "left:", left);
+            }else if(blockId==30){
+                let road = document.getElementsByTagName('body')[0].getElementsByClassName('corner-bottom-left')[0];
+                const rect = road.getBoundingClientRect();
+                top = rect.top + window.scrollY; // 绝对顶部位置
+                left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
+                const width = road.offsetWidth; // 强制浏览器计算布局，确保获取到正确的尺寸
+                const height = road.offsetHeight;
+                const pDWidth = width*0.67*0.2*(playerIdx);
+                const pDHeight = height*0.33*0.2*(playerIdx);
+                dWidth = width*(0.33+0.2*0.33)+pDWidth;
+                dHeight = height*(0.67+0.67*0.2)+pDHeight;
+                // 对player1进行操作
+                console.log("top:", top, "left:", left);
             }
+            // playerDiv.style.position = 'absolute';
+            // console.log("即将重新定位","top:",top,"skyHeight:",skyHeight,"playerHeight:",playerHeight,"dHeight:",dHeight);
+            // playerDiv.style.top = (top-skyHeight-playerHeight+dHeight)+'px';
+            // playerDiv.style.left = (left+dWidth)+'px';
+            return {left: left+dWidth, top: top-skyHeight-playerHeight+dHeight};
+        }
+        let road = block.getElementsByClassName('road')[0];
+        
+        if (playerDiv&&road) {
+            const rect = road.getBoundingClientRect();
+            const top = rect.top + window.scrollY; // 绝对顶部位置
+            const left = rect.left /*+ window.scrollX*/-mapContainerRect.left; // 绝对左侧位置
+            const width = road.offsetWidth; 
+            const height = road.offsetHeight;
+            const pDWidth = width*0.2*(playerIdx);
+            const pDHeight = height*0.2*(playerIdx)+height*0.5;
+            const playerHeight = playerDiv.offsetHeight;
+            // 对player1进行操作
+            console.log("top:", top, "left:", left,"playerHeight:",playerHeight);
+            //alert("top:"+top+ " left:"+left+" playerHeight:"+playerHeight);
+            return {left: left+width*0.2+pDWidth, top: top-skyHeight-playerHeight+pDHeight};
+        }
+    },
+    locatePlayerToBlock(playerIdx,blockId) {
+        this.$nextTick(() => {
+            const location = this.getLocationOfPlayer(playerIdx,blockId);
+            let playerDiv = document.getElementById(`player${playerIdx}`);
+            playerDiv.style.position = 'absolute';
+            playerDiv.style.top = location.top+'px';
+            playerDiv.style.left = location.left+'px';
         });
     },
     async handleDiceRolled() {
@@ -283,7 +287,7 @@ export default {
         }).then(response => {
             const newPosition = response.data.newPosition;
             console.log(`玩家 ${currentPlayer.name} 移动到位置 ${newPosition}`);
-            this.playerMoveToBlock(this.currentPlayerIndex, newPosition);
+            this.locatePlayerToBlock(this.currentPlayerIndex, newPosition);
         }).catch(error => {
             console.error('移动玩家失败:', error);
         });
