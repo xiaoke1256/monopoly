@@ -277,6 +277,31 @@ export default {
             playerDiv.style.left = location.left+'px';
         });
     },
+    async moving(playerDiv,curPosition,targetPosition) {
+        if(curPosition==targetPosition) {
+            this.onPlayerMoveComplete(targetPosition);
+            return;
+        }
+        const newPosition = (curPosition + 1)%this.cells.length;
+        const location = this.getLocationOfPlayer(this.currentPlayerIndex, newPosition);
+        playerDiv.style.position = 'absolute';
+        animate(`#player${this.currentPlayerIndex}`, {
+            top: location.top + 'px',
+            left: location.left + 'px',
+            duration: 500,
+            easing: 'easeInOutQuad',
+            onBegin: (/*animation*/) => {
+                console.log('动画开始');
+            },
+            onUpdate: (/*animation*/) => {
+                // 动画每一帧执行
+            },
+            onComplete: (/*animation*/) => {
+                this.moving(playerDiv,newPosition,targetPosition);
+            }
+        });
+
+    },
     async handleDiceRolled() {
         const response = await axios.get('/api/game/dice-value')
         const diceValue = response.data.dice;
@@ -287,25 +312,10 @@ export default {
         }).then(response => {
             const newPosition = response.data.newPosition;
             console.log(`玩家 ${currentPlayer.name} 移动到位置 ${newPosition}`);
-            const location = this.getLocationOfPlayer(this.currentPlayerIndex, newPosition);
             const playerDiv = document.getElementById(`player${this.currentPlayerIndex}`);
             if (playerDiv) {
                 playerDiv.style.position = 'absolute';
-                animate(`#player${this.currentPlayerIndex}`, {
-                    top: location.top + 'px',
-                    left: location.left + 'px',
-                    duration: 1000,
-                    easing: 'easeInOutQuad',
-                    onBegin: (/*animation*/) => {
-                        console.log('动画开始');
-                    },
-                    onUpdate: (/*animation*/) => {
-                        // 动画每一帧执行
-                    },
-                    onComplete: (/*animation*/) => {
-                        this.onPlayerMoveComplete(newPosition);
-                    }
-                });
+                this.moving(playerDiv, currentPlayer.position, newPosition);
             }
         }).catch(error => {
             console.error('移动玩家失败:', error);
@@ -315,7 +325,7 @@ export default {
     onPlayerMoveComplete(newPosition) {
         console.log('玩家移动完成，新位置:', newPosition);
         this.players[this.currentPlayerIndex].position = newPosition;
-        // TODO: 在此处添加移动完成后的业务逻辑
+        // TODO: 在此处添加移动完成后的业务逻辑,购买地产等。
     }
   }
 }
