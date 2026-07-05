@@ -216,10 +216,6 @@ export default {
                     // 对player1进行操作
                     console.log("top:", top, "left:", left);
                 }
-                // playerDiv.style.position = 'absolute';
-                // console.log("即将重新定位","top:",top,"skyHeight:",skyHeight,"playerHeight:",playerHeight,"dHeight:",dHeight);
-                // playerDiv.style.top = (top-skyHeight-playerHeight+dHeight)+'px';
-                // playerDiv.style.left = (left+dWidth)+'px';
                 return {left: left+dWidth, top: top-skyHeight-playerHeight+dHeight};
             }
             let road = block.getElementsByClassName('road')[0];
@@ -300,9 +296,6 @@ export default {
     margin: auto;
 }
 .map-div {
-    // max-width: 100vw;
-    // max-height: 100vh;
-    // width: 100vmin;
     width: 100%;
     height: 94.34%;
     background-color: lightblue; 
