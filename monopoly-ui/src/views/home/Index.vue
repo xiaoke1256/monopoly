@@ -4,7 +4,7 @@
         <p>
         This is the home page of the Monopoly Game. Please click the button below to start playing.
         </p>
-        <button @click="$router.push('/main')">Start Game</button>
+        <button @click="$router.push('/game')">Start Game</button>
     </div>
 </template>
 <script>
