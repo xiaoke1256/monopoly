@@ -35,7 +35,7 @@
             </div>
         </template>
         <div style="padding:4px 0;">
-            <BuyProperty :cell="currentCell"/>
+            <BuyProperty :cell="currentCell" @confirm="buyProperty" @cancel="endTurn" />
         </div>
         <template #footer>
             <div></div>
@@ -109,6 +109,42 @@ export default {
             this.showBuyPropertyModal = true;
         }
 
+    },
+    buyProperty() {
+        // 处理购买地产逻辑
+        console.log('玩家确认购买地产');
+        axios.post(`/api/game/player/${this.$refs.map.currentPlayerIndex}/payForProperty`, {
+            cellId: this.currentCell.id
+        }).then(response => {
+            console.log('购买地产成功:', response.data);
+            //界面上提示“商铺购买成功”
+            this.$Modal.success({
+                title: '购买成功',
+                content: '您已成功购买该地产！',
+                onOk: () => {
+                    this.$refs.map.currentPlayerIndex = response.data.currentPlayerIndex; // 更新当前玩家索引
+                    this.showBuyPropertyModal = false;
+                    //TODO : 先休眠一下，再显示要切换玩家了。
+                    this.showDiceModal = true; // 显示掷骰子弹窗，开始下一回合
+                }
+            });
+           
+        }).catch(error => {
+            console.error('购买地产失败:', error);
+        });
+    },
+    endTurn(){
+        axios.post(`/api/game/player/${this.$refs.map.currentPlayerIndex}/endTurn`)
+        .then(response => {
+            console.log('回合结束:', response.data);
+            // 处理回合结束后的逻辑，例如切换到下一个玩家
+            this.$refs.map.currentPlayerIndex = response.data.currentPlayerIndex; // 更新当前玩家索引
+            this.showBuyPropertyModal = false;
+            this.showDiceModal = true; // 显示掷骰子弹窗，开始下一回合
+        })
+        .catch(error => {
+            console.error('结束回合失败:', error);
+        }); 
     }
   }
 }

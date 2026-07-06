@@ -107,10 +107,37 @@ const onArrived = async (req, res) => {
     }  
 }
 
+const endTurn = async (req, res) => {
+    const game = await queryCurrentGame(); 
+    game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    await game.save();
+    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
+}
+
+const payForPropertyAndEndTurn = async (req, res) => {
+    const game = await queryCurrentGame(); 
+    const currentPlayerIndex = game.currentPlayerIndex ;
+    console.log(`Player at index ${currentPlayerIndex} `);  
+    const currentPlayer = game.players[currentPlayerIndex];
+    const cell = game.cells[currentPlayer.position];
+    console.log(`currentPlayer:`,currentPlayer);
+    // 从玩家账户中扣除费用
+    currentPlayer.money -= cell.price;
+    // 将地产的所有者设置为当前玩家
+    cell.owner = currentPlayer.id;
+
+    // 结束当前玩家的回合
+    game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    await game.save();
+    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
+}
+
 export {
     dice,
     getCurrentGame,
     getCurrentDice,
     movePlayer,
-    onArrived
+    onArrived,
+    endTurn,
+    payForPropertyAndEndTurn
 };

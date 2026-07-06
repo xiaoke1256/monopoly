@@ -14,7 +14,7 @@ const CellSchema = new mongoose.Schema({
   upgradeCost: { type: Number, default: null },/* 升级价格 */
   // buildingCost: { type: Number, default: null },
   mortgageValue: { type: Number, default: null },/* 抵押价 */
-  owner: { type: Number, default: null },
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'Player', default: null },
   level: { type: Number, default: 0 }
 });
 
