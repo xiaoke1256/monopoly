@@ -65,10 +65,52 @@ const dice = async (req, res)=>{
     return res.json({ dice:diceResult });
 }
 
+const onArrived = async (req, res) => {
+    try {
+        const game = await queryCurrentGame(); 
+        const currentPlayerIndex = game.currentPlayerIndex ;
+        console.log(`Player at index ${currentPlayerIndex} `);  
+        const currentPlayer = game.players[currentPlayerIndex];
+        const cell = game.cells[currentPlayer.position];
+        if(cell.type === 'property' && cell.owner === null){
+            //询问是否需要购买地产
+            console.log(`Player at index ${currentPlayerIndex} arrived at an unowned property.`);
+            return res.json({ action: 'buyProperty', cell });
+        }else if(cell.type === 'property' && cell.owner !== null && cell.owner !== currentPlayer.id){
+            //支付租金
+            console.log(`Player at index ${currentPlayerIndex} arrived at a property owned by another player.`);
+            return res.json({ action: 'payRent', cell });
+        }else if(cell.type === 'property' && cell.owner === currentPlayer.id){
+            //询问是否需要升级地产
+            console.log(`Player at index ${currentPlayerIndex} arrived at their own property.`);
+            return res.json({ action: 'upgradeProperty', cell });
+        }else if(cell.type === 'chance'){
+            //抽取机会卡
+            console.log(`Player at index ${currentPlayerIndex} arrived at a chance card.`);
+        }else if(cell.type === 'question'){
+            //抽取问答卡
+            console.log(`Player at index ${currentPlayerIndex} arrived at a question card.`);
+        }else if(cell.type === 'hospital'){
+            //进入医馆
+            console.log(`Player at index ${currentPlayerIndex} arrived at the hospital.`);
+        }else if(cell.type === 'jail'){
+            //进入大理寺
+            console.log(`Player at index ${currentPlayerIndex} arrived at the jail.`);
+        }else if(cell.type === 'security-company'){
+            //进入镖局
+            console.log(`Player at index ${currentPlayerIndex} arrived at the security company.`);
+        }
+        return res.json({ action: 'other', cell });
+    } catch (error) {
+        console.error('Error occurred after player move:', error);
+        return res.status(500).json({ error: error.message });
+    }  
+}
+
 export {
     dice,
     getCurrentGame,
     getCurrentDice,
-    movePlayer
-
+    movePlayer,
+    onArrived
 };

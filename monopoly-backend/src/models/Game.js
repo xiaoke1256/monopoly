@@ -14,7 +14,7 @@ const CellSchema = new mongoose.Schema({
   upgradeCost: { type: Number, default: null },/* 升级价格 */
   // buildingCost: { type: Number, default: null },
   mortgageValue: { type: Number, default: null },/* 抵押价 */
-  // owner: { type: mongoose.Schema.Types.ObjectId, ref: 'Player', default: null },
+  owner: { type: Number, default: null },
   level: { type: Number, default: 0 }
 });
 
@@ -33,6 +33,7 @@ const GameSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   currentDice: { type: Number, default: null },
+  currentPlayerIndex: { type: Number, default: 0 },
   players: [PlayerSchema],
 });
 
