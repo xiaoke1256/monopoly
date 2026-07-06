@@ -7,11 +7,14 @@
         v-model="showDiceModal"
         :closable="false">
         <template #header>
-            <div>
-                <img src="@/assets/player1.svg"  style="width:50px;height:50px;object-fit: cover;margin: 0 auto;"/>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#f8fafc;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <img src="@/assets/player1.svg" style="width:100%;height:100%;display:block;object-fit:cover;"/>
+                </div>
+                <span style="font-size:20px;font-weight:600;color:#2d8cf0;">掷骰子</span>
             </div>
         </template>
-        <div style="text-align:center">
+        <div style="text-align:center;padding:12px 0;">
             <Dice @diceRolled="handleDiceRolled"/>
         </div>
         <template #footer>
@@ -20,14 +23,18 @@
     </Modal> 
     <Modal
         v-model="showBuyPropertyModal"
-        :closable="false">
+        :closable="false"
+        :mask-closable="false"
+        width="520">
         <template #header>
-            <div>
-                <img src="@/assets/player1.svg"  style="width:50px;height:50px;object-fit: cover;margin: 0 auto;"/>
-                <h2>购买店铺</h2>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#f8fafc;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <img src="@/assets/player1.svg" style="width:100%;height:100%;display:block;object-fit:cover;"/>
+                </div>
+                <span style="font-size:20px;font-weight:600;color:#2d8cf0;">购买店铺</span>
             </div>
         </template>
-        <div style="text-align:center">
+        <div style="padding:4px 0;">
             <BuyProperty :cell="currentCell"/>
         </div>
         <template #footer>
@@ -111,6 +118,4 @@ export default {
     height: 100%;
     overflow-y: hidden;
 }
-
-
 </style>
