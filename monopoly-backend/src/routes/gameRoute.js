@@ -5,7 +5,8 @@ import { dice,
     movePlayer,
     onArrived,
     endTurn,
-    payForPropertyAndEndTurn } from '../controllers/gameController.js';
+    payForPropertyAndEndTurn,
+    getCurrentMap } from '../controllers/gameController.js';
 
 const gameRouter = new Router();   
 
@@ -16,5 +17,6 @@ gameRouter.post('/player/:playerIndex/move', movePlayer);
 gameRouter.get('/player/:playerIndex/arrived', onArrived);
 gameRouter.post('/player/:playerIndex/payForProperty', payForPropertyAndEndTurn);
 gameRouter.post('/player/:playerIndex/endTurn', endTurn);
+gameRouter.get('/map', getCurrentMap);
 
 export default gameRouter;

@@ -1,6 +1,20 @@
 import Game from '../models/Game.js';
 import Map from '../models/Map.js';
 
+const getCurrentMap = async (req, res) => {
+    try {
+        const game = await queryCurrentGame();
+        if (!game) {
+            return res.status(404).json({ message: 'Map not found, please initialize first' });
+        }
+        const cells = game.cells;
+        return res.json({ cells });
+    } catch (error) {
+        console.error('Error fetching current map:', error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
 const movePlayer = async (req, res ) => {
     try{
         req.params.playerIndex = parseInt(req.params.playerIndex);
@@ -139,5 +153,6 @@ export {
     movePlayer,
     onArrived,
     endTurn,
-    payForPropertyAndEndTurn
+    payForPropertyAndEndTurn,
+    getCurrentMap
 };

@@ -15,6 +15,9 @@
                 <div class="top-side">
                     <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+1)}`" class="block">
                         <div class="empty-land" >
+                            <div v-if="cells[key+1]?.type==='property'" style="width:100%;height:100%;">
+                                <div :style="{width:'20%',height:'100%',background: buildingColor(key+1),position: 'relative',left:'20%'}"></div>
+                            </div>
                             <img v-if="cells[key+1]?.type==='property'" src="@/assets/shop.svg" width="100%" height="100%" />
                             <img v-if="cells[key+1]?.type==='utility'" src="@/assets/qifu1.svg" width="100%" height="100%"/>
                             <img v-if="cells[key+1]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
@@ -74,6 +77,9 @@
                 <div class="bottom-side">
                     <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(29-key)}`" class="block">
                         <div class="empty-land" >
+                            <div v-if="cells[29-key]?.type==='property'" style="width:100%;height:100%;">
+                                <div :style="{width:'20%',height:'100%',background: buildingColor(29-key),position: 'relative',left:'20%'}"></div>
+                            </div>
                             <img v-if="cells[29-key]?.type==='property'" src="@/assets/shop.svg" width="100%" height="100%" />
                             <img v-if="cells[29-key]?.type==='utility'" src="@/assets/qifu1.svg" width="100%" height="100%"/>
                             <img v-if="cells[29-key]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
@@ -125,8 +131,8 @@ export default {
     mounted() {
         this.fetchMapData();
         this.players = [
-            { id: 0, name: '舞姬', position: 0 },
-            { id: 1, name: '大理寺卿', position: 0 }
+            { id: '6a4b4b482369e6847aab289a', name: '舞姬', position: 0 },
+            { id: '6a4b4b482369e6847aab289b', name: '大理寺卿', position: 0 }
         ];
 
         this.locatePlayerToBlock(0, 30);
@@ -137,8 +143,8 @@ export default {
             this.loading = true;
             this.error = null;
             try {
-                const response = await axios.get('/api/map/default');
-                this.cells = response.data.map.cells;
+                const response = await axios.get('/api/game/map');
+                this.cells = response.data.cells;
                 console.log('地图数据已读取:', this.cells);
             } catch (err) {
                 this.error = err.message;
@@ -278,9 +284,26 @@ export default {
                 return;
             }
             this.moving(playerDiv, currentPlayer.position, targetPosition,callback);
+        },
+        buildingColor(position) {
+            const cell = this.cells[position];
+            console.log("cell:", cell);
+            if (!cell || !cell.owner) return '#aaa';
+            let ownerId = cell.owner;
+            console.log("ownerId:", ownerId);
+            console.log("typeof ownerId:", typeof ownerId);
+            if (typeof ownerId === 'object' && ownerId !== null) {
+                ownerId = ownerId.id || ownerId._id || Object.values(ownerId)[0];
+            }
+            const player = this.players.find(p => String(p.id) === String(ownerId));
+            console.log("player:", player);
+            if (player) {
+                if (player.name === '舞姬') return 'limeGreen';
+                if (player.name === '大理寺卿') return 'lightcoral';
+            }
+            return '#aaa';
         }
     }
-    
 }
 </script>
 <style lang="scss" scoped>
