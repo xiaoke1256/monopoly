@@ -122,6 +122,8 @@ export default {
                 title: '购买成功',
                 content: '您已成功购买该地产！',
                 onOk: () => {
+                    //重新加载地图
+                    this.$refs.map.fetchMapData();
                     this.$refs.map.currentPlayerIndex = response.data.currentPlayerIndex; // 更新当前玩家索引
                     this.showBuyPropertyModal = false;
                     //TODO : 先休眠一下，再显示要切换玩家了。

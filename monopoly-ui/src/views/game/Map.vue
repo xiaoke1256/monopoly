@@ -42,6 +42,9 @@
                         <div class="road road-bg-v" style="" >
                         </div>
                         <div class="empty-land" >
+                            <div v-if="cells[39-key]?.type==='property'" style="width:100%;height:100%;">
+                                <div :style="{width:'10%',height:'40%',background: buildingColor(39-key),position: 'relative',left:'4%',top:'30%'}"></div>
+                            </div>
                             <img v-if="cells[39-key]?.type==='property'" src="@/assets/shop2.svg" width="100%" height="100%"/>
                             <img v-if="cells[39-key]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
                             <img v-if="cells[39-key]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
@@ -57,6 +60,9 @@
                         <div class="road road-bg-v" style="" >
                         </div>
                         <div class="empty-land" >
+                            <div v-if="cells[key+11]?.type==='property'" style="width:100%;height:100%;">
+                                <div :style="{width:'10%',height:'40%',background: buildingColor(key+11),position: 'relative',left:'85%',top:'30%'}"></div>
+                            </div>
                             <img v-if="cells[key+11]?.type==='property'" src="@/assets/shop2.svg" width="100%" height="100%"/>
                             <img v-if="cells[key+11]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
                             <img v-if="cells[key+11]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
@@ -143,8 +149,11 @@ export default {
             this.loading = true;
             this.error = null;
             try {
-                const response = await axios.get('/api/game/map');
-                this.cells = response.data.cells;
+                const response = await axios.get('/api/game/current');
+                console.log('地图数据已读取:', response);
+                const gameData = response?.data?.game;
+                this.currentPlayerIndex = gameData.currentPlayerIndex;
+                this.cells = gameData.cells;
                 console.log('地图数据已读取:', this.cells);
             } catch (err) {
                 this.error = err.message;
