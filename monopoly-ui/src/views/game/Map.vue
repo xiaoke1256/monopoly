@@ -47,8 +47,8 @@
                             </div>
                             <img v-if="cells[39-key]?.type==='property'" src="@/assets/shop2.svg" width="100%" height="100%"/>
                             <img v-if="cells[39-key]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
-                            <img v-if="cells[39-key]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
-                            <img v-if="cells[39-key]?.type==='question'" src="@/assets/question.svg" width="100%" height="100%"/>
+                            <img v-if="cells[39-key]?.type==='chance'" src="@/assets/chance2.svg" width="100%" height="100%"/>
+                            <img v-if="cells[39-key]?.type==='question'" src="@/assets/question2.svg" width="100%" height="100%"/>
                             <div style="writing-mode: vertical-rl;margin-right:93%;margin-top:-5%" v-if="cells[39-key]?.type==='property'" class="notice">{{cells[39-key]?.name}}</div>
                         </div>
                         
@@ -65,8 +65,8 @@
                             </div>
                             <img v-if="cells[key+11]?.type==='property'" src="@/assets/shop2.svg" width="100%" height="100%"/>
                             <img v-if="cells[key+11]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
-                            <img v-if="cells[key+11]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
-                            <img v-if="cells[key+11]?.type==='question'" src="@/assets/question.svg" width="100%" height="100%"/>
+                            <img v-if="cells[key+11]?.type==='chance'" src="@/assets/chance2.svg" width="100%" height="100%"/>
+                            <img v-if="cells[key+11]?.type==='question'" src="@/assets/question2.svg" width="100%" height="100%"/>
                             <div style="writing-mode: vertical-rl;margin-left:103%;margin-top:-5%" v-if="cells[key+11]?.type==='property'" class="notice">{{cells[key+11]?.name}}</div>
                         </div>
                     </div>
