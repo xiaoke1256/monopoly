@@ -136,13 +136,9 @@ export default {
     },
     mounted() {
         this.fetchMapData();
-        this.players = [
-            { id: '6a4b4b482369e6847aab289a', name: '舞姬', position: 0 },
-            { id: '6a4b4b482369e6847aab289b', name: '大理寺卿', position: 0 }
-        ];
 
-        this.locatePlayerToBlock(0, 30);
-        this.locatePlayerToBlock(1, 30);
+        // this.locatePlayerToBlock(0, 30);
+        // this.locatePlayerToBlock(1, 30);
     },
     methods:{
         async fetchMapData() {
@@ -154,12 +150,18 @@ export default {
                 const gameData = response?.data?.game;
                 this.currentPlayerIndex = gameData.currentPlayerIndex;
                 this.cells = gameData.cells;
+                this.players = gameData.players;
+                console.log('玩家数据已读取:', this.players);
+                for(let i = 0; i < this.players.length; i++){
+                    this.locatePlayerToBlock(i, this.players[i].position);
+                }
                 console.log('地图数据已读取:', this.cells);
             } catch (err) {
                 this.error = err.message;
                 console.error('读取地图数据失败:', err);
             } finally {
                 this.loading = false;
+                this.$emit('game-loaded', this.currentPlayerIndex);
             }
         },
         getLocationOfPlayer(playerIdx,blockId) {
