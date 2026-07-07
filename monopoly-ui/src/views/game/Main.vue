@@ -143,6 +143,7 @@ export default {
             console.log('回合结束:', response.data);
             // 处理回合结束后的逻辑，例如切换到下一个玩家
             this.currentPlayerIndex = response.data.currentPlayerIndex; // 更新当前玩家索引
+            this.$refs.map.currentPlayerIndex = this.currentPlayerIndex;
             this.showBuyPropertyModal = false;
             this.showDiceModal = true; // 显示掷骰子弹窗，开始下一回合
         })

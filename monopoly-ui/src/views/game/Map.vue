@@ -306,7 +306,7 @@ export default {
             if (typeof ownerId === 'object' && ownerId !== null) {
                 ownerId = ownerId.id || ownerId._id || Object.values(ownerId)[0];
             }
-            const player = this.players.find(p => String(p.id) === String(ownerId));
+            const player = this.players.find(p => String(p._id) === String(ownerId));
             console.log("player:", player);
             if (player) {
                 if (player.name === '舞姬') return 'limeGreen';
