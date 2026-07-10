@@ -41,6 +41,26 @@
             <div></div>
         </template>
     </Modal> 
+    <Modal
+        v-model="showUpgradePropertyModal"
+        :closable="false"
+        :mask-closable="false"
+        width="520">
+        <template #header>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#f8fafc;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <img :src="playerImage" style="width:100%;height:100%;display:block;object-fit:cover;"/>
+                </div>
+                <span style="font-size:20px;font-weight:600;color:#2d8cf0;">升级店铺</span>
+            </div>
+        </template>
+        <div style="padding:4px 0;">
+            <BuyProperty :cell="currentCell" :forUpgrade="true" @confirm="upgradeProperty" @cancel="endTurn" />
+        </div>
+        <template #footer>
+            <div></div>
+        </template>
+    </Modal> 
 </template>
 <script>
 import axios from 'axios';
@@ -64,6 +84,7 @@ export default {
     return {
       showDiceModal:true,
       showBuyPropertyModal:false,
+      showUpgradePropertyModal:false,
       showPayModal:false,
       currentCell:{},
       currentPlayerIndex: 0,
@@ -109,6 +130,16 @@ export default {
             // 打开购买地产的弹窗
             this.currentCell = response.data.cell;
             this.showBuyPropertyModal = true;
+        }else if ('upgradeProperty'===action) {
+            // 处理升级地产逻辑
+            console.log('玩家可以升级地产');   
+            // 打开升级地产的弹窗
+            this.currentCell = response.data.cell;
+            this.showUpgradePropertyModal = true;
+
+        }else if('nothing'===action){
+            console.log('玩家无需操作，直接结束回合');
+            this.endTurn();
         }
 
     },
@@ -137,6 +168,31 @@ export default {
             console.error('购买地产失败:', error);
         });
     },
+    upgradeProperty(){
+        // 处理升级地产逻辑
+        console.log('玩家确认升级地产');
+        axios.post(`/api/game/player/${this.currentPlayerIndex}/payForUpgradeProperty`, {
+            cellId: this.currentCell.id
+        }).then(response => {
+            console.log('升级地产成功:', response.data);
+            //界面上提示“商铺升级成功”
+            this.$Modal.success({
+                title: '升级成功',
+                content: '您已成功升级该地产！',
+                onOk: () => {
+                    //重新加载地图
+                    this.$refs.map.fetchMapData();
+                    this.currentPlayerIndex = response.data.currentPlayerIndex; // 更新当前玩家索引
+                    this.showUpgradePropertyModal = false;
+                    //TODO : 先休眠一下，再显示要切换玩家了。
+                    this.showDiceModal = true; // 显示掷骰子弹窗，开始下一回合
+                }
+            });
+
+        }).catch(error => {
+            console.error('升级地产失败:', error);
+        });
+    },
     endTurn(){
         axios.post(`/api/game/player/${this.currentPlayerIndex}/endTurn`)
         .then(response => {
@@ -145,6 +201,7 @@ export default {
             this.currentPlayerIndex = response.data.currentPlayerIndex; // 更新当前玩家索引
             this.$refs.map.currentPlayerIndex = this.currentPlayerIndex;
             this.showBuyPropertyModal = false;
+            this.showUpgradePropertyModal = false;
             this.showDiceModal = true; // 显示掷骰子弹窗，开始下一回合
         })
         .catch(error => {

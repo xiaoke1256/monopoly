@@ -1,6 +1,6 @@
 <template>
     <div class="buy-property">
-        <p class="question">您是否要购买这处店铺？</p>
+        <p class="question">您是否要{{ forUpgrade ? '升级' : '购买' }}这处店铺？</p>
         <div class="info-card">
             <div class="info-row">
                 <span class="info-label">店铺名称</span>
@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="action-buttons">
-            <Button type="primary" size="large" @click="confirmPurchase">确认购买</Button>
+            <Button type="primary" size="large" @click="confirmPurchase">{{ forUpgrade ? '确认升级' : '确认购买' }}</Button>
             <Button size="large" @click="cancelPurchase">取消购买</Button>
         </div>
     </div>
@@ -36,6 +36,10 @@ export default {
         cell: {
             type: Object,
             default: () => ({})
+        },
+        forUpgrade: {
+            type: Boolean,
+            default: false
         }
     },
     methods: {

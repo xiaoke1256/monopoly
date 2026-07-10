@@ -46,6 +46,10 @@ const queryCurrentGame = async ()=> {
         game.mapId = map._id;
         game.roomNo = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
         game.cells = map.cells;
+        game.cells.array.forEach(cell => {
+            cell.owner = null;
+            cell.level = 1;
+        });
         await game.save();
     }
     return game;
@@ -90,11 +94,12 @@ const onArrived = async (req, res) => {
             //询问是否需要购买地产
             console.log(`Player at index ${currentPlayerIndex} arrived at an unowned property.`);
             return res.json({ action: 'buyProperty', cell });
-        }else if(cell.type === 'property' && cell.owner !== null && cell.owner !== currentPlayer.id){
+        }else if(cell.type === 'property' && cell.owner !== null && String(cell.owner) !== String(currentPlayer.id)){
             //支付租金
+            console.log('cell.owner:',cell.owner,' currentPlayer._id:',currentPlayer._id,' currentPlayer.id:',currentPlayer.id);
             console.log(`Player at index ${currentPlayerIndex} arrived at a property owned by another player.`);
             return res.json({ action: 'payRent', cell });
-        }else if(cell.type === 'property' && cell.owner === currentPlayer.id){
+        }else if(cell.type === 'property' && String(cell.owner) === String(currentPlayer.id)){
             //询问是否需要升级地产
             console.log(`Player at index ${currentPlayerIndex} arrived at their own property.`);
             return res.json({ action: 'upgradeProperty', cell });
@@ -114,7 +119,7 @@ const onArrived = async (req, res) => {
             //进入镖局
             console.log(`Player at index ${currentPlayerIndex} arrived at the security company.`);
         }
-        return res.json({ action: 'other', cell });
+        return res.json({ action: 'nothing', cell });
     } catch (error) {
         console.error('Error occurred after player move:', error);
         return res.status(500).json({ error: error.message });
@@ -138,7 +143,37 @@ const payForPropertyAndEndTurn = async (req, res) => {
     // 从玩家账户中扣除费用
     currentPlayer.money -= cell.price;
     // 将地产的所有者设置为当前玩家
+    if (cell.owner){
+        console.log(`Property is already owned by another player. Cannot purchase.`);
+        return res.status(400).json({ message: 'Property is already owned by another player. Cannot purchase.' });
+    }
     cell.owner = currentPlayer.id;
+
+    // 结束当前玩家的回合
+    game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    await game.save();
+    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
+}
+
+const payForUpgradePropertyAndEndTurn = async (req, res) => {
+    const game = await queryCurrentGame(); 
+    const currentPlayerIndex = game.currentPlayerIndex ;
+    console.log(`Player at index ${currentPlayerIndex} `);  
+    const currentPlayer = game.players[currentPlayerIndex];
+    const cell = game.cells[currentPlayer.position];
+    console.log(`currentPlayer:`,currentPlayer);
+    if( cell.level >= 3 ){
+        console.log(`Property is already at max level. Cannot upgrade.`);
+        return res.status(400).json({ message: 'Property is already at max level. Cannot upgrade.' });
+    }
+    // 从玩家账户中扣除费用
+    currentPlayer.money -= cell.upgradeCost;
+    // 将地产的所有者设置为当前玩家
+    if (String(cell.owner) !== String(currentPlayer.id)){
+        console.log(`Property is not owned by the current player. Cannot upgrade.`);
+        return res.status(400).json({ message: 'Property is not owned by the current player. Cannot upgrade.' });
+    }
+    cell.level++;
 
     // 结束当前玩家的回合
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
@@ -154,5 +189,6 @@ export {
     onArrived,
     endTurn,
     payForPropertyAndEndTurn,
+    payForUpgradePropertyAndEndTurn,
     getCurrentMap
 };
