@@ -21,7 +21,7 @@
         </div>
         <div class="action-buttons">
             <Button type="primary" size="large" @click="confirmPurchase">{{ forUpgrade ? '确认升级' : '确认购买' }}</Button>
-            <Button size="large" @click="cancelPurchase">取消购买</Button>
+            <Button size="large" @click="cancelPurchase">{{ forUpgrade ? '取消升级' : '取消购买' }}</Button>
         </div>
     </div>
 </template>
