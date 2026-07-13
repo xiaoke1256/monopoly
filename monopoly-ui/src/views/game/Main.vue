@@ -82,7 +82,7 @@ export default {
   },
   data() {
     return {
-      showDiceModal:true,
+      showDiceModal:false,
       showBuyPropertyModal:false,
       showUpgradePropertyModal:false,
       showPayModal:false,
@@ -93,6 +93,15 @@ export default {
     };
   },
   mounted() {
+    axios.get('/api/game/player-status').then(response => {
+       const playerStatus = response.data.playerStatus;
+       const currentPlayerPosition = response.data.currentPlayerPosition;
+       if(playerStatus==='before-dice') {
+           this.showDiceModal=true;
+       } else {
+           this.onPlayerMoveComplete(currentPlayerPosition);
+       }
+    });
   },
   methods: {
     onGameLoaded(playerIndex) {

@@ -78,6 +78,7 @@ const dice = async (req, res)=>{
     const game = await queryCurrentGame();
     if(game){
         game.currentDice = diceResult;
+        game.playerStatus = 'arrive-cell';
         await game.save();
     }
     return res.json({ dice:diceResult });
@@ -129,6 +130,7 @@ const onArrived = async (req, res) => {
 const endTurn = async (req, res) => {
     const game = await queryCurrentGame(); 
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    game.playerStatus = 'before-dice';
     await game.save();
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
 }
@@ -151,6 +153,7 @@ const payForPropertyAndEndTurn = async (req, res) => {
 
     // 结束当前玩家的回合
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    game.playerStatus = 'before-dice';
     await game.save();
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
 }
@@ -177,15 +180,24 @@ const payForUpgradePropertyAndEndTurn = async (req, res) => {
 
     // 结束当前玩家的回合
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    game.playerStatus = 'before-dice';
     await game.save();
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
 }
+
+const getPlayerStatus = async (req, res) => {
+    const game = await queryCurrentGame();
+    const currentPlayerIndex = game.currentPlayerIndex ;
+    const currentPlayer = game.players[currentPlayerIndex];
+    return res.json({ playerStatus: game.playerStatus,currentPlayerPosition: currentPlayer.position });
+};
 
 export {
     dice,
     getCurrentGame,
     getCurrentDice,
     movePlayer,
+    getPlayerStatus,
     onArrived,
     endTurn,
     payForPropertyAndEndTurn,

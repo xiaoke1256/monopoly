@@ -34,6 +34,7 @@ const GameSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
   currentDice: { type: Number, default: null },
   currentPlayerIndex: { type: Number, default: 0 },
+  playerStatus: { type: String, enum: ['before-dice', 'arrive-cell', 'completed'], default: 'before-dice' },
   players: [PlayerSchema],
 });
 

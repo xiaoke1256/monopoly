@@ -7,12 +7,14 @@ import { dice,
     endTurn,
     payForPropertyAndEndTurn,
     payForUpgradePropertyAndEndTurn,
-    getCurrentMap } from '../controllers/gameController.js';
+    getCurrentMap,
+    getPlayerStatus } from '../controllers/gameController.js';
 
 const gameRouter = new Router();   
 
 gameRouter.get('/dice', dice);
 gameRouter.get('/current', getCurrentGame);
+gameRouter.get('/player-status', getPlayerStatus);
 gameRouter.get('/dice-value', getCurrentDice);
 gameRouter.post('/player/:playerIndex/move', movePlayer);
 gameRouter.get('/player/:playerIndex/arrived', onArrived);
