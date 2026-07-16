@@ -4,15 +4,106 @@ import connectDB from '../config/db.js';
 
 const defaultMapData = [
   { position: 0, type: 'go', name: '柜坊', color: null },
-  { position: 1, type: 'property', name: '乐艺馆', color: 'brown', price: 60, rent: 2, upgradeCost: 50, mortgageValue: 30 },
-  { position: 2, type: 'property', name: '酒肆', color: 'brown', price: 60, rent: 4, upgradeCost: 50, mortgageValue: 30 },
+  { position: 1, type: 'property', name: '乐艺馆', color: 'brown', price: 60, rent: 2, upgradeCost: 50, mortgageValue: 30 ,
+    buildStyle:{
+      lv1:{
+        image:'@/assets/shop-lv1.svg',
+        textStyle:{top:"-2%",marginTop:"15%"},
+        colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
+      },
+      lv2:{
+        image:'@/assets/shop.svg',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      }
+    }
+  },
+  { position: 2, type: 'property', name: '酒肆', color: 'brown', price: 60, rent: 4, upgradeCost: 50, mortgageValue: 30 ,
+    buildStyle:{
+      lv1:{
+        image:'@/assets/shop-lv1.svg',
+        textStyle:{top:"-2%",marginTop:"15%"},
+        colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
+      },
+      lv2:{
+        image:'@/assets/shop.svg',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      }
+    }
+  },
   { position: 3, type: 'utility', name: '观百戏', color: null },
-  { position: 4, type: 'property', name: '珠宝行', color: 'light-blue', price: 100, rent: 6, upgradeCost: 50, mortgageValue: 50 },
+  { position: 4, type: 'property', name: '珠宝行', color: 'light-blue', price: 100, rent: 6, upgradeCost: 50, mortgageValue: 50 ,
+    buildStyle:{
+      lv1:{
+        image:'@/assets/shop-lv1.svg',
+        textStyle:{top:"-2%",marginTop:"15%"},
+        colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
+      },
+      lv2:{
+        image:'@/assets/shop.svg',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      }
+    }
+   },
   { position: 5, type: 'chance', name: '运气卡', color: null },
-  { position: 6, type: 'property', name: '鱼行', color: 'light-blue', price: 100, rent: 6, upgradeCost: 50, buildingCost: 50, mortgageValue: 50 },
-  { position: 7, type: 'property', name: '果子铺', color: 'light-blue', price: 120, rent: 8, upgradeCost: 50, buildingCost: 50, mortgageValue: 60 },
-  { position: 8, type: 'property', name: '肉行', color: 'pink', price: 140, rent: 10, upgradeCost: 100, buildingCost: 100, mortgageValue: 70 },
-  { position: 9, type: 'property', name: '大雁塔', color: 'pink', price: 140, rent: 10, upgradeCost: 100, buildingCost: 100, mortgageValue: 70 },
+  { position: 6, type: 'property', name: '鱼行', color: 'light-blue', price: 100, rent: 6, upgradeCost: 50, buildingCost: 50, mortgageValue: 50,
+    buildStyle:{
+      lv1:{
+        image:'@/assets/shop-lv1.svg',
+        textStyle:{top:"-2%",marginTop:"15%"},
+        colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
+      },
+      lv2:{
+        image:'@/assets/shop.svg',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      }
+    }
+   },
+  { position: 7, type: 'property', name: '果子铺', color: 'light-blue', price: 120, rent: 8, upgradeCost: 50, buildingCost: 50, mortgageValue: 60 ,
+    buildStyle:{
+      lv1:{
+        image:'@/assets/shop-lv1.svg',
+        textStyle:{top:"-2%",marginTop:"15%"},
+        colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
+      },
+      lv2:{
+        image:'@/assets/shop.svg',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      }
+    }
+   },
+  { position: 8, type: 'property', name: '肉行', color: 'pink', price: 140, rent: 10, upgradeCost: 100, buildingCost: 100, mortgageValue: 70,
+    buildStyle:{
+      lv1:{
+        image:'@/assets/shop-lv1.svg',
+        textStyle:{top:"-2%",marginTop:"15%"},
+        colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
+      },
+      lv2:{
+        image:'@/assets/shop.svg',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      }
+    }
+   },
+  { position: 9, type: 'property', name: '大雁塔', color: 'pink', price: 140, rent: 10, upgradeCost: 100, buildingCost: 100, mortgageValue: 70,
+    buildStyle:{
+      lv1:{
+        image:'@/assets/shop-lv1.svg',
+        textStyle:{top:"-2%",marginTop:"15%"},
+        colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
+      },
+      lv2:{
+        image:'@/assets/shop.svg',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      }
+    }
+   },
   { position: 10, type: 'hospital', name: '医馆', color: 'utility'},
   { position: 11, type: 'property', name: '胭脂铺', color: 'pink', price: 140, rent: 10, upgradeCost: 100, buildingCost: 100, mortgageValue: 70 },
   { position: 12, type: 'property', name: '华清宫', color: 'pink', price: 140, rent: 10, upgradeCost: 100, buildingCost: 100, mortgageValue: 70 },

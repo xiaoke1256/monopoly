@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="200px" height="150px" viewBox="0 0 200 150" enable-background="new 0 0 200 150" xml:space="preserve">
+<defs>
+	<filter id="Adobe_OpacityMaskFilter" filterUnits="userSpaceOnUse" x="3.769" y="4.04" width="187.446" height="146.46">
+		<feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+	</filter>
+</defs>
+<mask maskUnits="userSpaceOnUse" x="3.769" y="4.04" width="187.446" height="146.46" id="lanternMask">
+	<rect fill="#FFFFFF" filter="url(#Adobe_OpacityMaskFilter)" width="200" height="150"/>
+	<ellipse cx="49.452" cy="95.685" rx="8.534" ry="6.928"/>
+</mask>
+<g id="building" mask="url(#lanternMask)">
+	<polygon fill="#132528" stroke="#000000" stroke-miterlimit="10" points="34.251,81.673 8.877,81.673 4.645,80.244 4.645,78.352 
+		34.564,79.775 	"/>
+	<rect x="8.581" y="81.678" fill="#132528" stroke="#000000" stroke-miterlimit="10" width="22.29" height="3.01"/>
+	<rect x="4.369" y="104.941" fill="#F4ECAD" stroke="#C9A66A" stroke-miterlimit="10" width="186.346" height="41.865"/>
+	<rect x="10.597" y="101.9" fill="#E8D589" stroke="#C9A66A" stroke-miterlimit="10" width="19.779" height="43.875"/>
+	<rect x="9.892" y="99.755" fill="#502928" stroke="#331415" stroke-miterlimit="10" width="20.18" height="2.832"/>
+	<rect x="35.759" y="84.542" fill="#ECE3C3" stroke="#C9A66A" stroke-miterlimit="10" width="123.818" height="62.474"/>
+	<rect x="7.96" y="84.596" fill="#21383D" stroke="#000000" stroke-miterlimit="10" width="22.127" height="14.992"/>
+	<rect x="4.269" y="147.109" fill="#C9A66A" stroke="#C9A66A" stroke-miterlimit="10" width="186.124" height="2.891"/>
+	<rect x="26.241" y="56.213" fill="#21383D" stroke="#000000" stroke-miterlimit="10" width="142.71" height="23.727"/>
+	<path fill="none" stroke="#000000" stroke-miterlimit="10" d="M173.872,4.04"/>
+	<path fill="none" stroke="#000000" stroke-miterlimit="10" d="M173.872,10.773"/>
+	<rect x="30.601" y="84.342" fill="#BC2704" stroke="#514352" stroke-miterlimit="10" width="5.158" height="62.674"/>
+	<rect x="159.577" y="84.243" fill="#BC2704" stroke="#514352" stroke-miterlimit="10" width="5.159" height="62.774"/>
+	<rect x="76.923" y="87.686" fill="#BC2704" stroke="#514352" stroke-miterlimit="10" width="5.159" height="59.332"/>
+	<rect x="114.2" y="88.628" fill="#BC2704" stroke="#514352" stroke-miterlimit="10" width="5.157" height="58.39"/>
+	
+		<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="365.1816" y1="1106.7402" x2="398.3008" y2="1106.7402" gradientTransform="matrix(1 0 0 1 -283.6001 -988.3984)">
+		<stop  offset="0" style="stop-color:#5E4A1A"/>
+		<stop  offset="0.2133" style="stop-color:#3C2B13"/>
+		<stop  offset="0.4267" style="stop-color:#24150A"/>
+		<stop  offset="0.6332" style="stop-color:#130102"/>
+		<stop  offset="0.8283" style="stop-color:#060000"/>
+		<stop  offset="1" style="stop-color:#040000"/>
+	</linearGradient>
+	<rect x="82.082" y="89.628" fill="#B28C63" stroke="url(#SVGID_1_)" stroke-miterlimit="10" width="32.118" height="57.427"/>
+	<rect x="29.021" y="80.501" fill="#502928" stroke="#331415" stroke-miterlimit="10" width="137.549" height="3.47"/>
+	<rect x="45.096" y="103.118" fill="#A26123" stroke="#000000" stroke-miterlimit="10" width="31.827" height="43.897"/>
+	<rect x="36.391" y="98.344" fill="#5B3E3E" stroke="#381E20" stroke-miterlimit="10" width="123.292" height="4.316"/>
+	<rect x="119.738" y="103.116" fill="#A26123" stroke="#000000" stroke-miterlimit="10" width="31.828" height="43.899"/>
+	<rect x="73.446" y="80.763" fill="#A26123" stroke="#000000" stroke-miterlimit="10" width="50.704" height="20.604"/>
+	<rect x="15.213" y="112.626" fill="#A26123" stroke="#000000" stroke-miterlimit="10" width="11.546" height="22.593"/>
+	<path fill="none" stroke="#FF1800" stroke-width="3" stroke-miterlimit="10" d="M49.251,103.483c0,4.162-0.603,5.815-1.506,8.125"
+		/>
+	<line fill="none" stroke="#FF1800" stroke-miterlimit="10" x1="50.054" y1="84.561" x2="50.054" y2="87.773"/>
+	<rect x="26.762" y="53.752" fill="#132528" stroke="#000000" stroke-miterlimit="10" width="140.864" height="2.409"/>
+	<rect x="82.484" y="102.934" fill="#502928" stroke="#331415" stroke-miterlimit="10" width="31.927" height="2.912"/>
+	<rect x="82.785" y="141.99" fill="#5B3E3E" stroke="#381E20" stroke-miterlimit="10" width="31.124" height="4.316"/>
+	<path fill="#132528" stroke="#000000" stroke-miterlimit="10" d="M169.03,53.352H25.657l-4.233-1.213v-1.606
+		c0,0,50.819,1.108,75.919,1.208c26.406,0.105,75.113-0.807,75.113-0.807v1.706L169.03,53.352z"/>
+</g>
+</svg>

@@ -16,13 +16,13 @@
                     <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+1)}`" class="block">
                         <div class="empty-land" >
                             <div v-if="cells[key+1]?.type==='property'" style="width:100%;height:100%;">
-                                <div :style="{width:'20%',height:'100%',background: buildingColor(key+1),position: 'relative',left:'20%'}"></div>
+                                <div :style="colorStyle(cells[key+1])"></div>
                             </div>
-                            <img v-if="cells[key+1]?.type==='property'" src="@/assets/shop.svg" width="100%" height="100%" />
+                            <img v-if="cells[key+1]?.type==='property'" :src="buildingImage(cells[key+1])" width="100%" height="100%" />
                             <img v-if="cells[key+1]?.type==='utility'" src="@/assets/qifu1.svg" width="100%" height="100%"/>
                             <img v-if="cells[key+1]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
                             <img v-if="cells[key+1]?.type==='question'" src="@/assets/question.svg" width="100%" height="100%"/>
-                            <div style="top:-2%;margin-top:11% ;" v-if="cells[key+1]?.type==='property'" class="notice">{{cells[key+1]?.name}}</div>
+                            <div :style="textStyle(cells[key+1])" v-if="cells[key+1]?.type==='property'" class="notice">{{cells[key+1]?.name}}</div>
                         </div>
                         <div class="road road-bg" style="" >
                         </div>
@@ -43,7 +43,7 @@
                         </div>
                         <div class="empty-land" >
                             <div v-if="cells[39-key]?.type==='property'" style="width:100%;height:100%;">
-                                <div :style="{width:'10%',height:'40%',background: buildingColor(39-key),position: 'relative',left:'4%',top:'30%'}"></div>
+                                <div :style="{width:'10%',height:'40%',background: buildingColor(cells[39-key]),position: 'relative',left:'4%',top:'30%'}"></div>
                             </div>
                             <img v-if="cells[39-key]?.type==='property'" src="@/assets/shop2.svg" width="100%" height="100%"/>
                             <img v-if="cells[39-key]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
@@ -61,7 +61,7 @@
                         </div>
                         <div class="empty-land" >
                             <div v-if="cells[key+11]?.type==='property'" style="width:100%;height:100%;">
-                                <div :style="{width:'10%',height:'40%',background: buildingColor(key+11),position: 'relative',left:'85%',top:'30%'}"></div>
+                                <div :style="{width:'10%',height:'40%',background: buildingColor(cells[key+11]),position: 'relative',left:'85%',top:'30%'}"></div>
                             </div>
                             <img v-if="cells[key+11]?.type==='property'" src="@/assets/shop2.svg" width="100%" height="100%"/>
                             <img v-if="cells[key+11]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
@@ -84,7 +84,7 @@
                     <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(29-key)}`" class="block">
                         <div class="empty-land" >
                             <div v-if="cells[29-key]?.type==='property'" style="width:100%;height:100%;">
-                                <div :style="{width:'20%',height:'100%',background: buildingColor(29-key),position: 'relative',left:'20%'}"></div>
+                                <div :style="{width:'20%',height:'100%',background: buildingColor(cells[29-key]),position: 'relative',left:'20%'}"></div>
                             </div>
                             <img v-if="cells[29-key]?.type==='property'" src="@/assets/shop.svg" width="100%" height="100%" />
                             <img v-if="cells[29-key]?.type==='utility'" src="@/assets/qifu1.svg" width="100%" height="100%"/>
@@ -120,6 +120,9 @@
 <script>
 import axios from 'axios';
 import { animate } from 'animejs';
+
+import shopImg from '@/assets/shop.svg';
+import shopImgLv1 from '@/assets/shop-lv1.svg';
 
 export default {
     name: 'MapComponent',
@@ -296,8 +299,8 @@ export default {
             }
             this.moving(playerDiv, currentPlayer.position, targetPosition,callback);
         },
-        buildingColor(position) {
-            const cell = this.cells[position];
+        buildingColor(cell) {
+            //const cell = this.cells[position];
             console.log("cell:", cell);
             if (!cell || !cell.owner) return '#aaa';
             let ownerId = cell.owner;
@@ -313,6 +316,19 @@ export default {
                 if (player.name === '大理寺卿') return 'lightcoral';
             }
             return '#aaa';
+        },
+        buildingImage(cell){
+            if(cell.level>=2){
+                return shopImg;
+            }else{
+                return shopImgLv1;
+            }
+        },
+        textStyle(cell){
+            return cell.buildStyle[`lv${cell.level}`].textStyle;
+        },
+        colorStyle(cell){
+            return {...cell.buildStyle[`lv${cell.level}`].colorStyle,background:this.buildingColor(cell)};
         }
     }
 }

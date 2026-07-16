@@ -1,5 +1,11 @@
 import mongoose from 'mongoose';
 
+const BuildStyleSchema = new mongoose.Schema({
+  image: { type: String, default: null },
+  textStyle: {type:Object,default: {}},
+  colorStyle: { type:Object,default: {} }
+}, { _id: false });
+
 const CellSchema = new mongoose.Schema({
   position: { type: Number, required: true, unique: true },
   type: { 
@@ -15,7 +21,12 @@ const CellSchema = new mongoose.Schema({
   // buildingCost: { type: Number, default: null },
   mortgageValue: { type: Number, default: null },/* 抵押价 */
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'Player', default: null },
-  level: { type: Number, default: 0 }
+  level: { type: Number, default: 0 },
+  buildStyle:{
+    lv1:BuildStyleSchema,
+    lv2:BuildStyleSchema,
+    lv3:BuildStyleSchema
+  }
 });
 
 const PlayerSchema = new mongoose.Schema({
