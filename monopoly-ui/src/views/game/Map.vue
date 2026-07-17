@@ -18,10 +18,7 @@
                             <div v-if="cells[key+1]?.type==='property'" style="width:100%;height:100%;">
                                 <div :style="colorStyle(cells[key+1])"></div>
                             </div>
-                            <img v-if="cells[key+1]?.type==='property'" :src="buildingImage(cells[key+1])" width="100%" height="100%" />
-                            <img v-if="cells[key+1]?.type==='utility'" src="@/assets/qifu1.svg" width="100%" height="100%"/>
-                            <img v-if="cells[key+1]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
-                            <img v-if="cells[key+1]?.type==='question'" src="@/assets/question.svg" width="100%" height="100%"/>
+                            <img :src="buildingImage(cells[key+1])" width="100%" height="100%" />
                             <div :style="textStyle(cells[key+1])" v-if="cells[key+1]?.type==='property'" class="notice">{{cells[key+1]?.name}}</div>
                         </div>
                         <div class="road road-bg" style="" >
@@ -120,9 +117,7 @@
 <script>
 import axios from 'axios';
 import { animate } from 'animejs';
-
-import shopImg from '@/assets/shop.svg';
-import shopImgLv1 from '@/assets/shop-lv1.svg';
+import {imageMap} from '../../util/imagesMap.js';
 
 export default {
     name: 'MapComponent',
@@ -318,10 +313,14 @@ export default {
             return '#aaa';
         },
         buildingImage(cell){
-            if(cell.level>=2){
-                return shopImg;
-            }else{
-                return shopImgLv1;
+            if(cell?.type==='property'){
+                if(cell.level>=2){
+                    return imageMap['shop-lv2'];
+                }else{
+                    return imageMap['shop-lv1'];
+                }
+            } else {
+                return imageMap[cell?.buildingImage]
             }
         },
         textStyle(cell){
