@@ -7,12 +7,12 @@ const defaultMapData = [
   { position: 1, type: 'property', name: '乐艺馆', color: 'brown', price: 60, rent: 2, upgradeCost: 50, mortgageValue: 30 ,
     buildStyle:{
       lv1:{
-        image:'@/assets/shop-lv1.svg',
+        image:'shop-lv1',
         textStyle:{top:"-2%",marginTop:"15%"},
         colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
       },
       lv2:{
-        image:'@/assets/shop.svg',
+        image:'shop-lv2',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }
@@ -21,12 +21,12 @@ const defaultMapData = [
   { position: 2, type: 'property', name: '酒肆', color: 'brown', price: 60, rent: 4, upgradeCost: 50, mortgageValue: 30 ,
     buildStyle:{
       lv1:{
-        image:'@/assets/shop-lv1.svg',
+        image:'shop-lv1',
         textStyle:{top:"-2%",marginTop:"15%"},
         colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
       },
       lv2:{
-        image:'@/assets/shop.svg',
+        image:'shop-lv2',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }
@@ -36,12 +36,12 @@ const defaultMapData = [
   { position: 4, type: 'property', name: '珠宝行', color: 'light-blue', price: 100, rent: 6, upgradeCost: 50, mortgageValue: 50 ,
     buildStyle:{
       lv1:{
-        image:'@/assets/shop-lv1.svg',
+        image:'shop-lv1',
         textStyle:{top:"-2%",marginTop:"15%"},
         colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
       },
       lv2:{
-        image:'@/assets/shop.svg',
+        image:'shop-lv2',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }
@@ -51,12 +51,12 @@ const defaultMapData = [
   { position: 6, type: 'property', name: '鱼行', color: 'light-blue', price: 100, rent: 6, upgradeCost: 50, buildingCost: 50, mortgageValue: 50,
     buildStyle:{
       lv1:{
-        image:'@/assets/shop-lv1.svg',
+        image:'shop-lv1',
         textStyle:{top:"-2%",marginTop:"15%"},
         colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
       },
       lv2:{
-        image:'@/assets/shop.svg',
+        image:'shop-lv2',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }
@@ -65,12 +65,12 @@ const defaultMapData = [
   { position: 7, type: 'property', name: '果子铺', color: 'light-blue', price: 120, rent: 8, upgradeCost: 50, buildingCost: 50, mortgageValue: 60 ,
     buildStyle:{
       lv1:{
-        image:'@/assets/shop-lv1.svg',
+        image:'shop-lv1',
         textStyle:{top:"-2%",marginTop:"15%"},
         colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
       },
       lv2:{
-        image:'@/assets/shop.svg',
+        image:'shop-lv2',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }
@@ -79,12 +79,12 @@ const defaultMapData = [
   { position: 8, type: 'property', name: '肉行', color: 'pink', price: 140, rent: 10, upgradeCost: 100, buildingCost: 100, mortgageValue: 70,
     buildStyle:{
       lv1:{
-        image:'@/assets/shop-lv1.svg',
+        image:'shop-lv1',
         textStyle:{top:"-2%",marginTop:"15%"},
         colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
       },
       lv2:{
-        image:'@/assets/shop.svg',
+        image:'shop-lv2',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }
@@ -93,12 +93,12 @@ const defaultMapData = [
   { position: 9, type: 'property', name: '大雁塔', color: 'pink', price: 140, rent: 10, upgradeCost: 100, buildingCost: 100, mortgageValue: 70,
     buildStyle:{
       lv1:{
-        image:'@/assets/shop-lv1.svg',
+        image:'shop-lv1',
         textStyle:{top:"-2%",marginTop:"15%"},
         colorStyle:{width:'20%',height:'60%',position: 'relative',left:'20%',top:'20%'}
       },
       lv2:{
-        image:'@/assets/shop.svg',
+        image:'shop-lv2',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }

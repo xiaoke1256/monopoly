@@ -22,6 +22,7 @@ const CellSchema = new mongoose.Schema({
   mortgageValue: { type: Number, default: null },/* 抵押价 */
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'Player', default: null },
   level: { type: Number, default: 0 },
+  buildingImage: { type: String, required: false},
   buildStyle:{
     lv1:BuildStyleSchema,
     lv2:BuildStyleSchema,

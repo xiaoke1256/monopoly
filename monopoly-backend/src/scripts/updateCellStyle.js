@@ -18,12 +18,12 @@ const updateCellStyle = async () => {
         if(cell.type==='property' && cell.position<=10){
             cell.buildStyle={
                 "lv1":{
-                    "image":'@/assets/shop-lv1.svg',
+                    "image":'shop-lv1',
                     "textStyle":{"top":"-2%","marginTop":"15%"},
                     "colorStyle":{"width":'20%',"height":'60%',"position": 'relative',"left":'20%',"top":'20%'}
                 },
                 "lv2":{
-                    "image":'@/assets/shop.svg',
+                    "image":'shop-lv2',
                     "textStyle":{"top":"-2%","marginTop":"11%"},
                     "colorStyle":{"width":'20%',"height":'100%',"position": 'relative',"left":'20%'}
                 }
