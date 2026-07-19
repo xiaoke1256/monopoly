@@ -81,13 +81,10 @@
                     <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(29-key)}`" class="block">
                         <div class="empty-land" >
                             <div v-if="cells[29-key]?.type==='property'" style="width:100%;height:100%;">
-                                <div :style="{width:'20%',height:'100%',background: buildingColor(cells[29-key]),position: 'relative',left:'20%'}"></div>
+                                <div :style="colorStyle(cells[29-key])"></div>
                             </div>
-                            <img v-if="cells[29-key]?.type==='property'" src="@/assets/shop.svg" width="100%" height="100%" />
-                            <img v-if="cells[29-key]?.type==='utility'" src="@/assets/qifu1.svg" width="100%" height="100%"/>
-                            <img v-if="cells[29-key]?.type==='chance'" src="@/assets/chance.svg" width="100%" height="100%"/>
-                            <img v-if="cells[29-key]?.type==='question'" src="@/assets/question.svg" width="100%" height="100%"/>
-                            <div style="top:-2%;margin-top:11% ;" v-if="cells[29-key]?.type==='property'" class="notice">{{cells[29-key]?.name}}</div>
+                            <img :src="buildingImage(cells[29-key])" width="100%" height="100%" />
+                            <div :style="textStyle(cells[29-key])" v-if="cells[29-key]?.type==='property'" class="notice">{{cells[29-key]?.name}}</div>
                         </div>
                         <div class="road road-bg" style="" >
                         </div>

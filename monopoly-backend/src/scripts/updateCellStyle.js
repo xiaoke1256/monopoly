@@ -15,20 +15,42 @@ const updateCellStyle = async () => {
     console.log("existingGame:",existingGame);
     
     existingGame.cells.forEach(cell => {
-        if(cell.type==='property' && cell.position<=10){
-            cell.buildStyle={
-                "lv1":{
-                    "image":'shop-lv1',
-                    "textStyle":{"top":"-2%","marginTop":"15%"},
-                    "colorStyle":{"width":'20%',"height":'60%',"position": 'relative',"left":'20%',"top":'20%'}
-                },
-                "lv2":{
-                    "image":'shop-lv2',
-                    "textStyle":{"top":"-2%","marginTop":"11%"},
-                    "colorStyle":{"width":'20%',"height":'100%',"position": 'relative',"left":'20%'}
-                }
-            };
-            console.log("HaHaHaHa");
+        if(cell.position<=10){
+            if(cell.type==='property'){
+                cell.buildStyle={
+                    "lv1":{
+                        "image":'shop-lv1',
+                        "textStyle":{"top":"-2%","marginTop":"15%"},
+                        "colorStyle":{"width":'20%',"height":'60%',"position": 'relative',"left":'20%',"top":'20%'}
+                    },
+                    "lv2":{
+                        "image":'shop-lv2',
+                        "textStyle":{"top":"-2%","marginTop":"11%"},
+                        "colorStyle":{"width":'20%',"height":'100%',"position": 'relative',"left":'20%'}
+                    }
+                };
+            }
+        }else if (cell.position >=21 && cell.position<=30) {
+            if(cell.type==='property'){
+                cell.buildStyle={
+                    "lv1":{
+                        "image":'shop-lv1',
+                        "textStyle":{"top":"-2%","marginTop":"15%"},
+                        "colorStyle":{"width":'20%',"height":'60%',"position": 'relative',"left":'20%',"top":'20%'}
+                    },
+                    "lv2":{
+                        "image":'shop-lv2',
+                        "textStyle":{"top":"-2%","marginTop":"11%"},
+                        "colorStyle":{"width":'20%',"height":'100%',"position": 'relative',"left":'20%'}
+                    }
+                };
+            }else if(cell.type==='utility'){
+                cell.buildingImage='pray'
+            }else if(cell.type==='chance'){
+                cell.buildingImage='chance'
+            }else if(cell.type==='question'){
+                cell.buildingImage='question'
+            }
         }
     });
     
