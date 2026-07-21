@@ -58,13 +58,13 @@
                         </div>
                         <div class="empty-land" >
                             <div v-if="cells[key+11]?.type==='property'" style="width:100%;height:100%;">
-                                <div :style="{width:'10%',height:'40%',background: buildingColor(cells[key+11]),position: 'relative',left:'85%',top:'30%'}"></div>
+                                <div :style="colorStyle(cells[key+11])"></div>
                             </div>
-                            <img v-if="cells[key+11]?.type==='property'" src="@/assets/shop2.svg" width="100%" height="100%"/>
+                            <img v-if="cells[key+11]?.type==='property'" :src="buildingImage(cells[key+11])" width="100%" height="100%"/>
                             <img v-if="cells[key+11]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
                             <img v-if="cells[key+11]?.type==='chance'" src="@/assets/chance2.svg" width="100%" height="100%"/>
                             <img v-if="cells[key+11]?.type==='question'" src="@/assets/question2.svg" width="100%" height="100%"/>
-                            <div style="writing-mode: vertical-rl;margin-left:103%;margin-top:-5%" v-if="cells[key+11]?.type==='property'" class="notice">{{cells[key+11]?.name}}</div>
+                            <div :style="textStyle(cells[key+11])" v-if="cells[key+11]?.type==='property'" class="notice">{{cells[key+11]?.name}}</div>
                         </div>
                     </div>
                 </div>
@@ -311,11 +311,7 @@ export default {
         },
         buildingImage(cell){
             if(cell?.type==='property'){
-                if(cell.level>=2){
-                    return imageMap['shop-lv2'];
-                }else{
-                    return imageMap['shop-lv1'];
-                }
+                return imageMap[cell?.buildStyle[`lv${cell?.level}`].image];
             } else {
                 return imageMap[cell?.buildingImage]
             }
