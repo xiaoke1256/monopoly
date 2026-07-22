@@ -40,15 +40,14 @@
                         </div>
                         <div class="empty-land" >
                             <div v-if="cells[39-key]?.type==='property'" style="width:100%;height:100%;">
-                                <div :style="{width:'10%',height:'40%',background: buildingColor(cells[39-key]),position: 'relative',left:'4%',top:'30%'}"></div>
+                                <div :style="colorStyle(cells[39-key])"></div>
                             </div>
-                            <img v-if="cells[39-key]?.type==='property'" src="@/assets/shop2.svg" width="100%" height="100%"/>
+                            <img v-if="cells[39-key]?.type==='property'" :src="buildingImage(cells[39-key])" width="100%" height="100%"/>
                             <img v-if="cells[39-key]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
                             <img v-if="cells[39-key]?.type==='chance'" src="@/assets/chance2.svg" width="100%" height="100%"/>
                             <img v-if="cells[39-key]?.type==='question'" src="@/assets/question2.svg" width="100%" height="100%"/>
-                            <div style="writing-mode: vertical-rl;margin-right:93%;margin-top:-5%" v-if="cells[39-key]?.type==='property'" class="notice">{{cells[39-key]?.name}}</div>
+                            <div :style="textStyle(cells[39-key])" v-if="cells[39-key]?.type==='property'" class="notice">{{cells[39-key]?.name}}</div>
                         </div>
-                        
                     </div>
                 </div>
                 <div class="center"></div>
@@ -60,10 +59,7 @@
                             <div v-if="cells[key+11]?.type==='property'" style="width:100%;height:100%;">
                                 <div :style="colorStyle(cells[key+11])"></div>
                             </div>
-                            <img v-if="cells[key+11]?.type==='property'" :src="buildingImage(cells[key+11])" width="100%" height="100%"/>
-                            <img v-if="cells[key+11]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
-                            <img v-if="cells[key+11]?.type==='chance'" src="@/assets/chance2.svg" width="100%" height="100%"/>
-                            <img v-if="cells[key+11]?.type==='question'" src="@/assets/question2.svg" width="100%" height="100%"/>
+                            <img :src="buildingImage(cells[key+11])" width="100%" height="100%"/>
                             <div :style="textStyle(cells[key+11])" v-if="cells[key+11]?.type==='property'" class="notice">{{cells[key+11]?.name}}</div>
                         </div>
                     </div>

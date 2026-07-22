@@ -62,15 +62,36 @@ const updateCellStyle = async () => {
                     "lv2":{
                         "image":'shop2-lv2',
                         "textStyle":{"writingMode": "vertical-rl","marginLeft":"103%","marginTop":"-5%"},
-                        "colorStyle":{width:'10%',height:'40%',position: 'relative',left:'85%',top:'30%'}
+                        "colorStyle":{width:'10%',height:'36%',position: 'relative',left:'85%',top:'30%'}
                     }
                 };
-            // }else if(cell.type==='utility'){
-            //     cell.buildingImage='pray'
-            // }else if(cell.type==='chance'){
-            //     cell.buildingImage='chance'
-            // }else if(cell.type==='question'){
-            //     cell.buildingImage='question'
+            }else if(cell.type==='utility'){
+                cell.buildingImage='pray2'
+            }else if(cell.type==='chance'){
+                cell.buildingImage='chance2'
+            }else if(cell.type==='question'){
+                cell.buildingImage='question2'
+            }
+        }else if (cell.position >=31 && cell.position<=40) {
+            if(cell.type==='property'){
+                cell.buildStyle={
+                    "lv1":{
+                        "image":'shop2-lv1',
+                        "textStyle":{"writingMode": "vertical-rl","marginRight":"88%","marginTop":"-3%"},
+                        "colorStyle":{width:'10%',height:'14%',position: 'relative',left:'9%',top:'43%'}
+                    },
+                    "lv2":{
+                        "image":'shop2-lv2',
+                        "textStyle":{"writingMode": "vertical-rl","marginRight":"93%","marginTop":"-5%"},
+                        "colorStyle":{width:'10%',height:'36%',position: 'relative',left:'4%',top:'30%'}
+                    }
+                };
+            }else if(cell.type==='utility'){
+                cell.buildingImage='pray2'
+            }else if(cell.type==='chance'){
+                cell.buildingImage='chance2'
+            }else if(cell.type==='question'){
+                cell.buildingImage='question2'
             }
         }
     });
