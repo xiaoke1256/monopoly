@@ -7,7 +7,7 @@
                         <div class="background" >
                             <img src="@/assets/building3.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                         </div>
-                        <div style="position: absolute;left: 44%;top: 0%;font-size: 1.5vh;">柜坊</div>
+                        <div class="notice">柜坊</div>
                         
                     </div>
                     
@@ -30,7 +30,7 @@
                         <div class="background" >
                             <img src="@/assets/building3.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                         </div>
-                        <div style="position: absolute;left: 44%;top: 0%;font-size: 1.5vh;">医馆</div>
+                        <div class="notice">医馆</div>
                     </div>
                 </div>
                 <!-- 中间一行 -->
@@ -67,7 +67,7 @@
                         <div class="background" >
                             <img src="@/assets/building4.svg" width="66.67%" height="100%" />
                         </div>
-                        <div style="position: absolute;left: 60%;top: 0%;font-size: 1.5vh;">镖局</div>
+                        <div class="notice">镖局</div>
                     </div>
                 </div>
                 <div class="bottom-side">
@@ -88,7 +88,7 @@
                         <div class="background" >
                             <img src="@/assets/building4.svg" width="66.67%" height="100%"/>
                         </div>
-                        <div style="position: absolute;left: 23%;top: 0%;font-size: 1.5vh;">大理寺</div>
+                        <div class="notice">大理寺</div>
                     </div>
                 </div>
                 <div id="other">
@@ -492,6 +492,13 @@ export default {
         left: 0;
         bottom: 33.33%;
     }
+    .notice{
+        position: absolute;
+        left: 44%;
+        top: 0%;
+        font-size: 1.7vh;
+        font-family: "STXinwei", "FZWeibei", "Weibei SC", serif;
+    }
 }
 .corner-top-left {
     width:100%;
@@ -512,6 +519,13 @@ export default {
             bottom: 33.33%;
         }
     }
+    .notice{
+        position: absolute;
+        left: 44%;
+        top: 0%;
+        font-size: 1.7vh;
+        font-family: "STXinwei", "FZWeibei", "Weibei SC", serif;
+    }
 }
 .corner-bottom-right {
     width:100%;
@@ -527,7 +541,15 @@ export default {
         left: 0;
         bottom: 33.33%;
     }
+    .notice{
+        position: absolute;
+        left: 23%;
+        top: 0%;
+        font-size: 1.7vh;
+        font-family: "STXinwei", "FZWeibei", "Weibei SC", serif;
+    }
 }
+
 .corner-bottom-left {
     width:100%;
     height: 100%;
@@ -546,6 +568,14 @@ export default {
             left: 0;
             bottom: 33.33%;
         }
+
+    }
+    .notice{
+        position: absolute;
+        left: 60%;
+        top: 0%;
+        font-size: 1.7vh;
+        font-family: "STXinwei", "FZWeibei", "Weibei SC", serif;
     }
 }
 </style>
