@@ -42,10 +42,7 @@
                             <div v-if="cells[39-key]?.type==='property'" style="width:100%;height:100%;">
                                 <div :style="colorStyle(cells[39-key])"></div>
                             </div>
-                            <img v-if="cells[39-key]?.type==='property'" :src="buildingImage(cells[39-key])" width="100%" height="100%"/>
-                            <img v-if="cells[39-key]?.type==='utility'" src="@/assets/qifu2.svg" width="100%" height="100%"/>
-                            <img v-if="cells[39-key]?.type==='chance'" src="@/assets/chance2.svg" width="100%" height="100%"/>
-                            <img v-if="cells[39-key]?.type==='question'" src="@/assets/question2.svg" width="100%" height="100%"/>
+                            <img :src="buildingImage(cells[39-key])" width="100%" height="100%"/>
                             <div :style="textStyle(cells[39-key])" v-if="cells[39-key]?.type==='property'" class="notice">{{cells[39-key]?.name}}</div>
                         </div>
                     </div>
