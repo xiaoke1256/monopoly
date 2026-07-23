@@ -473,7 +473,8 @@ export default {
         left:0;
         right:0;
         margin-top: 0;
-        font-size: 10px;
+        font-size: 1.4vh;
+        font-family: "STXinwei", "FZWeibei", "Weibei SC", serif;
         color: #333;
     }
 }
