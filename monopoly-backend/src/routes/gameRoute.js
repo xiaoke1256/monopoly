@@ -7,6 +7,7 @@ import { dice,
     endTurn,
     payForPropertyAndEndTurn,
     payForUpgradePropertyAndEndTurn,
+    payRentAndEndTurn,
     getCurrentMap,
     getPlayerStatus } from '../controllers/gameController.js';
 
@@ -20,6 +21,7 @@ gameRouter.post('/player/:playerIndex/move', movePlayer);
 gameRouter.get('/player/:playerIndex/arrived', onArrived);
 gameRouter.post('/player/:playerIndex/payForProperty', payForPropertyAndEndTurn);
 gameRouter.post('/player/:playerIndex/payForUpgradeProperty', payForUpgradePropertyAndEndTurn);
+gameRouter.post('/player/:playerIndex/payRent', payRentAndEndTurn);
 gameRouter.post('/player/:playerIndex/endTurn', endTurn);
 gameRouter.get('/map', getCurrentMap);
 

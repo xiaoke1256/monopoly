@@ -61,12 +61,33 @@
             <div></div>
         </template>
     </Modal> 
+    <Modal
+        v-model="showPayRentModal"
+        :closable="false"
+        :mask-closable="false"
+        width="520">
+        <template #header>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#f8fafc;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <img :src="playerImage" style="width:100%;height:100%;display:block;object-fit:cover;"/>
+                </div>
+                <span style="font-size:20px;font-weight:600;color:#ed4014;">支付租金</span>
+            </div>
+        </template>
+        <div style="padding:4px 0;">
+            <PayRent :cell="currentCell" :owner="rentOwner" :rentAmount="rentAmount" @confirm="payRent" />
+        </div>
+        <template #footer>
+            <div></div>
+        </template>
+    </Modal> 
 </template>
 <script>
 import axios from 'axios';
 import Dice from './Dice.vue';
 import Map from './Map.vue';
 import BuyProperty from './BuyProperty.vue';
+import PayRent from './PayRent.vue';
 import { Modal, Button } from 'view-ui-plus';
 
 export default {
@@ -76,6 +97,7 @@ export default {
     Modal,
     Map,
     BuyProperty,
+    PayRent,
     Button
   },
   props: {
@@ -85,8 +107,10 @@ export default {
       showDiceModal:false,
       showBuyPropertyModal:false,
       showUpgradePropertyModal:false,
-      showPayModal:false,
+      showPayRentModal:false,
       currentCell:{},
+      rentOwner:{},
+      rentAmount:0,
       currentPlayerIndex: 0,
       loading: false,
       error: null
@@ -146,6 +170,12 @@ export default {
             this.currentCell = response.data.cell;
             this.showUpgradePropertyModal = true;
 
+        }else if('payRent'===action){
+            console.log('玩家需要支付租金');
+            this.currentCell = response.data.cell;
+            this.rentOwner = response.data.owner;
+            this.rentAmount = response.data.rentAmount;
+            this.showPayRentModal = true;
         }else if('nothing'===action){
             console.log('玩家无需操作，直接结束回合');
             this.endTurn();
@@ -202,6 +232,27 @@ export default {
             console.error('升级地产失败:', error);
         });
     },
+    payRent(){
+        console.log('玩家确认支付租金');
+        axios.post(`/api/game/player/${this.currentPlayerIndex}/payRent`, {
+            cellId: this.currentCell.id
+        }).then(response => {
+            console.log('支付租金成功:', response.data);
+            this.$Modal.success({
+                title: '支付成功',
+                content: `您已成功支付租金 ${this.rentAmount} 文！`,
+                onOk: () => {
+                    this.$refs.map.fetchMapData();
+                    this.currentPlayerIndex = response.data.currentPlayerIndex;
+                    this.showPayRentModal = false;
+                    this.showDiceModal = true;
+                }
+            });
+
+        }).catch(error => {
+            console.error('支付租金失败:', error);
+        });
+    },
     endTurn(){
         axios.post(`/api/game/player/${this.currentPlayerIndex}/endTurn`)
         .then(response => {
@@ -211,6 +262,7 @@ export default {
             this.$refs.map.currentPlayerIndex = this.currentPlayerIndex;
             this.showBuyPropertyModal = false;
             this.showUpgradePropertyModal = false;
+            this.showPayRentModal = false;
             this.showDiceModal = true; // 显示掷骰子弹窗，开始下一回合
         })
         .catch(error => {

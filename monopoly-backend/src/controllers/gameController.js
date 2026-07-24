@@ -96,10 +96,11 @@ const onArrived = async (req, res) => {
             console.log(`Player at index ${currentPlayerIndex} arrived at an unowned property.`);
             return res.json({ action: 'buyProperty', cell });
         }else if(cell.type === 'property' && cell.owner !== null && String(cell.owner) !== String(currentPlayer.id)){
-            //支付租金
+            const owner = game.players.find(p => String(p.id) === String(cell.owner));
+            const rentAmount = cell.rent * (cell.level + 1);
             console.log('cell.owner:',cell.owner,' currentPlayer._id:',currentPlayer._id,' currentPlayer.id:',currentPlayer.id);
             console.log(`Player at index ${currentPlayerIndex} arrived at a property owned by another player.`);
-            return res.json({ action: 'payRent', cell });
+            return res.json({ action: 'payRent', cell, owner, rentAmount });
         }else if(cell.type === 'property' && String(cell.owner) === String(currentPlayer.id)){
             //询问是否需要升级地产
             console.log(`Player at index ${currentPlayerIndex} arrived at their own property.`);
@@ -185,6 +186,30 @@ const payForUpgradePropertyAndEndTurn = async (req, res) => {
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
 }
 
+const payRentAndEndTurn = async (req, res) => {
+    const game = await queryCurrentGame(); 
+    const currentPlayerIndex = game.currentPlayerIndex ;
+    console.log(`Player at index ${currentPlayerIndex} paying rent`);  
+    const currentPlayer = game.players[currentPlayerIndex];
+    const cell = game.cells[currentPlayer.position];
+    
+    const owner = game.players.find(p => String(p.id) === String(cell.owner));
+    if (!owner) {
+        console.log(`Owner not found for property at position ${currentPlayer.position}`);
+        return res.status(400).json({ message: 'Owner not found.' });
+    }
+    
+    const rentAmount = cell.rent * (cell.level + 1);
+    
+    currentPlayer.money -= rentAmount;
+    owner.money += rentAmount;
+
+    game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    game.playerStatus = 'before-dice';
+    await game.save();
+    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
+}
+
 const getPlayerStatus = async (req, res) => {
     const game = await queryCurrentGame();
     const currentPlayerIndex = game.currentPlayerIndex ;
@@ -202,5 +227,6 @@ export {
     endTurn,
     payForPropertyAndEndTurn,
     payForUpgradePropertyAndEndTurn,
+    payRentAndEndTurn,
     getCurrentMap
 };
