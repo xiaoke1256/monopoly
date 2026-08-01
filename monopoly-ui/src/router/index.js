@@ -11,6 +11,11 @@ const routes = [
     name: "Main",
     component: () => import("../views/game/Main.vue"),
   },
+  {
+    path: "/cashBox",
+    name: "CashBox",
+    component: () => import("../views/game/CashBox.vue"),
+  }
 ];
 
 const router = createRouter({
