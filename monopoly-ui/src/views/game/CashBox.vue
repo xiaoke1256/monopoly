@@ -2,19 +2,19 @@
     <div class="cash-box-container">
         <div id="otherBox" class="cash-box" >
             <img v-for="i in other.cash20-other.selected.cash20" @click="selectOtherBox(20,i,other.cash20-other.selected.cash20)" :key="i" src="@/assets/cash/cash-20.svg" :style="otherCashPosition(20, i)" />
-            <img class="selected 20" v-for="i in other.selected.cash20" @click="unSelectOtherBox(20,i,other.selected.cash20)" :key="i" src="@/assets/cash/cash-20.svg" :style="otherCashPosition(20, (i+other.cash20-other.selected.cash20),true)" />
+            <img class="selected" data-denomination="20" v-for="i in other.selected.cash20" @click="unSelectOtherBox(20,i,other.selected.cash20)" :key="i" src="@/assets/cash/cash-20.svg" :style="otherCashPosition(20, (i+other.cash20-other.selected.cash20),true)" />
 
             <img v-for="i in other.cash100-other.selected.cash100" @click="selectOtherBox(100,i,other.cash100-other.selected.cash100)" :key="i" src="@/assets/cash/cash-100.svg" :style="otherCashPosition(100, i)" />
-            <img class="selected" v-for="i in other.selected.cash100" @click="unSelectOtherBox(100,i,other.selected.cash100)" :key="i" src="@/assets/cash/cash-100.svg" :style="otherCashPosition(100, (i+other.cash100-other.selected.cash100),true)" />
+            <img class="selected" data-denomination="100" v-for="i in other.selected.cash100" @click="unSelectOtherBox(100,i,other.selected.cash100)" :key="i" src="@/assets/cash/cash-100.svg" :style="otherCashPosition(100, (i+other.cash100-other.selected.cash100),true)" />
 
             <img v-for="i in other.cash200-other.selected.cash200" @click="selectOtherBox(200,i,other.cash200-other.selected.cash200)" :key="i" src="@/assets/cash/cash-200.svg" :style="otherCashPosition(200, i)" />
-            <img class="selected" v-for="i in other.selected.cash200" @click="unSelectOtherBox(200,i,other.selected.cash200)" :key="i" src="@/assets/cash/cash-200.svg" :style="otherCashPosition(200, (i+other.cash200-other.selected.cash200),true)" />
+            <img class="selected" data-denomination="200" v-for="i in other.selected.cash200" @click="unSelectOtherBox(200,i,other.selected.cash200)" :key="i" src="@/assets/cash/cash-200.svg" :style="otherCashPosition(200, (i+other.cash200-other.selected.cash200),true)" />
 
             <img v-for="i in other.cash500-other.selected.cash500" @click="selectOtherBox(500,i,other.cash500-other.selected.cash500)" :key="i" src="@/assets/cash/cash-500.svg" :style="otherCashPosition(500, i)" />
-            <img class="selected" v-for="i in other.selected.cash500" @click="unSelectOtherBox(500,i,other.selected.cash500)" :key="i" src="@/assets/cash/cash-500.svg" :style="otherCashPosition(500, (i+other.cash500-other.selected.cash500),true)" />
+            <img class="selected" data-denomination="500" v-for="i in other.selected.cash500" @click="unSelectOtherBox(500,i,other.selected.cash500)" :key="i" src="@/assets/cash/cash-500.svg" :style="otherCashPosition(500, (i+other.cash500-other.selected.cash500),true)" />
 
             <img v-for="i in other.cash1000-other.selected.cash1000" @click="selectOtherBox(1000,i,other.cash1000-other.selected.cash1000)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, i)" />
-            <img class="selected" v-for="i in other.selected.cash1000" @click="unSelectOtherBox(1000,i,other.selected.cash1000)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, (i+other.cash1000-other.selected.cash1000),true)" />
+            <img class="selected" data-denomination="1000" v-for="i in other.selected.cash1000" @click="unSelectOtherBox(1000,i,other.selected.cash1000)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, (i+other.cash1000-other.selected.cash1000),true)" />
         </div>
         <div id="yourBox" class="cash-box" >
             <img v-for="i in you.cash20-you.selected.cash20" @click="selectYourBox(20,i,you.cash20-you.selected.cash20)" :key="i" src="@/assets/cash/cash-20.svg" :style="cashPosition(20, i)" />
@@ -221,49 +221,54 @@ export default {
             this.selectOtherBox(denomination,currentIndex,maxIndex,true);
         },
         exchange(){
-            if(this.other.selected.cash20>0){
-                const cashes = document.getElementById('otherBox').getElementsByClassName('selected 20');
-                if(cashes && cashes.length>0){
-                    console.log("cashes:",cashes)
-                    var cashesArray = Array.from(cashes);
-                    const cash = cashesArray.pop();
+            const cashes = document.getElementById('otherBox').getElementsByClassName('selected');
+            if(cashes && cashes.length>0){
+                const  hasNext = cashes.length>1;
+                console.log("cashes:",cashes)
+                var cashesArray = Array.from(cashes);
+                const cash = cashesArray.pop();
+                const denomination = parseInt(cash.dataset.denomination);
+                console.log("denomination:",denomination);
 
-                    const pos = getRelativePosition(cash,document.getElementById('yourBox'))
-                    console.log("pos:",pos);
-                    //把cash 从otherBox中摘除，移到yourBox中去
-                    cash.style.top=pos.top;
-                    cash.style.left=pos.left;
-                    cash.parentNode.removeChild(cash);
-                    document.getElementById('yourBox').appendChild(cash);
-                    this.$nextTick(()=>{
-                        //算出新的位置
-                        const newPos = this.cashPosition(20,this.you.cash20+1)
-                        console.log("newPos:",newPos);
-
-                        animate(cash,{
-                            top: newPos.xTop,
-                            left: newPos.left,
-                            duration: 500,
-                            easing: 'easeInOutQuad',
-                            onBegin: (/*animation*/) => {
-                                console.log('动画开始');
-                            },
-                            onUpdate: (/*animation*/) => {
-                                // 动画每一帧执行
-                            },
-                            onComplete: (/*animation*/) => {
-                                console.log('动画结束');
-                                //cash.classList.remove("selected");
-                                this.other.selected.cash20 --;
-                                this.other.cash20 --;
-                                this.you.cash20 ++;
-                                //移动下一枚钱币
-
+                const pos = getRelativePosition(cash,document.getElementById('yourBox'))
+                console.log("pos:",pos);
+                //把cash 从otherBox中摘除，移到yourBox中去
+                cash.style.top=pos.top;
+                cash.style.left=pos.left;
+                cash.parentNode.removeChild(cash);
+                document.getElementById('yourBox').appendChild(cash);
+                this.$nextTick(()=>{
+                    //算出新的位置
+                    const newPos = this.cashPosition(denomination,this.you[`cash${denomination}`]+1)
+                    console.log("newPos:",newPos);
+                    animate(cash,{
+                        top: newPos.xTop,
+                        left: newPos.left,
+                        duration: 500,
+                        easing: 'easeInOutQuad',
+                        onBegin: (/*animation*/) => {
+                            console.log('动画开始');
+                        },
+                        onUpdate: (/*animation*/) => {
+                            // 动画每一帧执行
+                        },
+                        onComplete: (/*animation*/) => {
+                            console.log('动画结束');
+                            //cash.classList.remove("selected");
+                            this.other.selected[`cash${denomination}`] --;
+                            this.other[`cash${denomination}`] --;
+                            this.you[`cash${denomination}`] ++;
+                            //移动下一枚钱币
+                            if(hasNext){
+                                this.$nextTick(()=>{
+                                    this.exchange();
+                                });
                             }
-                        })
-                    });
+                        }
+                    })
+                });
                     
-                }
+                
             }
         },
     }
