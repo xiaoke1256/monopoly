@@ -18,19 +18,19 @@
         </div>
         <div id="yourBox" class="cash-box" >
             <img v-for="i in you.cash20-you.selected.cash20" @click="selectYourBox(20,i,you.cash20-you.selected.cash20)" :key="i" src="@/assets/cash/cash-20.svg" :style="cashPosition(20, i)" />
-            <img v-for="i in you.selected.cash20" @click="unSelectYourBox(20,i,you.selected.cash20)" :key="i" src="@/assets/cash/cash-20.svg" :style="cashPosition(20, (i+you.cash20-you.selected.cash20),true)" />
+            <img class="selected" data-denomination="20" v-for="i in you.selected.cash20" @click="unSelectYourBox(20,i,you.selected.cash20)" :key="i" src="@/assets/cash/cash-20.svg" :style="cashPosition(20, (i+you.cash20-you.selected.cash20),true)" />
             
             <img v-for="i in you.cash100-you.selected.cash100" @click="selectYourBox(100,i,you.cash100-you.selected.cash100)" :key="i" src="@/assets/cash/cash-100.svg" :style="cashPosition(100, i)" />
-            <img v-for="i in you.selected.cash100" @click="unSelectYourBox(100,i,you.selected.cash100)" :key="i" src="@/assets/cash/cash-100.svg" :style="cashPosition(100, (i+you.cash100-you.selected.cash100),true)" />
+            <img class="selected" data-denomination="100" v-for="i in you.selected.cash100" @click="unSelectYourBox(100,i,you.selected.cash100)" :key="i" src="@/assets/cash/cash-100.svg" :style="cashPosition(100, (i+you.cash100-you.selected.cash100),true)" />
             
             <img v-for="i in you.cash200-you.selected.cash200" @click="selectYourBox(200,i,you.cash200-you.selected.cash200)" :key="i" src="@/assets/cash/cash-200.svg" :style="cashPosition(200, i)" />
-            <img v-for="i in you.selected.cash200" @click="unSelectYourBox(200,i,you.selected.cash200)" :key="i" src="@/assets/cash/cash-200.svg" :style="cashPosition(200, (i+you.cash200-you.selected.cash200),true)" />
+            <img class="selected" data-denomination="200" v-for="i in you.selected.cash200" @click="unSelectYourBox(200,i,you.selected.cash200)" :key="i" src="@/assets/cash/cash-200.svg" :style="cashPosition(200, (i+you.cash200-you.selected.cash200),true)" />
 
             <img v-for="i in you.cash500-you.selected.cash500" @click="selectYourBox(500,i,you.cash500-you.selected.cash500)" :key="i" src="@/assets/cash/cash-500.svg" :style="cashPosition(500, i)" />
-            <img v-for="i in you.selected.cash500" @click="unSelectYourBox(500,i,you.selected.cash500)" :key="i" src="@/assets/cash/cash-500.svg" :style="cashPosition(500, (i+you.cash500-you.selected.cash500),true)" />
+            <img class="selected" data-denomination="500" v-for="i in you.selected.cash500" @click="unSelectYourBox(500,i,you.selected.cash500)" :key="i" src="@/assets/cash/cash-500.svg" :style="cashPosition(500, (i+you.cash500-you.selected.cash500),true)" />
             
             <img v-for="i in you.cash1000-you.selected.cash1000" @click="selectYourBox(1000,i,you.cash1000-you.selected.cash1000)"  :key="i" src="@/assets/cash/cash-1000.svg" :style="cashPosition(1000, i)" />
-            <img v-for="i in you.selected.cash1000" @click="unSelectYourBox(1000,i,you.selected.cash1000)" :key="i" src="@/assets/cash/cash-1000.svg" :style="cashPosition(1000, (i+you.cash1000-you.selected.cash1000),true)" />
+            <img class="selected" data-denomination="1000" v-for="i in you.selected.cash1000" @click="unSelectYourBox(1000,i,you.selected.cash1000)" :key="i" src="@/assets/cash/cash-1000.svg" :style="cashPosition(1000, (i+you.cash1000-you.selected.cash1000),true)" />
         </div>
         <div>
             <Button type="primary" @click="exchange" >交换</Button>
@@ -123,7 +123,8 @@ export default {
             }
             return {
                 left: (2+pos*(10+2.25))+'%',
-                top: (7+index*0.5+(isSelected?15:0))+'%'
+                top: (7+index*0.5+(isSelected?15:0))+'%',
+                xTop: (7+index*0.5+(isSelected?15:0))+'%'
             }
         },
         selectYourBox(denomination,currentIndex,maxIndex,isUnSelect=false){
@@ -221,30 +222,54 @@ export default {
             this.selectOtherBox(denomination,currentIndex,maxIndex,true);
         },
         exchange(){
-            const cashes = document.getElementById('otherBox').getElementsByClassName('selected');
+            this.exchangeFrom();
+        },
+        exchangeFrom(from){
+            if(!from){
+                from = "other"
+            }
+            console.log("from:",from)
+            if(!["other","you"].includes(from)){
+                throw new Error("from 的取值范围只能是：'other','you'");
+            }
+            let fromBox = '';
+            let toBox = '';
+            if("other"===from){
+                fromBox = 'otherBox';
+                toBox = 'yourBox';
+            }else if("you"===from){
+                fromBox = 'yourBox';
+                toBox = 'otherBox';
+            }
+            const cashes = document.getElementById(fromBox).getElementsByClassName('selected');
+            console.log("cashes:",cashes)
             if(cashes && cashes.length>0){
                 const  hasNext = cashes.length>1;
-                console.log("cashes:",cashes)
                 var cashesArray = Array.from(cashes);
                 const cash = cashesArray.pop();
                 const denomination = parseInt(cash.dataset.denomination);
                 console.log("denomination:",denomination);
 
-                const pos = getRelativePosition(cash,document.getElementById('yourBox'))
+                const pos = getRelativePosition(cash,document.getElementById(toBox))
                 console.log("pos:",pos);
-                //把cash 从otherBox中摘除，移到yourBox中去
+                //把cash 从fromBox中摘除，移到toBox中去
                 cash.style.top=pos.top;
                 cash.style.left=pos.left;
                 cash.parentNode.removeChild(cash);
-                document.getElementById('yourBox').appendChild(cash);
+                document.getElementById(toBox).appendChild(cash);
                 this.$nextTick(()=>{
                     //算出新的位置
-                    const newPos = this.cashPosition(denomination,this.you[`cash${denomination}`]+1)
+                    let newPos = {};
+                    if("other"===from){
+                        newPos = this.cashPosition(denomination,this.you[`cash${denomination}`]+1)
+                    }else if('you'===from){
+                        newPos = this.otherCashPosition(denomination,this.other[`cash${denomination}`]+1)
+                    } 
                     console.log("newPos:",newPos);
                     animate(cash,{
                         top: newPos.xTop,
                         left: newPos.left,
-                        duration: 500,
+                        duration: 200,
                         easing: 'easeInOutQuad',
                         onBegin: (/*animation*/) => {
                             console.log('动画开始');
@@ -255,13 +280,23 @@ export default {
                         onComplete: (/*animation*/) => {
                             console.log('动画结束');
                             //cash.classList.remove("selected");
-                            this.other.selected[`cash${denomination}`] --;
-                            this.other[`cash${denomination}`] --;
-                            this.you[`cash${denomination}`] ++;
+                            if("other"===from){
+                                this.other.selected[`cash${denomination}`] --;
+                                this.other[`cash${denomination}`] --;
+                                this.you[`cash${denomination}`] ++;
+                            }else if('you'===from){
+                                this.you.selected[`cash${denomination}`] --;
+                                this.you[`cash${denomination}`] --;
+                                this.other[`cash${denomination}`] ++;
+                            }
                             //移动下一枚钱币
                             if(hasNext){
                                 this.$nextTick(()=>{
-                                    this.exchange();
+                                    this.exchangeFrom(from);
+                                });
+                            }else if("other"===from){
+                                this.$nextTick(()=>{
+                                    this.exchangeFrom('you');
                                 });
                             }
                         }
