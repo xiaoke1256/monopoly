@@ -223,80 +223,49 @@ export default {
         exchange(){
             if(this.other.selected.cash20>0){
                 const cashes = document.getElementById('otherBox').getElementsByClassName('selected 20');
-                if(cashes && cashes.length){
+                if(cashes && cashes.length>0){
                     console.log("cashes:",cashes)
-                    let index = 0;
-                    for(const cash of cashes){
-                        index ++;
-                        const pos = getRelativePosition(cash,document.getElementById('yourBox'))
-                        console.log("pos:",pos);
-                        //把cash 从otherBox中摘除，移到yourBox中去
-                        cash.style.top=pos.top+'px';
-                        cash.style.left=pos.left+'px';
-                        cash.parentNode.removeChild(cash);
-                        document.getElementById('yourBox').appendChild(cash);
-                        this.$nextTick(()=>{
-                            //算出新的位置
-                            const newPos = this.cashPosition(20,this.you.cash20+index)
-                            console.log("newPos:",newPos);
+                    var cashesArray = Array.from(cashes);
+                    const cash = cashesArray.pop();
 
-                            animate(cash,{
-                                top: newPos.xTop,
-                                left: newPos.left,
-                                duration: 500,
-                                easing: 'easeInOutQuad',
-                                onBegin: (/*animation*/) => {
-                                    console.log('动画开始');
-                                },
-                                onUpdate: (/*animation*/) => {
-                                    // 动画每一帧执行
-                                },
-                                onComplete: (/*animation*/) => {
-                                    console.log('动画结束');
-                                    cash.classList.remove("selected");
-                                    //移动下一枚钱币
+                    const pos = getRelativePosition(cash,document.getElementById('yourBox'))
+                    console.log("pos:",pos);
+                    //把cash 从otherBox中摘除，移到yourBox中去
+                    cash.style.top=pos.top;
+                    cash.style.left=pos.left;
+                    cash.parentNode.removeChild(cash);
+                    document.getElementById('yourBox').appendChild(cash);
+                    this.$nextTick(()=>{
+                        //算出新的位置
+                        const newPos = this.cashPosition(20,this.you.cash20+1)
+                        console.log("newPos:",newPos);
 
-                                }
-                            })
-                        });
-                        
-                        
-                    }
+                        animate(cash,{
+                            top: newPos.xTop,
+                            left: newPos.left,
+                            duration: 500,
+                            easing: 'easeInOutQuad',
+                            onBegin: (/*animation*/) => {
+                                console.log('动画开始');
+                            },
+                            onUpdate: (/*animation*/) => {
+                                // 动画每一帧执行
+                            },
+                            onComplete: (/*animation*/) => {
+                                console.log('动画结束');
+                                //cash.classList.remove("selected");
+                                this.other.selected.cash20 --;
+                                this.other.cash20 --;
+                                this.you.cash20 ++;
+                                //移动下一枚钱币
+
+                            }
+                        })
+                    });
+                    
                 }
-                // const playerDiv = document.getElementById(`player${this.currentPlayerIndex}`);
-                // if (!playerDiv) {
-                //     console.error(`未找到玩家${this.currentPlayerIndex}的DOM元素`);
-                //     return;
-                // }
-                // this.moving(playerDiv, currentPlayer.position, targetPosition,callback);
             }
         },
-        // async moving(playerDiv,curPosition,targetPosition,callback) {
-        //     if(curPosition==targetPosition) {
-        //         this.players[this.currentPlayerIndex].position = targetPosition;
-        //         if (callback) callback(targetPosition);
-        //         return;
-        //     }
-        //     const newPosition = (curPosition + 1)%this.cells.length;
-        //     const location = this.getLocationOfPlayer(this.currentPlayerIndex, newPosition);
-        //     playerDiv.style.position = 'absolute';
-        //     animate(`#player${this.currentPlayerIndex}`, {
-        //         top: location.top + 'px',
-        //         left: location.left + 'px',
-        //         duration: 500,
-        //         easing: 'easeInOutQuad',
-        //         onBegin: (/*animation*/) => {
-        //             console.log('动画开始');
-        //         },
-        //         onUpdate: (/*animation*/) => {
-        //             // 动画每一帧执行
-        //         },
-        //         onComplete: (/*animation*/) => {
-        //             this.moving(playerDiv,newPosition,targetPosition,callback);
-        //         }
-        //     });
-
-        // }
     }
 }
 
@@ -305,11 +274,13 @@ function getRelativePosition(element, relativeToElement) {
     const top = rect.top + window.scrollY; 
     const left = rect.left + window.scrollX;
 
-    var toRect = relativeToElement.getBoundingClientRect();
+    const toRect = relativeToElement.getBoundingClientRect();
+    const width = toRect.width;
+    const height = toRect.height;
     const toTop = toRect.top + window.scrollY;
     const toLeft = toRect.left + window.scrollX;
 
-    return { left:left-toLeft, top:top-toTop };
+    return { left:((left-toLeft)/width*100)+'%', top:((top-toTop)/height*100)+'%' };
 }
 </script>
 <style lang="scss" scoped>
