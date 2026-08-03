@@ -78,8 +78,9 @@ export default {
     },
     methods:{
         cashPosition(denomination,index,isSelected=false ){
+            let baseOffset = 0;
             if(isSelected){
-                index += this.you[`cash${denomination}`]-this.you.selected[`cash${denomination}`]
+                baseOffset = this.you[`cash${denomination}`]-this.you.selected[`cash${denomination}`]
             }
             let pos = 0;
             switch(denomination){
@@ -100,14 +101,15 @@ export default {
                     break;
             }
             return {
-                left: (2+pos*(10+2.25))+'%',
-                bottom: (7+index*0.5+(isSelected?15:0))+'%',
-                xTop: (7-5+index*0.5+(isSelected?15:0))+'%'
+                left: (2+pos*(10+2.30))+'%',
+                bottom: (7+baseOffset*0.5+index*(isSelected?1.5:0.5)+(isSelected?15:0))+'%',
+                xTop: (7-5+baseOffset*0.5+index*(isSelected?1.5:0.5)+(isSelected?15:0))+'%'
             }
         },
         otherCashPosition(denomination,index,isSelected=false ){
+            let baseOffset = 0;
             if(isSelected){
-                index += this.other[`cash${denomination}`]-this.other.selected[`cash${denomination}`]
+                baseOffset = this.other[`cash${denomination}`]-this.other.selected[`cash${denomination}`]
             }
             let pos = 0;
             switch(denomination){
@@ -128,9 +130,9 @@ export default {
                     break;
             }
             return {
-                left: (2+pos*(10+2.25))+'%',
-                top: (7+index*0.5+(isSelected?15:0))+'%',
-                xTop: (7+index*0.5+(isSelected?15:0))+'%'
+                left: (2+pos*(10+2.30))+'%',
+                top: (7+baseOffset*0.5+index*(isSelected?1.5:0.5)+(isSelected?15:0))+'%',
+                xTop: (7+baseOffset*0.5+index*(isSelected?1.5:0.5)+(isSelected?15:0))+'%'
             }
         },
         selectYourBox(denomination,currentIndex,maxIndex,isUnSelect=false){
