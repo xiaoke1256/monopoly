@@ -1,20 +1,20 @@
 <template>
     <div class="cash-box-container">
         <div id="otherBox" class="cash-box" >
-            <img v-for="i in other.cash20-other.selected.cash20" @click="selectOtherBox(20,i,other.cash20-other.selected.cash20)" :key="i" src="@/assets/cash/cash-20.svg" :style="otherCashPosition(20, i)" />
-            <img class="selected" data-denomination="20" v-for="i in other.selected.cash20" @click="unSelectOtherBox(20,i,other.selected.cash20)" :key="i" src="@/assets/cash/cash-20.svg" :style="otherCashPosition(20, (i+other.cash20-other.selected.cash20),true)" />
+            <img v-for="i in other.cash20-other.selected.cash20" @click="selectOtherBox(20,i)" :key="i" src="@/assets/cash/cash-20.svg" :style="otherCashPosition(20, i)" />
+            <img class="selected" data-denomination="20" v-for="i in other.selected.cash20" @click="unSelectOtherBox(20,i)" :key="i" src="@/assets/cash/cash-20.svg" :style="otherCashPosition(20, (i+other.cash20-other.selected.cash20),true)" />
 
-            <img v-for="i in other.cash100-other.selected.cash100" @click="selectOtherBox(100,i,other.cash100-other.selected.cash100)" :key="i" src="@/assets/cash/cash-100.svg" :style="otherCashPosition(100, i)" />
-            <img class="selected" data-denomination="100" v-for="i in other.selected.cash100" @click="unSelectOtherBox(100,i,other.selected.cash100)" :key="i" src="@/assets/cash/cash-100.svg" :style="otherCashPosition(100, (i+other.cash100-other.selected.cash100),true)" />
+            <img v-for="i in other.cash100-other.selected.cash100" @click="selectOtherBox(100,i)" :key="i" src="@/assets/cash/cash-100.svg" :style="otherCashPosition(100, i)" />
+            <img class="selected" data-denomination="100" v-for="i in other.selected.cash100" @click="unSelectOtherBox(100,i)" :key="i" src="@/assets/cash/cash-100.svg" :style="otherCashPosition(100, (i+other.cash100-other.selected.cash100),true)" />
 
-            <img v-for="i in other.cash200-other.selected.cash200" @click="selectOtherBox(200,i,other.cash200-other.selected.cash200)" :key="i" src="@/assets/cash/cash-200.svg" :style="otherCashPosition(200, i)" />
-            <img class="selected" data-denomination="200" v-for="i in other.selected.cash200" @click="unSelectOtherBox(200,i,other.selected.cash200)" :key="i" src="@/assets/cash/cash-200.svg" :style="otherCashPosition(200, (i+other.cash200-other.selected.cash200),true)" />
+            <img v-for="i in other.cash200-other.selected.cash200" @click="selectOtherBox(200,i)" :key="i" src="@/assets/cash/cash-200.svg" :style="otherCashPosition(200, i)" />
+            <img class="selected" data-denomination="200" v-for="i in other.selected.cash200" @click="unSelectOtherBox(200,i)" :key="i" src="@/assets/cash/cash-200.svg" :style="otherCashPosition(200, (i+other.cash200-other.selected.cash200),true)" />
 
-            <img v-for="i in other.cash500-other.selected.cash500" @click="selectOtherBox(500,i,other.cash500-other.selected.cash500)" :key="i" src="@/assets/cash/cash-500.svg" :style="otherCashPosition(500, i)" />
-            <img class="selected" data-denomination="500" v-for="i in other.selected.cash500" @click="unSelectOtherBox(500,i,other.selected.cash500)" :key="i" src="@/assets/cash/cash-500.svg" :style="otherCashPosition(500, (i+other.cash500-other.selected.cash500),true)" />
+            <img v-for="i in other.cash500-other.selected.cash500" @click="selectOtherBox(500,i)" :key="i" src="@/assets/cash/cash-500.svg" :style="otherCashPosition(500, i)" />
+            <img class="selected" data-denomination="500" v-for="i in other.selected.cash500" @click="unSelectOtherBox(500,i)" :key="i" src="@/assets/cash/cash-500.svg" :style="otherCashPosition(500, (i+other.cash500-other.selected.cash500),true)" />
 
-            <img v-for="i in other.cash1000-other.selected.cash1000" @click="selectOtherBox(1000,i,other.cash1000-other.selected.cash1000)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, i)" />
-            <img class="selected" data-denomination="1000" v-for="i in other.selected.cash1000" @click="unSelectOtherBox(1000,i,other.selected.cash1000)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, (i+other.cash1000-other.selected.cash1000),true)" />
+            <img v-for="i in other.cash1000-other.selected.cash1000" @click="selectOtherBox(1000,i)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, i)" />
+            <img class="selected" data-denomination="1000" v-for="i in other.selected.cash1000" @click="unSelectOtherBox(1000,i)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, (i+other.cash1000-other.selected.cash1000),true)" />
         </div>
         <div id="yourBox" class="cash-box" >
             <img v-for="i in you.cash20-you.selected.cash20" @click="selectYourBox(20,i,you.cash20-you.selected.cash20)" :key="i" src="@/assets/cash/cash-20.svg" :style="cashPosition(20, i)" />
@@ -174,7 +174,10 @@ export default {
         unSelectYourBox(denomination,currentIndex,maxIndex){
             this.selectYourBox(denomination,currentIndex,maxIndex,true);
         },
-        selectOtherBox(denomination,currentIndex,maxIndex,isUnSelect=false){
+        selectOtherBox(denomination,currentIndex,isUnSelect=false,maxIndex){
+            if(!maxIndex){
+                maxIndex = this.other[`cash${denomination}`]-this.other.selected[`cash${denomination}`]
+            }
             if(currentIndex!=maxIndex){
                 return;
             }
@@ -219,7 +222,7 @@ export default {
 
         },
         unSelectOtherBox(denomination,currentIndex,maxIndex){
-            this.selectOtherBox(denomination,currentIndex,maxIndex,true);
+            this.selectOtherBox(denomination,currentIndex,true,maxIndex);
         },
         exchange(){
             this.exchangeFrom();
@@ -301,9 +304,9 @@ export default {
                             }
                         }
                     })
-                });
-                    
-                
+                });  
+            }else if("other"===from){
+                this.exchangeFrom('you');
             }
         },
     }
