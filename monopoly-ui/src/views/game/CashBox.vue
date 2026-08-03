@@ -17,20 +17,20 @@
             <img class="selected" data-denomination="1000" v-for="i in other.selected.cash1000" @click="unSelectOtherBox(1000,i)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, i,true)" />
         </div>
         <div id="yourBox" class="cash-box" >
-            <img v-for="i in you.cash20-you.selected.cash20" @click="selectYourBox(20,i,you.cash20-you.selected.cash20)" :key="i" src="@/assets/cash/cash-20.svg" :style="cashPosition(20, i)" />
-            <img class="selected" data-denomination="20" v-for="i in you.selected.cash20" @click="unSelectYourBox(20,i,you.selected.cash20)" :key="i" src="@/assets/cash/cash-20.svg" :style="cashPosition(20, (i+you.cash20-you.selected.cash20),true)" />
+            <img v-for="i in you.cash20-you.selected.cash20" @click="selectYourBox(20,i)" :key="i" src="@/assets/cash/cash-20.svg" :style="cashPosition(20, i)" />
+            <img class="selected" data-denomination="20" v-for="i in you.selected.cash20" @click="unSelectYourBox(20,i)" :key="i" src="@/assets/cash/cash-20.svg" :style="cashPosition(20, i,true)" />
             
-            <img v-for="i in you.cash100-you.selected.cash100" @click="selectYourBox(100,i,you.cash100-you.selected.cash100)" :key="i" src="@/assets/cash/cash-100.svg" :style="cashPosition(100, i)" />
-            <img class="selected" data-denomination="100" v-for="i in you.selected.cash100" @click="unSelectYourBox(100,i,you.selected.cash100)" :key="i" src="@/assets/cash/cash-100.svg" :style="cashPosition(100, (i+you.cash100-you.selected.cash100),true)" />
+            <img v-for="i in you.cash100-you.selected.cash100" @click="selectYourBox(100,i)" :key="i" src="@/assets/cash/cash-100.svg" :style="cashPosition(100, i)" />
+            <img class="selected" data-denomination="100" v-for="i in you.selected.cash100" @click="unSelectYourBox(100,i)" :key="i" src="@/assets/cash/cash-100.svg" :style="cashPosition(100, i,true)" />
             
-            <img v-for="i in you.cash200-you.selected.cash200" @click="selectYourBox(200,i,you.cash200-you.selected.cash200)" :key="i" src="@/assets/cash/cash-200.svg" :style="cashPosition(200, i)" />
-            <img class="selected" data-denomination="200" v-for="i in you.selected.cash200" @click="unSelectYourBox(200,i,you.selected.cash200)" :key="i" src="@/assets/cash/cash-200.svg" :style="cashPosition(200, (i+you.cash200-you.selected.cash200),true)" />
+            <img v-for="i in you.cash200-you.selected.cash200" @click="selectYourBox(200,i)" :key="i" src="@/assets/cash/cash-200.svg" :style="cashPosition(200, i)" />
+            <img class="selected" data-denomination="200" v-for="i in you.selected.cash200" @click="unSelectYourBox(200,i)" :key="i" src="@/assets/cash/cash-200.svg" :style="cashPosition(200, i,true)" />
 
-            <img v-for="i in you.cash500-you.selected.cash500" @click="selectYourBox(500,i,you.cash500-you.selected.cash500)" :key="i" src="@/assets/cash/cash-500.svg" :style="cashPosition(500, i)" />
-            <img class="selected" data-denomination="500" v-for="i in you.selected.cash500" @click="unSelectYourBox(500,i,you.selected.cash500)" :key="i" src="@/assets/cash/cash-500.svg" :style="cashPosition(500, (i+you.cash500-you.selected.cash500),true)" />
+            <img v-for="i in you.cash500-you.selected.cash500" @click="selectYourBox(500,i)" :key="i" src="@/assets/cash/cash-500.svg" :style="cashPosition(500, i)" />
+            <img class="selected" data-denomination="500" v-for="i in you.selected.cash500" @click="unSelectYourBox(500,i)" :key="i" src="@/assets/cash/cash-500.svg" :style="cashPosition(500, i,true)" />
             
-            <img v-for="i in you.cash1000-you.selected.cash1000" @click="selectYourBox(1000,i,you.cash1000-you.selected.cash1000)"  :key="i" src="@/assets/cash/cash-1000.svg" :style="cashPosition(1000, i)" />
-            <img class="selected" data-denomination="1000" v-for="i in you.selected.cash1000" @click="unSelectYourBox(1000,i,you.selected.cash1000)" :key="i" src="@/assets/cash/cash-1000.svg" :style="cashPosition(1000, (i+you.cash1000-you.selected.cash1000),true)" />
+            <img v-for="i in you.cash1000-you.selected.cash1000" @click="selectYourBox(1000,i)"  :key="i" src="@/assets/cash/cash-1000.svg" :style="cashPosition(1000, i)" />
+            <img class="selected" data-denomination="1000" v-for="i in you.selected.cash1000" @click="unSelectYourBox(1000,i)" :key="i" src="@/assets/cash/cash-1000.svg" :style="cashPosition(1000, i,true)" />
         </div>
         <div>
             <Button type="primary" @click="exchange" >交换</Button>
@@ -78,6 +78,9 @@ export default {
     },
     methods:{
         cashPosition(denomination,index,isSelected=false ){
+            if(isSelected){
+                index += this.you[`cash${denomination}`]-this.you.selected[`cash${denomination}`]
+            }
             let pos = 0;
             switch(denomination){
                 case 20:
