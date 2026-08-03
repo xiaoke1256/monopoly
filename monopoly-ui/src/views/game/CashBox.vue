@@ -131,72 +131,35 @@ export default {
             }
         },
         selectYourBox(denomination,currentIndex,maxIndex,isUnSelect=false){
-            if(currentIndex!=maxIndex){
-                return;
-            }
-            const boxSelect = this.you.selected;
-            switch(denomination){
-                case 20:
-                    if(!isUnSelect){
-                        boxSelect.cash20 ++;
-                    }else{
-                        boxSelect.cash20 --
-                    }
-                    break;
-                case 100:
-                    if(!isUnSelect){
-                        boxSelect.cash100 ++;
-                    }else{
-                        boxSelect.cash100 --
-                    }
-                    break;
-                case 200:
-                    if(!isUnSelect){
-                        boxSelect.cash200 ++;
-                    }else{
-                        boxSelect.cash200 --
-                    }
-                    break;
-                case 500:
-                    if(!isUnSelect){
-                        boxSelect.cash500 ++;
-                    }else{
-                        boxSelect.cash500 --
-                    }
-                    break;
-                case 1000:
-                    if(!isUnSelect){
-                        boxSelect.cash1000 ++;
-                    }else{
-                        boxSelect.cash1000 --
-                    }
-                    break;
-            }
-
+            this.selectBox(denomination,currentIndex,isUnSelect,maxIndex,'you')
         },
         unSelectYourBox(denomination,currentIndex,maxIndex){
             this.selectYourBox(denomination,currentIndex,maxIndex,true);
         },
-        selectOtherBox(denomination,currentIndex,isUnSelect=false,maxIndex){
+        selectBox(denomination,currentIndex,isUnSelect=false,maxIndex,boxName){
+            if(!["other","you"].includes(boxName)){
+                throw new Error("boxName 的取值范围只能是：'other','you'");
+            }
+            let box = this.other;
+            if(boxName==='you'){
+                box = this.you;
+            }
             if(!maxIndex){
                 if(!isUnSelect){
-                    maxIndex = this.other[`cash${denomination}`]-this.other.selected[`cash${denomination}`]
+                    maxIndex = box[`cash${denomination}`]-box.selected[`cash${denomination}`]
                 }else{
-                    maxIndex = this.other.selected[`cash${denomination}`]
+                    maxIndex = box.selected[`cash${denomination}`]
                 }
             }
             if(currentIndex!=maxIndex){
                 return;
             }
-            const boxSelect = this.other.selected;
+            const boxSelect = box.selected;
             switch(denomination){
                 case 20:
-                    console.log("20")
                     if(!isUnSelect){
-                        console.log("++");
                         boxSelect.cash20 ++;
                     }else{
-                        console.log("--");
                         boxSelect.cash20 --
                     }
                     break;
@@ -231,8 +194,10 @@ export default {
             }
 
         },
+        selectOtherBox(denomination,currentIndex,isUnSelect=false,maxIndex){
+            this.selectBox(denomination,currentIndex,isUnSelect,maxIndex,'other')
+        },
         unSelectOtherBox(denomination,currentIndex,maxIndex){
-            console.log("unSelectOtherBox");
             this.selectOtherBox(denomination,currentIndex,true,maxIndex);
         },
         exchange(){
