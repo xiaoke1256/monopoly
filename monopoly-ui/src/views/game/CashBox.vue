@@ -158,42 +158,10 @@ export default {
                 return;
             }
             const boxSelect = box.selected;
-            switch(denomination){
-                case 20:
-                    if(!isUnSelect){
-                        boxSelect.cash20 ++;
-                    }else{
-                        boxSelect.cash20 --
-                    }
-                    break;
-                case 100:
-                    if(!isUnSelect){
-                        boxSelect.cash100 ++;
-                    }else{
-                        boxSelect.cash100 --
-                    }
-                    break;
-                case 200:
-                    if(!isUnSelect){
-                        boxSelect.cash200 ++;
-                    }else{
-                        boxSelect.cash200 --
-                    }
-                    break;
-                case 500:
-                    if(!isUnSelect){
-                        boxSelect.cash500 ++;
-                    }else{
-                        boxSelect.cash500 --
-                    }
-                    break;
-                case 1000:
-                    if(!isUnSelect){
-                        boxSelect.cash1000 ++;
-                    }else{
-                        boxSelect.cash1000 --
-                    }
-                    break;
+            if(!isUnSelect){
+                boxSelect[`cash${denomination}`] ++;
+            }else{
+                boxSelect[`cash${denomination}`] --;
             }
 
         },
