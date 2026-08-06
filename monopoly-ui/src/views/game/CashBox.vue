@@ -1,36 +1,42 @@
 <template>
     <div class="cash-box-container">
         <div id="otherBox" class="cash-box" >
-            <img v-for="i in other.cash20-other.selected.cash20" @click="selectOtherBox(20,i)" :key="i" src="@/assets/cash/cash-20.svg" :style="otherCashPosition(20, i)" />
-            <img class="selected" data-denomination="20" v-for="i in other.selected.cash20" @click="unSelectOtherBox(20,i)" :key="i" src="@/assets/cash/cash-20.svg" :style="otherCashPosition(20, i,true)" />
+            <img class="coin" v-for="i in other.cash1-other.selected.cash1" @click="selectOtherBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="otherCashPosition(1, i)" />
+            <img class="selected coin" data-denomination="1" v-for="i in other.selected.cash1" @click="unSelectOtherBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="otherCashPosition(1, i,true)" />
+             
+            <img class="banknote‌" v-for="i in other.cash20-other.selected.cash20" @click="selectOtherBox(20,i)" :key="i" src="@/assets/cash/cash-20.svg" :style="otherCashPosition(20, i)" />
+            <img class="selected banknote‌" data-denomination="20" v-for="i in other.selected.cash20" @click="unSelectOtherBox(20,i)" :key="i" src="@/assets/cash/cash-20.svg" :style="otherCashPosition(20, i,true)" />
 
-            <img v-for="i in other.cash100-other.selected.cash100" @click="selectOtherBox(100,i)" :key="i" src="@/assets/cash/cash-100.svg" :style="otherCashPosition(100, i)" />
-            <img class="selected" data-denomination="100" v-for="i in other.selected.cash100" @click="unSelectOtherBox(100,i)" :key="i" src="@/assets/cash/cash-100.svg" :style="otherCashPosition(100, i,true)" />
+            <img class="banknote‌" v-for="i in other.cash100-other.selected.cash100" @click="selectOtherBox(100,i)" :key="i" src="@/assets/cash/cash-100.svg" :style="otherCashPosition(100, i)" />
+            <img class="selected banknote‌" data-denomination="100" v-for="i in other.selected.cash100" @click="unSelectOtherBox(100,i)" :key="i" src="@/assets/cash/cash-100.svg" :style="otherCashPosition(100, i,true)" />
 
-            <img v-for="i in other.cash200-other.selected.cash200" @click="selectOtherBox(200,i)" :key="i" src="@/assets/cash/cash-200.svg" :style="otherCashPosition(200, i)" />
-            <img class="selected" data-denomination="200" v-for="i in other.selected.cash200" @click="unSelectOtherBox(200,i)" :key="i" src="@/assets/cash/cash-200.svg" :style="otherCashPosition(200, i,true)" />
+            <img class="banknote‌" v-for="i in other.cash200-other.selected.cash200" @click="selectOtherBox(200,i)" :key="i" src="@/assets/cash/cash-200.svg" :style="otherCashPosition(200, i)" />
+            <img class="selected banknote‌" data-denomination="200" v-for="i in other.selected.cash200" @click="unSelectOtherBox(200,i)" :key="i" src="@/assets/cash/cash-200.svg" :style="otherCashPosition(200, i,true)" />
 
-            <img v-for="i in other.cash500-other.selected.cash500" @click="selectOtherBox(500,i)" :key="i" src="@/assets/cash/cash-500.svg" :style="otherCashPosition(500, i)" />
-            <img class="selected" data-denomination="500" v-for="i in other.selected.cash500" @click="unSelectOtherBox(500,i)" :key="i" src="@/assets/cash/cash-500.svg" :style="otherCashPosition(500, i,true)" />
+            <img class="banknote‌" v-for="i in other.cash500-other.selected.cash500" @click="selectOtherBox(500,i)" :key="i" src="@/assets/cash/cash-500.svg" :style="otherCashPosition(500, i)" />
+            <img class="selected banknote‌" data-denomination="500" v-for="i in other.selected.cash500" @click="unSelectOtherBox(500,i)" :key="i" src="@/assets/cash/cash-500.svg" :style="otherCashPosition(500, i,true)" />
 
-            <img v-for="i in other.cash1000-other.selected.cash1000" @click="selectOtherBox(1000,i)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, i)" />
-            <img class="selected" data-denomination="1000" v-for="i in other.selected.cash1000" @click="unSelectOtherBox(1000,i)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, i,true)" />
+            <img class="banknote‌" v-for="i in other.cash1000-other.selected.cash1000" @click="selectOtherBox(1000,i)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, i)" />
+            <img class="selected banknote‌" data-denomination="1000" v-for="i in other.selected.cash1000" @click="unSelectOtherBox(1000,i)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, i,true)" />
         </div>
         <div id="yourBox" class="cash-box" >
-            <img v-for="i in you.cash20-you.selected.cash20" @click="selectYourBox(20,i)" :key="i" src="@/assets/cash/cash-20.svg" :style="cashPosition(20, i)" />
-            <img class="selected" data-denomination="20" v-for="i in you.selected.cash20" @click="unSelectYourBox(20,i)" :key="i" src="@/assets/cash/cash-20.svg" :style="cashPosition(20, i,true)" />
-            
-            <img v-for="i in you.cash100-you.selected.cash100" @click="selectYourBox(100,i)" :key="i" src="@/assets/cash/cash-100.svg" :style="cashPosition(100, i)" />
-            <img class="selected" data-denomination="100" v-for="i in you.selected.cash100" @click="unSelectYourBox(100,i)" :key="i" src="@/assets/cash/cash-100.svg" :style="cashPosition(100, i,true)" />
-            
-            <img v-for="i in you.cash200-you.selected.cash200" @click="selectYourBox(200,i)" :key="i" src="@/assets/cash/cash-200.svg" :style="cashPosition(200, i)" />
-            <img class="selected" data-denomination="200" v-for="i in you.selected.cash200" @click="unSelectYourBox(200,i)" :key="i" src="@/assets/cash/cash-200.svg" :style="cashPosition(200, i,true)" />
+            <img class="coin" v-for="i in you.cash1-you.selected.cash1" @click="selectYourBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="cashPosition(1, i)" />
+            <img class="selected coin" data-denomination="1" v-for="i in you.selected.cash1" @click="unSelectYourBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="cashPosition(1, i,true)" />
 
-            <img v-for="i in you.cash500-you.selected.cash500" @click="selectYourBox(500,i)" :key="i" src="@/assets/cash/cash-500.svg" :style="cashPosition(500, i)" />
-            <img class="selected" data-denomination="500" v-for="i in you.selected.cash500" @click="unSelectYourBox(500,i)" :key="i" src="@/assets/cash/cash-500.svg" :style="cashPosition(500, i,true)" />
+            <img class="banknote‌" v-for="i in you.cash20-you.selected.cash20" @click="selectYourBox(20,i)" :key="i" src="@/assets/cash/cash-20.svg" :style="cashPosition(20, i)" />
+            <img class="selected banknote‌" data-denomination="20" v-for="i in you.selected.cash20" @click="unSelectYourBox(20,i)" :key="i" src="@/assets/cash/cash-20.svg" :style="cashPosition(20, i,true)" />
             
-            <img v-for="i in you.cash1000-you.selected.cash1000" @click="selectYourBox(1000,i)"  :key="i" src="@/assets/cash/cash-1000.svg" :style="cashPosition(1000, i)" />
-            <img class="selected" data-denomination="1000" v-for="i in you.selected.cash1000" @click="unSelectYourBox(1000,i)" :key="i" src="@/assets/cash/cash-1000.svg" :style="cashPosition(1000, i,true)" />
+            <img class="banknote‌" v-for="i in you.cash100-you.selected.cash100" @click="selectYourBox(100,i)" :key="i" src="@/assets/cash/cash-100.svg" :style="cashPosition(100, i)" />
+            <img class="selected banknote‌" data-denomination="100" v-for="i in you.selected.cash100" @click="unSelectYourBox(100,i)" :key="i" src="@/assets/cash/cash-100.svg" :style="cashPosition(100, i,true)" />
+            
+            <img class="banknote‌" v-for="i in you.cash200-you.selected.cash200" @click="selectYourBox(200,i)" :key="i" src="@/assets/cash/cash-200.svg" :style="cashPosition(200, i)" />
+            <img class="selected banknote‌" data-denomination="200" v-for="i in you.selected.cash200" @click="unSelectYourBox(200,i)" :key="i" src="@/assets/cash/cash-200.svg" :style="cashPosition(200, i,true)" />
+
+            <img class="banknote‌" v-for="i in you.cash500-you.selected.cash500" @click="selectYourBox(500,i)" :key="i" src="@/assets/cash/cash-500.svg" :style="cashPosition(500, i)" />
+            <img class="selected banknote‌" data-denomination="500" v-for="i in you.selected.cash500" @click="unSelectYourBox(500,i)" :key="i" src="@/assets/cash/cash-500.svg" :style="cashPosition(500, i,true)" />
+            
+            <img class="banknote‌" v-for="i in you.cash1000-you.selected.cash1000" @click="selectYourBox(1000,i)"  :key="i" src="@/assets/cash/cash-1000.svg" :style="cashPosition(1000, i)" />
+            <img class="selected banknote‌" data-denomination="1000" v-for="i in you.selected.cash1000" @click="unSelectYourBox(1000,i)" :key="i" src="@/assets/cash/cash-1000.svg" :style="cashPosition(1000, i,true)" />
         </div>
         <div>
             <Button type="primary" @click="exchange" >交换</Button>
@@ -47,12 +53,14 @@ export default {
     data(){
         return {
             other:{
+                cash1: 80,
                 cash20:20,
                 cash100:20,
                 cash200:20,
                 cash500:20,
                 cash1000:20,
                 selected:{
+                    cash1: 0,
                     cash20:0,
                     cash100:0,
                     cash200:0,
@@ -61,12 +69,14 @@ export default {
                 }
             },
             you:{
+                cash1: 64,
                 cash20:10,
                 cash100:20,
                 cash200:5,
                 cash500:0,
                 cash1000:2,
                 selected:{
+                    cash1: 0,
                     cash20:0,
                     cash100:0,
                     cash200:0,
@@ -84,6 +94,9 @@ export default {
             }
             let pos = 0;
             switch(denomination){
+                case 1:
+                    pos = 0;
+                    break;
                 case 20:
                     pos = 1;
                     break;
@@ -100,6 +113,22 @@ export default {
                     pos = 5;
                     break;
             }
+            if (denomination===1){
+                if(isSelected){
+                    return {
+                        left: (2+pos*(10+2.30)+((index-1)%7)*1.5)+'%',
+                        bottom: (100+Math.floor((index-1)/7)*7.5)+'%',
+                        xTop: (100-5+Math.floor((index-1)/7)*7.5)+'%'
+                    }
+                }else{
+                    return {
+                        left: (2+pos*(10+2.30)+5*Math.floor((index-1)/50))+'%',
+                        bottom: (((index-1)%50)*1.5)+'%',
+                        xTop: (-5+((index-1)%50)*1.5)+'%',
+                    };
+                }
+                
+            }
             return {
                 left: (2+pos*(10+2.30))+'%',
                 bottom: (7+baseOffset*0.5+index*(isSelected?1.5:0.5)+(isSelected?15:0))+'%',
@@ -113,6 +142,9 @@ export default {
             }
             let pos = 0;
             switch(denomination){
+                case 1:
+                    pos = 7;
+                    break;
                 case 20:
                     pos = 6;
                     break;
@@ -128,6 +160,22 @@ export default {
                 case 1000:
                     pos = 2;
                     break;
+            }
+            if (denomination===1){
+                if(isSelected){
+                    return {
+                        left: (2+pos*(10+2.30)+((index-1)%7)*1.5)+'%',
+                        top: (100+Math.floor((index-1)/7)*7.5)+'%',
+                        xTop: (100+Math.floor((index-1)/7)*7.5)+'%'
+                    }
+                }else{
+                    return {
+                        left: (2+pos*(10+2.30)+5*Math.floor((index-1)/50))+'%',
+                        top: (baseOffset*0.5+((index-1)%50)*1.5)+'%',
+                        xTop: (baseOffset*0.5+((index-1)%50)*1.5)+'%'
+                    };
+                }
+                
             }
             return {
                 left: (2+pos*(10+2.30))+'%',
@@ -207,6 +255,7 @@ export default {
                 //把cash 从fromBox中摘除，移到toBox中去
                 cash.style.top=pos.top;
                 cash.style.left=pos.left;
+                cash.style.zIndex=99;
                 cash.parentNode.removeChild(cash);
                 document.getElementById(toBox).appendChild(cash);
                 this.$nextTick(()=>{
@@ -290,10 +339,15 @@ function getRelativePosition(element, relativeToElement) {
     background-image: url('@/assets/cash/cash-box.svg');
     background-size: cover;
     position: relative;
-    img{
+    img.banknote‌ {
         position: absolute;
         width: 10%;
         aspect-ratio: 1 / 2;
+    }
+    img.coin {
+        position: absolute;
+        width: 5%;
+        aspect-ratio: 1 / 1;
     }
 }
 </style>
