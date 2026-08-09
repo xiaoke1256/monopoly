@@ -163,9 +163,9 @@ export default {
                     }
                 }else{
                     return {
-                        left: (1.5+pos*(10+2.30)+3.33*Math.floor((index-1)/5))+'%',
-                        bottom: (4+((index-1)%5)*18.5)+'%',
-                        xTop: (4-5+((index-1)%5)*18.5)+'%'
+                        left: (1.5+pos*(10+2.30)+3.33*((index-1)%3))+'%',
+                        bottom: (4+Math.floor((index-1)/3)*18.5)+'%',
+                        xTop: (100-23+Math.floor((1-index)/3)*18.5)+'%'
                     };
                 }
                 
@@ -178,9 +178,9 @@ export default {
                     }
                 }else{
                     return {
-                        left: (1.5+pos*(10+2.30)+5.4*Math.floor((index-1)/6))+'%',
-                        bottom: (6+((index-1)%6)*13.5)+'%',
-                        xTop: (100-22+((1-index)%6)*13.5)+'%'
+                        left: (1.5+pos*(10+2.30)+5.4*Math.floor((index-1)%2))+'%',
+                        bottom: (6+Math.floor((index-1)/2)*13.5)+'%',
+                        xTop: (100-22+Math.floor((1-index)/2)*13.5)+'%'
                     };
                 }
                 
@@ -247,9 +247,9 @@ export default {
                     }
                 }else{
                     return {
-                        left: (1.5+pos*(10+2.30)+3.33*Math.floor((index-1)/5))+'%',
-                        top: (4+baseOffset*0.5+((index-1)%5)*18.5)+'%',
-                        xTop: (4+baseOffset*0.5+((index-1)%5)*18.5)+'%'
+                        left: (1.5+pos*(10+2.30)+3.33*((index-1)%3))+'%',
+                        top: (4+baseOffset*0.5+Math.floor((index-1)/3)*18.5)+'%',
+                        xTop: (4+baseOffset*0.5+Math.floor((index-1)/3)*18.5)+'%'
                     };
                 }
                 
@@ -262,9 +262,9 @@ export default {
                     }
                 }else{
                     return {
-                        left: (1.5+pos*(10+2.30)+5.4*Math.floor((index-1)/6))+'%',
-                        top: (6+baseOffset*0.5+((index-1)%6)*13.5)+'%',
-                        xTop: (6+baseOffset*0.5+((index-1)%6)*13.5)+'%'
+                        left: (1.5+pos*(10+2.30)+5.4*((index-1)%2))+'%',
+                        top: (6+baseOffset*0.5+Math.floor((index-1)/2)*13.5)+'%',
+                        xTop: (6+baseOffset*0.5+Math.floor((index-1)/2)*13.5)+'%'
                     };
                 }
                 
@@ -296,7 +296,9 @@ export default {
                     maxIndex = box.selected[`cash${denomination}`]
                 }
             }
-            if(currentIndex!=maxIndex){
+            if(denomination===2000 || denomination===5000){
+                // 暂时不做判断
+            }else if(currentIndex!=maxIndex){
                 return;
             }
             const boxSelect = box.selected;
