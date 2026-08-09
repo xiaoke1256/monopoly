@@ -18,6 +18,12 @@
 
             <img class="banknote‌" v-for="i in other.cash1000-other.selected.cash1000" @click="selectOtherBox(1000,i)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, i)" />
             <img class="selected banknote‌" data-denomination="1000" v-for="i in other.selected.cash1000" @click="unSelectOtherBox(1000,i)" :key="i" src="@/assets/cash/cash-1000.svg" :style="otherCashPosition(1000, i,true)" />
+
+            <img class="silver1" v-for="i in other.cash2000-other.selected.cash2000" @click="selectOtherBox(2000,i)" :key="i" src="@/assets/cash/cash-2000.svg" :style="otherCashPosition(2000, i)" />
+            <img class="selected silver1" data-denomination="2000" v-for="i in other.selected.cash2000" @click="unSelectOtherBox(2000,i)" :key="i" src="@/assets/cash/cash-2000.svg" :style="otherCashPosition(2000, i,true)" />
+
+            <img class="silver2" v-for="i in other.cash5000-other.selected.cash5000" @click="selectOtherBox(5000,i)" :key="i" src="@/assets/cash/cash-5000.svg" :style="otherCashPosition(5000, i)" />
+            <img class="selected silver2" data-denomination="5000" v-for="i in other.selected.cash5000" @click="unSelectOtherBox(5000,i)" :key="i" src="@/assets/cash/cash-5000.svg" :style="otherCashPosition(5000, i,true)" />
         </div>
         <div id="yourBox" class="cash-box" >
             <img class="coin" v-for="i in you.cash1-you.selected.cash1" @click="selectYourBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="cashPosition(1, i)" />
@@ -37,6 +43,12 @@
             
             <img class="banknote‌" v-for="i in you.cash1000-you.selected.cash1000" @click="selectYourBox(1000,i)"  :key="i" src="@/assets/cash/cash-1000.svg" :style="cashPosition(1000, i)" />
             <img class="selected banknote‌" data-denomination="1000" v-for="i in you.selected.cash1000" @click="unSelectYourBox(1000,i)" :key="i" src="@/assets/cash/cash-1000.svg" :style="cashPosition(1000, i,true)" />
+
+            <img class="silver1" v-for="i in you.cash2000-you.selected.cash2000" @click="selectYourBox(2000,i)" :key="i" src="@/assets/cash/cash-2000.svg" :style="cashPosition(2000, i)" />
+            <img class="selected silver1" data-denomination="2000" v-for="i in you.selected.cash2000" @click="unSelectYourBox(2000,i)" :key="i" src="@/assets/cash/cash-2000.svg" :style="cashPosition(2000, i,true)" />
+            
+            <img class="silver2" v-for="i in you.cash5000-you.selected.cash5000" @click="selectYourBox(5000,i)"  :key="i" src="@/assets/cash/cash-5000.svg" :style="cashPosition(5000, i)" />
+            <img class="selected silver2" data-denomination="5000" v-for="i in you.selected.cash5000" @click="unSelectYourBox(5000,i)" :key="i" src="@/assets/cash/cash-5000.svg" :style="cashPosition(5000, i,true)" />
         </div>
         <div>
             <Button type="primary" @click="exchange" >交换</Button>
@@ -59,6 +71,8 @@ export default {
                 cash200:20,
                 cash500:20,
                 cash1000:20,
+                cash2000:15,
+                cash5000:12,
                 selected:{
                     cash1: 0,
                     cash20:0,
@@ -66,6 +80,8 @@ export default {
                     cash200:0,
                     cash500:0,
                     cash1000:0,
+                    cash2000:0,
+                    cash5000:0,
                 }
             },
             you:{
@@ -75,6 +91,8 @@ export default {
                 cash200:5,
                 cash500:0,
                 cash1000:2,
+                cash2000:4,
+                cash5000:2,
                 selected:{
                     cash1: 0,
                     cash20:0,
@@ -82,6 +100,8 @@ export default {
                     cash200:0,
                     cash500:0,
                     cash1000:0,
+                    cash2000:0,
+                    cash5000:0,
                 }
             }
         }
@@ -112,6 +132,12 @@ export default {
                 case 1000:
                     pos = 5;
                     break;
+                case 2000:
+                    pos = 6;
+                    break;
+                case 5000:
+                    pos = 7;
+                    break;
             }
             if (denomination===1){
                 if(isSelected){
@@ -124,7 +150,37 @@ export default {
                     return {
                         left: (2+pos*(10+2.30)+5*Math.floor((index-1)/50))+'%',
                         bottom: (((index-1)%50)*1.5)+'%',
-                        xTop: (-5+((index-1)%50)*1.5)+'%',
+                        xTop: 6+(((100-index)%50)*1.5)+'%',
+                    };
+                }
+                
+            }else if (denomination===2000){
+                if(isSelected){
+                    return {
+                        left: (2+pos*(10+2.30)+((index-1)%3)*3.5)+'%',
+                        bottom: (100+Math.floor((index-1)/3)*7.5)+'%',
+                        xTop: (100-5+Math.floor((index-1)/3)*7.5)+'%'
+                    }
+                }else{
+                    return {
+                        left: (1.5+pos*(10+2.30)+3.33*Math.floor((index-1)/5))+'%',
+                        bottom: (4+((index-1)%5)*18.5)+'%',
+                        xTop: (4-5+((index-1)%5)*18.5)+'%'
+                    };
+                }
+                
+            }else if (denomination===5000){
+                if(isSelected){
+                    return {
+                        left: (2+pos*(10+2.30)+((index-1)%2)*4.5)+'%',
+                        bottom: (100+Math.floor((index-1)/2)*7.5)+'%',
+                        xTop: (100-5+Math.floor((index-1)/2)*7.5)+'%'
+                    }
+                }else{
+                    return {
+                        left: (1.5+pos*(10+2.30)+5.4*Math.floor((index-1)/6))+'%',
+                        bottom: (6+((index-1)%6)*13.5)+'%',
+                        xTop: (100-22+((1-index)%6)*13.5)+'%'
                     };
                 }
                 
@@ -132,7 +188,7 @@ export default {
             return {
                 left: (2+pos*(10+2.30))+'%',
                 bottom: (7+baseOffset*0.5+index*(isSelected?1.5:0.5)+(isSelected?15:0))+'%',
-                xTop: (7-5+baseOffset*0.5+index*(isSelected?1.5:0.5)+(isSelected?15:0))+'%'
+                xTop: (14-baseOffset*0.5-index*(isSelected?1.5:0.5)-(isSelected?15:0))+'%'
             }
         },
         otherCashPosition(denomination,index,isSelected=false ){
@@ -160,6 +216,12 @@ export default {
                 case 1000:
                     pos = 2;
                     break;
+                case 2000:
+                    pos = 1;
+                    break;
+                case 5000:
+                    pos = 0;
+                    break;
             }
             if (denomination===1){
                 if(isSelected){
@@ -173,6 +235,36 @@ export default {
                         left: (2+pos*(10+2.30)+5*Math.floor((index-1)/50))+'%',
                         top: (baseOffset*0.5+((index-1)%50)*1.5)+'%',
                         xTop: (baseOffset*0.5+((index-1)%50)*1.5)+'%'
+                    };
+                }
+                
+            }else if (denomination===2000){
+                if(isSelected){
+                    return {
+                        left: (2+pos*(10+2.30)+((index-1)%3)*3.5)+'%',
+                        top: (100+Math.floor((index-1)/3)*7.5)+'%',
+                        xTop: (100+Math.floor((index-1)/3)*7.5)+'%'
+                    }
+                }else{
+                    return {
+                        left: (1.5+pos*(10+2.30)+3.33*Math.floor((index-1)/5))+'%',
+                        top: (4+baseOffset*0.5+((index-1)%5)*18.5)+'%',
+                        xTop: (4+baseOffset*0.5+((index-1)%5)*18.5)+'%'
+                    };
+                }
+                
+            }else if (denomination===5000){
+                if(isSelected){
+                    return {
+                        left: (2+pos*(10+2.30)+((index-1)%2)*4.5)+'%',
+                        top: (100+Math.floor((index-1)/2)*7.5)+'%',
+                        xTop: (100+Math.floor((index-1)/2)*7.5)+'%'
+                    }
+                }else{
+                    return {
+                        left: (1.5+pos*(10+2.30)+5.4*Math.floor((index-1)/6))+'%',
+                        top: (6+baseOffset*0.5+((index-1)%6)*13.5)+'%',
+                        xTop: (6+baseOffset*0.5+((index-1)%6)*13.5)+'%'
                     };
                 }
                 
@@ -348,6 +440,16 @@ function getRelativePosition(element, relativeToElement) {
         position: absolute;
         width: 5%;
         aspect-ratio: 1 / 1;
+    }
+    img.silver1 {
+        position: absolute;
+        width: 3.7%;
+        aspect-ratio: 6 / 8;
+    }
+    img.silver2 {
+        position: absolute;
+        width: 5.5%;
+        aspect-ratio: 8 / 6;
     }
 }
 </style>
