@@ -1,6 +1,7 @@
 <template>
     <div class="cash-box-container">
         <div class="box-row">
+            <PlayerAvatar width="10%" :playerIndex="otherPlayerIndex"></PlayerAvatar>
             <div id="otherBox" class="cash-box" >
                 <img class="coin" v-for="i in other.cash1-other.selected.cash1" @click="selectOtherBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="otherCashPosition(1, i)" />
                 <img class="selected coin" data-denomination="1" v-for="i in other.selected.cash1" @click="unSelectOtherBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="otherCashPosition(1, i,true)" />
@@ -32,6 +33,7 @@
         <div class="box-space">
         </div>
         <div class="box-row">
+            <PlayerAvatar width="10%" :playerIndex="yourPlayerIndex"></PlayerAvatar>
             <div id="yourBox" class="cash-box" >
                 <img class="coin" v-for="i in you.cash1-you.selected.cash1" @click="selectYourBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="cashPosition(1, i)" />
                 <img class="selected coin" data-denomination="1" v-for="i in you.selected.cash1" @click="unSelectYourBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="cashPosition(1, i,true)" />
@@ -66,10 +68,11 @@
 <script>
 import { Button } from 'view-ui-plus';
 import { animate } from 'animejs';
+import PlayerAvatar from '@/components/PlayerAvatar.vue';
 
 export default {
     name: 'CashBoxComponent',
-    components: {Button},
+    components: {Button,PlayerAvatar},
     data(){
         return {
             other:{
@@ -92,6 +95,7 @@ export default {
                     cash5000:0,
                 }
             },
+            otherPlayerIndex:0,
             you:{
                 cash1: 64,
                 cash20:10,
@@ -111,7 +115,8 @@ export default {
                     cash2000:0,
                     cash5000:0,
                 }
-            }
+            },
+            yourPlayerIndex:1
         }
     },
     methods:{
@@ -432,17 +437,19 @@ function getRelativePosition(element, relativeToElement) {
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
 }
 .box-space{
     height: 10%;
+    width: 100%;
 }
 .box-row{
     width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    align-items: center;
 }
 .cash-box{
     width: 80%;

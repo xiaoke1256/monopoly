@@ -8,9 +8,7 @@
         :closable="false">
         <template #header>
             <div style="display:flex;align-items:center;gap:12px;">
-                <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#f8fafc;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                    <img :src="playerImage" style="width:100%;height:100%;display:block;object-fit:cover;"/>
-                </div>
+                <PlayerAvatar :playerIndex="currentPlayerIndex" />
                 <span style="font-size:20px;font-weight:600;color:#2d8cf0;">掷骰子</span>
             </div>
         </template>
@@ -28,9 +26,7 @@
         width="520">
         <template #header>
             <div style="display:flex;align-items:center;gap:12px;">
-                <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#f8fafc;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                    <img :src="playerImage" style="width:100%;height:100%;display:block;object-fit:cover;"/>
-                </div>
+                <PlayerAvatar :playerIndex="currentPlayerIndex" />
                 <span style="font-size:20px;font-weight:600;color:#2d8cf0;">购买店铺</span>
             </div>
         </template>
@@ -48,9 +44,7 @@
         width="520">
         <template #header>
             <div style="display:flex;align-items:center;gap:12px;">
-                <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#f8fafc;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                    <img :src="playerImage" style="width:100%;height:100%;display:block;object-fit:cover;"/>
-                </div>
+                <PlayerAvatar :playerIndex="currentPlayerIndex" />
                 <span style="font-size:20px;font-weight:600;color:#2d8cf0;">升级店铺</span>
             </div>
         </template>
@@ -68,9 +62,7 @@
         width="520">
         <template #header>
             <div style="display:flex;align-items:center;gap:12px;">
-                <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#f8fafc;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                    <img :src="playerImage" style="width:100%;height:100%;display:block;object-fit:cover;"/>
-                </div>
+                <PlayerAvatar :playerIndex="currentPlayerIndex" />
                 <span style="font-size:20px;font-weight:600;color:#ed4014;">支付租金</span>
             </div>
         </template>
@@ -88,6 +80,7 @@ import Dice from './Dice.vue';
 import Map from './Map.vue';
 import BuyProperty from './BuyProperty.vue';
 import PayRent from './PayRent.vue';
+import PlayerAvatar from '@/components/PlayerAvatar.vue';
 import { Modal, Button } from 'view-ui-plus';
 
 export default {
@@ -98,7 +91,8 @@ export default {
     Map,
     BuyProperty,
     PayRent,
-    Button
+    Button,
+    PlayerAvatar
   },
   props: {
   },
@@ -271,12 +265,6 @@ export default {
     }
   },
   computed: {
-        playerImage() {
-            // 根据当前玩家索引返回对应的玩家头像
-            const playerIndex = this.currentPlayerIndex;
-            console.log('当前玩家索引:', playerIndex);
-            return playerIndex === 0 ? require('@/assets/player1.svg') : require('@/assets/player2.png');
-        }
   }
 }
 </script>
