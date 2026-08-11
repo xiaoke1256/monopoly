@@ -60,19 +60,18 @@
                 <img class="selected silver2" data-denomination="5000" v-for="i in you.selected.cash5000" @click="unSelectYourBox(5000,i)" :key="i" src="@/assets/cash/cash-5000.svg" :style="cashPosition(5000, i,true)" />
             </div>
         </div>
-        <div>
+        <!-- <div>
             <Button type="primary" @click="exchange" >交换</Button>
-        </div>
+        </div> -->
     </div>
 </template>
 <script>
-import { Button } from 'view-ui-plus';
 import { animate } from 'animejs';
 import PlayerAvatar from '@/components/PlayerAvatar.vue';
 
 export default {
     name: 'CashBoxComponent',
-    components: {Button,PlayerAvatar},
+    components: {PlayerAvatar},
     data(){
         return {
             other:{
@@ -95,7 +94,7 @@ export default {
                     cash5000:0,
                 }
             },
-            otherPlayerIndex:0,
+            otherPlayerIndex:-1,
             you:{
                 cash1: 64,
                 cash20:10,
@@ -441,11 +440,12 @@ function getRelativePosition(element, relativeToElement) {
     align-items: center;
 }
 .box-space{
-    height: 10%;
     width: 100%;
+    aspect-ratio: 20 / 1;
 }
 .box-row{
     width: 100%;
+    height: 45%;
     display: flex;
     flex-direction: row;
     justify-content: space-around;

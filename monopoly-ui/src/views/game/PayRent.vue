@@ -19,13 +19,25 @@
             <Button type="primary" size="large" @click="confirmPayment">确认支付</Button>
         </div>
     </div>
+    <Modal
+        v-model="showPayModal"
+        width="90%"
+        class-name="vertical-center-modal">
+        <div style="height: 100%;padding:4px 0;">
+            <CashBox />
+        </div>
+        <template #footer>
+            <div><Button type="primary" size="large">确认</Button></div>
+        </template>
+    </Modal> 
 </template>
 <script>
 import { Button } from 'view-ui-plus';
+import CashBox from './CashBox.vue';
 export default {
     name: 'PayRentComponent',
     components: {
-        Button
+        Button,CashBox
     },
     props: {
         cell: {
@@ -41,9 +53,15 @@ export default {
             default: 0
         }
     },
+    data(){
+        return {
+            showPayModal:false
+        }
+    },
     methods: {
         confirmPayment() {
-            this.$emit('confirm');
+            this.showPayModal=true;
+            //this.$emit('confirm');
         }
     }
 }

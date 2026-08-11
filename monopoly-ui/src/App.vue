@@ -25,4 +25,12 @@ body, html {
   padding: 0;
   height: 100%;
 }
+.vertical-center-modal{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.vertical-center-modal .ivu-modal{
+    top: 0;
+}
 </style>

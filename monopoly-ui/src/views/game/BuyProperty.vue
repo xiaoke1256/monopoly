@@ -24,13 +24,24 @@
             <Button size="large" @click="cancelPurchase">{{ forUpgrade ? '取消升级' : '取消购买' }}</Button>
         </div>
     </div>
+    <Modal
+        v-model="showPayModal"
+        width="520">
+        <div style="padding:4px 0;">
+            <CashBox />
+        </div>
+        <template #footer>
+            <div></div>
+        </template>
+    </Modal> 
 </template>
 <script>
 import { Button } from 'view-ui-plus';
+import CashBox from './CashBox.vue';
 export default {
     name: 'BuyPropertyComponent',
     components: {
-        Button
+        Button,CashBox
     },
     props: {
         cell: {
@@ -40,6 +51,11 @@ export default {
         forUpgrade: {
             type: Boolean,
             default: false
+        }
+    },
+    data(){
+        return {
+            showPayModal:false
         }
     },
     methods: {

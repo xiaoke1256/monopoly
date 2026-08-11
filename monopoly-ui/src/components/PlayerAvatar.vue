@@ -52,6 +52,9 @@ export default {
         playerImage() {
             // 根据当前玩家索引返回对应的玩家头像
             console.log('当前玩家索引:', this.playerIndex);
+            if(this.playerIndex<0){
+                return require('@/assets/abacus.svg')
+            }
             return this.playerIndex === 0 ? require('@/assets/player1.svg') : require('@/assets/player2.png');
         }
     }
