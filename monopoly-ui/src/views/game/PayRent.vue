@@ -20,6 +20,7 @@
         </div>
     </div>
     <Modal
+        v-if="showPayModal"
         v-model="showPayModal"
         width="90%"
         loading="true"
@@ -57,15 +58,19 @@ export default {
             showPayModal:false
         }
     },
+    mounted(){
+        console.log("mounted");
+    },
     methods: {
         confirmPayment() {
             this.showPayModal=true;
             //this.$emit('confirm');
         },
         pay(){
-            console.log("this.$refs.cashBox.exchange:",this.$refs.cashBox.exchange);
-            this.$refs.cashBox.exchange(()=>{this.showPayModal = false;});
-            
+            this.$nextTick(()=>{
+                console.log("this.$refs.cashBox.exchange:",this.$refs.cashBox.exchange);
+                this.$refs.cashBox.exchange(()=>{this.showPayModal = false;});
+            });     
         }
     }
 }
