@@ -75,14 +75,14 @@ export default {
     data(){
         return {
             other:{
-                cash1: 80,
-                cash20:20,
-                cash100:20,
-                cash200:20,
-                cash500:20,
-                cash1000:20,
-                cash2000:12,
-                cash5000:12,
+                cash1: 2,
+                cash20:2,
+                cash100:2,
+                cash200:2,
+                cash500:2,
+                cash1000:2,
+                cash2000:2,
+                cash5000:2,
                 selected:{
                     cash1: 0,
                     cash20:0,
@@ -96,13 +96,13 @@ export default {
             },
             otherPlayerIndex:-1,
             you:{
-                cash1: 64,
-                cash20:10,
-                cash100:20,
+                cash1: 2,
+                cash20:2,
+                cash100:2,
                 cash200:5,
                 cash500:0,
                 cash1000:2,
-                cash2000:4,
+                cash2000:2,
                 cash5000:2,
                 selected:{
                     cash1: 0,
@@ -327,10 +327,12 @@ export default {
         unSelectOtherBox(denomination,currentIndex,maxIndex){
             this.selectOtherBox(denomination,currentIndex,true,maxIndex);
         },
-        exchange(){
-            this.exchangeFrom();
+        exchange(callback){
+            this.$nextTick(()=>{
+                this.exchangeFrom(undefined,callback);
+            });
         },
-        exchangeFrom(from){
+        exchangeFrom(from,callback){
             if(!from){
                 from = "other"
             }
@@ -347,6 +349,7 @@ export default {
                 fromBox = 'yourBox';
                 toBox = 'otherBox';
             }
+            console.log("document.getElementById(fromBox):",document.getElementById(fromBox))
             const cashes = document.getElementById(fromBox).getElementsByClassName('selected');
             console.log("cashes:",cashes)
             if(cashes && cashes.length>0){
@@ -399,18 +402,28 @@ export default {
                             //移动下一枚钱币
                             if(hasNext){
                                 this.$nextTick(()=>{
-                                    this.exchangeFrom(from);
+                                    this.exchangeFrom(from,callback);
                                 });
                             }else if("other"===from){
                                 this.$nextTick(()=>{
-                                    this.exchangeFrom('you');
+                                    this.exchangeFrom('you',callback);
+                                });
+                            }else if(callback){
+                                this.$nextTick(()=>{
+                                    callback();
                                 });
                             }
                         }
                     })
                 });  
             }else if("other"===from){
-                this.exchangeFrom('you');
+                this.$nextTick(()=>{
+                    this.exchangeFrom('you',callback);
+                });
+            }else if(callback){
+                this.$nextTick(()=>{
+                    callback();
+                });
             }
         },
     }

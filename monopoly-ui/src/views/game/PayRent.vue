@@ -22,13 +22,12 @@
     <Modal
         v-model="showPayModal"
         width="90%"
-        class-name="vertical-center-modal">
+        loading="true"
+        class-name="vertical-center-modal"
+        @on-ok="pay">
         <div style="height: 100%;padding:4px 0;">
-            <CashBox />
+            <CashBox ref="cashBox" />
         </div>
-        <template #footer>
-            <div><Button type="primary" size="large">确认</Button></div>
-        </template>
     </Modal> 
 </template>
 <script>
@@ -62,6 +61,11 @@ export default {
         confirmPayment() {
             this.showPayModal=true;
             //this.$emit('confirm');
+        },
+        pay(){
+            console.log("this.$refs.cashBox.exchange:",this.$refs.cashBox.exchange);
+            this.$refs.cashBox.exchange(()=>{this.showPayModal = false;});
+            
         }
     }
 }
