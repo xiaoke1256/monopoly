@@ -5,6 +5,7 @@
     <Button v-if="!showDiceModal" style="position:absolute;bottom:0;right:0" type="primary" @click="showDiceModal=true" size="large">Continue</Button>
     <Modal
         v-model="showDiceModal"
+        footer-hide
         :closable="false">
         <template #header>
             <div style="display:flex;align-items:center;gap:12px;">
@@ -23,6 +24,7 @@
         v-model="showBuyPropertyModal"
         :closable="false"
         :mask-closable="false"
+        footer-hide
         width="520">
         <template #header>
             <div style="display:flex;align-items:center;gap:12px;">
@@ -41,6 +43,7 @@
         v-model="showUpgradePropertyModal"
         :closable="false"
         :mask-closable="false"
+        footer-hide
         width="520">
         <template #header>
             <div style="display:flex;align-items:center;gap:12px;">
@@ -59,6 +62,7 @@
         v-model="showPayRentModal"
         :closable="false"
         :mask-closable="false"
+        footer-hide
         width="520">
         <template #header>
             <div style="display:flex;align-items:center;gap:12px;">
