@@ -1,7 +1,7 @@
 <template>
     <div class="cash-box-container">
         <div class="box-row">
-            <PlayerAvatar width="10%" :playerIndex="otherPlayerIndex"></PlayerAvatar>
+            <PlayerAvatar width="100%" show-name="true" :playerIndex="otherPlayerIndex"></PlayerAvatar>
             <div id="otherBox" ref="otherBox" class="cash-box" >
                 <img class="coin" v-for="i in other.cash1-other.selected.cash1" @click="selectOtherBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="otherCashPosition(1, i)" />
                 <img class="selected coin" data-denomination="1" v-for="i in other.selected.cash1" @click="unSelectOtherBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="otherCashPosition(1, i,true)" />
@@ -33,7 +33,7 @@
         <div class="box-space">
         </div>
         <div class="box-row">
-            <PlayerAvatar width="10%" :playerIndex="yourPlayerIndex"></PlayerAvatar>
+            <PlayerAvatar width="100%" show-name="true" :playerIndex="yourPlayerIndex"></PlayerAvatar>
             <div id="yourBox" ref="yourBox" class="cash-box" >
                 <img class="coin" v-for="i in you.cash1-you.selected.cash1" @click="selectYourBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="cashPosition(1, i)" />
                 <img class="selected coin" data-denomination="1" v-for="i in you.selected.cash1" @click="unSelectYourBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="cashPosition(1, i,true)" />
@@ -72,6 +72,13 @@ import PlayerAvatar from '@/components/PlayerAvatar.vue';
 export default {
     name: 'CashBoxComponent',
     components: {PlayerAvatar},
+    props: {
+        /*支付金额，正数表示你想别人支付的金额，负数表示你想从别人那里收取的金额*/
+        payAmount: {
+            type: Number,
+            default: 0
+        },
+    },
     data(){
         return {
             other:{
@@ -332,6 +339,34 @@ export default {
             this.selectOtherBox(denomination,currentIndex,true,maxIndex);
         },
         exchange(callback){
+            //交易之前先抵消同面值货币
+            for(let denomination of [1,20,100,200,500,1000,2000,5000]){
+                const otherSelected = this.other.selected[`cash${denomination}`];
+                const yourSelected = this.you.selected[`cash${denomination}`];
+                if(otherSelected>0 && yourSelected>0){
+                    const minSelected = Math.min(otherSelected,yourSelected);
+                    this.other.selected[`cash${denomination}`] -= minSelected;
+                    this.you.selected[`cash${denomination}`] -= minSelected;
+                }
+            }
+            //检查交易金额是否正确
+            let otherSelectedAmount = 0;
+            let yourSelectedAmount = 0;
+            for(let denomination of [1,20,100,200,500,1000,2000,5000]){
+                otherSelectedAmount += this.other.selected[`cash${denomination}`]*denomination;
+                yourSelectedAmount += this.you.selected[`cash${denomination}`]*denomination;
+            }
+            if(yourSelectedAmount-otherSelectedAmount!==this.payAmount){
+                console.log(`交易金额不正确: otherSelectedAmount=${otherSelectedAmount}, yourSelectedAmount=${yourSelectedAmount}, payAmount=${this.payAmount}`);
+                let msg = this.payAmount>0?`交易金额不正确,请支付 ${this.payAmount}文`:'交易金额不正确,请收取 '+(-this.payAmount)+'文';
+                this.$Message['error']({
+                    background: true,
+                    content: msg
+                });
+                callback({ isSuccess: false });
+                return;
+            }
+            
             this.$nextTick(()=>{
                 this.exchangeFrom(undefined,callback);
             });
@@ -414,7 +449,7 @@ export default {
                                 });
                             }else if(callback){
                                 this.$nextTick(()=>{
-                                    callback();
+                                    callback({ isSuccess: true });
                                 });
                             }
                         }
@@ -426,7 +461,8 @@ export default {
                 });
             }else if(callback){
                 this.$nextTick(()=>{
-                    callback();
+                    console.log("exchange finished, callback(true)");
+                    callback({ isSuccess: true });
                 });
             }
         },

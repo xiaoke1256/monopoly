@@ -20,15 +20,18 @@
         </div>
     </div>
     <Modal
-        v-if="showPayModal"
         v-model="showPayModal"
         width="90%"
-        loading="true"
         class-name="vertical-center-modal"
         @on-ok="pay">
         <div style="height: 100%;padding:4px 0;">
-            <CashBox ref="cashBox" />
+            <CashBox :payAmount="rentAmount" ref="cashBox" />
         </div>
+        <template #footer>
+            <div style="text-align:center;">
+                <Button :loading="payModalLoading" type="primary" size="large" @click="pay">确认</Button>
+            </div>
+        </template>
     </Modal> 
 </template>
 <script>
@@ -55,11 +58,13 @@ export default {
     },
     data(){
         return {
-            showPayModal:false
+            showPayModal:false,
+            payModalLoading:false
         }
     },
     mounted(){
         console.log("mounted");
+        this.payAmount = this.rentAmount;
     },
     methods: {
         confirmPayment() {
@@ -67,9 +72,18 @@ export default {
             //this.$emit('confirm');
         },
         pay(){
+            this.payModalLoading = true;
             this.$nextTick(()=>{
                 console.log("this.$refs.cashBox.exchange:",this.$refs.cashBox.exchange);
-                this.$refs.cashBox.exchange(()=>{this.showPayModal = false;});
+                this.$refs.cashBox.exchange(
+                    ({isSuccess})=>{
+                        console.log("exchange finished, isSuccess:",isSuccess);
+                        this.payModalLoading = false;
+                        if(isSuccess){
+                            this.showPayModal = false;
+                        }
+                    }
+                );
             });     
         }
     }

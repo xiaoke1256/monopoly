@@ -1,6 +1,9 @@
 <template>
-    <div class="player-avatar" :style="containerStyle">
-        <img :src="playerImage" class="player-avatar-img"/>
+    <div class="avatar-div">
+        <div class="player-avatar" :style="containerStyle">
+            <img :src="playerImage" class="player-avatar-img"/>
+        </div>
+        <div v-if="showName" class="name" >{{playerName}}</div>
     </div>
 </template>
 
@@ -23,6 +26,10 @@ export default {
         bgColor: {
             type: String,
             default: '#f8fafc'
+        },
+        showName:{
+           type:Boolean,
+           default:false 
         }
     },
     data(){
@@ -56,6 +63,13 @@ export default {
                 return require('@/assets/abacus.svg')
             }
             return this.playerIndex === 0 ? require('@/assets/player1.svg') : require('@/assets/player2.png');
+        },
+        playerName(){
+             console.log('当前玩家索引:', this.playerIndex);
+            if(this.playerIndex<0){
+                return '柜坊'
+            }
+            return this.playerIndex === 0 ? '舞姬' : '大理寺卿';
         }
     }
 }
@@ -76,5 +90,16 @@ export default {
     height: 100%;
     display: block;
     object-fit: cover;
+}
+.avatar-div{
+    width:10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .name{
+        font-weight: 600;
+        font-size: 16px;
+    }
 }
 </style>
