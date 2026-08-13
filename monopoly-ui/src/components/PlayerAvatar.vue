@@ -1,6 +1,6 @@
 <template>
-    <div class="avatar-div">
-        <div class="player-avatar" :style="containerStyle">
+    <div class="avatar-div" :style="containerStyle">
+        <div class="player-avatar" :style="{background: bgColor}">
             <img :src="playerImage" class="player-avatar-img"/>
         </div>
         <div v-if="showName" class="name" >{{playerName}}</div>
@@ -45,15 +45,14 @@ export default {
                 const width = typeof this.width === 'number' ? `${this.width}px` : this.width;
                 return {
                     width: width,
-                    aspectRatio: "1 / 1",
-                    background: this.bgColor
+                    //background: this.bgColor
                 }
             }
             const size = typeof this.size === 'number' ? `${this.size}px` : this.size;
             return {
                 width: size,
                 height: size,
-                background: this.bgColor
+                //background: this.bgColor
             };
         },
         playerImage() {
@@ -78,6 +77,8 @@ export default {
 <style lang="scss" scoped>
 .player-avatar {
     border-radius: 50%;
+    width: 100%;
+    aspect-ratio: 1 / 1 !important;
     overflow: hidden;
     display: flex;
     align-items: center;

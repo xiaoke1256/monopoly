@@ -1,7 +1,10 @@
 <template>
     <div class="cash-box-container">
         <div class="box-row">
-            <PlayerAvatar width="100%" show-name="true" :playerIndex="otherPlayerIndex"></PlayerAvatar>
+            <div style="width: 10%;">
+                <PlayerAvatar width="100%" show-name="true" :playerIndex="otherPlayerIndex"></PlayerAvatar>
+                <div style="text-align: center;">({{ otherAmount }}文)</div>
+            </div>
             <div id="otherBox" ref="otherBox" class="cash-box" >
                 <img class="coin" v-for="i in other.cash1-other.selected.cash1" @click="selectOtherBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="otherCashPosition(1, i)" />
                 <img class="selected coin" data-denomination="1" v-for="i in other.selected.cash1" @click="unSelectOtherBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="otherCashPosition(1, i,true)" />
@@ -33,7 +36,10 @@
         <div class="box-space">
         </div>
         <div class="box-row">
-            <PlayerAvatar width="100%" show-name="true" :playerIndex="yourPlayerIndex"></PlayerAvatar>
+            <div style="width: 10%;">
+                <PlayerAvatar width="100%" show-name="true" :playerIndex="yourPlayerIndex"></PlayerAvatar>
+                <div style="text-align: center;">({{ yourAmount }}文)</div>
+            </div>
             <div id="yourBox" ref="yourBox" class="cash-box" >
                 <img class="coin" v-for="i in you.cash1-you.selected.cash1" @click="selectYourBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="cashPosition(1, i)" />
                 <img class="selected coin" data-denomination="1" v-for="i in you.selected.cash1" @click="unSelectYourBox(1,i)" :key="i" src="@/assets/cash/cash-1.svg" :style="cashPosition(1, i,true)" />
@@ -82,14 +88,14 @@ export default {
     data(){
         return {
             other:{
-                cash1: 2,
-                cash20:2,
-                cash100:2,
-                cash200:2,
-                cash500:2,
-                cash1000:2,
-                cash2000:2,
-                cash5000:2,
+                cash1: 80,
+                cash20:20,
+                cash100:20,
+                cash200:20,
+                cash500:20,
+                cash1000:20,
+                cash2000:12,
+                cash5000:12,
                 selected:{
                     cash1: 0,
                     cash20:0,
@@ -466,6 +472,22 @@ export default {
                 });
             }
         },
+    },
+    computed:{
+        otherAmount(){
+            let amount = 0;
+            for(let denomination of [1,20,100,200,500,1000,2000,5000]){
+                amount += this.other[`cash${denomination}`]*denomination;
+            }
+            return amount;
+        },
+        yourAmount(){
+            let amount = 0;
+            for(let denomination of [1,20,100,200,500,1000,2000,5000]){
+                amount += this.you[`cash${denomination}`]*denomination;
+            }
+            return amount;
+        }
     }
 }
 
