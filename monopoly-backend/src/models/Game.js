@@ -34,7 +34,27 @@ const PlayerSchema = new mongoose.Schema({
   roleId: { type: Number, required: false },
   name: { type: String, required: true },
   position: { type: Number, default: 0 },
-  money: { type: Number, default: 1500 }
+  money: { type: {
+      cash1: { type: Number, default: 0 },
+      cash20: { type: Number, default: 0 },
+      cash100: { type: Number, default: 0 },
+      cash200: { type: Number, default: 0 },
+      cash500: { type: Number, default: 0 },
+      cash1000: { type: Number, default: 0 },
+      cash2000: { type: Number, default: 0 },
+      cash5000: { type: Number, default: 0 },
+    },
+    default: {
+      cash1: 0,
+      cash20: 0,
+      cash100: 6,
+      cash200: 2,
+      cash500: 2,
+      cash1000: 5,
+      cash2000: 4,
+      cash5000: 1,
+    }
+  }
 });
 
 const GameSchema = new mongoose.Schema({

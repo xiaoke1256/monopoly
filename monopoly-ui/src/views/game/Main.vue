@@ -71,7 +71,7 @@
             </div>
         </template>
         <div style="padding:4px 0;">
-            <PayRent :cell="currentCell" :owner="rentOwner" :rentAmount="rentAmount" @confirm="payRent" />
+            <PayRent :cell="currentCell" :owner="rentOwner" :playerIndex="currentPlayerIndex" :rentAmount="rentAmount" @confirm="payRent" />
         </div>
         <template #footer>
             <div></div>
@@ -172,6 +172,7 @@ export default {
             console.log('玩家需要支付租金');
             this.currentCell = response.data.cell;
             this.rentOwner = response.data.owner;
+            console.log("this.rentOwner:",this.rentOwner);
             this.rentAmount = response.data.rentAmount;
             this.showPayRentModal = true;
         }else if('nothing'===action){

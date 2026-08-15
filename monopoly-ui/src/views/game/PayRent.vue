@@ -25,7 +25,7 @@
         class-name="vertical-center-modal"
         @on-ok="pay">
         <div style="height: 100%;padding:4px 0;">
-            <CashBox :payAmount="rentAmount" ref="cashBox" />
+            <CashBox v-if="showPayModal" :otherPlayerIndex="owner.index" :yourPlayerIndex="playerIndex" :payAmount="rentAmount" ref="cashBox" />
         </div>
         <template #footer>
             <div style="text-align:center;">
@@ -50,6 +50,10 @@ export default {
         owner: {
             type: Object,
             default: () => ({})
+        },
+        playerIndex: {
+            type: Number,
+            default: -1
         },
         rentAmount: {
             type: Number,

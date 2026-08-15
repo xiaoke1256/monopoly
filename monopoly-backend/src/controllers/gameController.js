@@ -84,6 +84,19 @@ const dice = async (req, res)=>{
     return res.json({ dice:diceResult });
 }
 
+const getMoney = async (req, res) => {
+    req.params.playerIndex = parseInt(req.params.playerIndex);
+    const {playerIndex} = req.params;
+    try {
+        const game = await queryCurrentGame();  
+        const money = game.players[playerIndex].money || {};
+        return res.json({ money });
+    } catch (error) {
+        console.error('Error fetching player money:', error);
+        return res.status(500).json({ error: error.message });
+    }
+}
+
 const onArrived = async (req, res) => {
     try {
         const game = await queryCurrentGame(); 
@@ -96,11 +109,12 @@ const onArrived = async (req, res) => {
             console.log(`Player at index ${currentPlayerIndex} arrived at an unowned property.`);
             return res.json({ action: 'buyProperty', cell });
         }else if(cell.type === 'property' && cell.owner !== null && String(cell.owner) !== String(currentPlayer.id)){
-            const owner = game.players.find(p => String(p.id) === String(cell.owner));
+            //支付租金
+            const owner = game.players.map((p,index) =>  ({ ...(p.toObject({ getters: true })), index }) ).find(p => String(p.id) === String(cell.owner));
             const rentAmount = cell.rent * (cell.level + 1);
             console.log('cell.owner:',cell.owner,' currentPlayer._id:',currentPlayer._id,' currentPlayer.id:',currentPlayer.id);
             console.log(`Player at index ${currentPlayerIndex} arrived at a property owned by another player.`);
-            return res.json({ action: 'payRent', cell, owner, rentAmount });
+            return res.json({ action: 'payRent', cell, owner , rentAmount });
         }else if(cell.type === 'property' && String(cell.owner) === String(currentPlayer.id)){
             //询问是否需要升级地产
             console.log(`Player at index ${currentPlayerIndex} arrived at their own property.`);
@@ -228,5 +242,6 @@ export {
     payForPropertyAndEndTurn,
     payForUpgradePropertyAndEndTurn,
     payRentAndEndTurn,
-    getCurrentMap
+    getCurrentMap,
+    getMoney
 };

@@ -74,6 +74,7 @@
 <script>
 import { animate } from 'animejs';
 import PlayerAvatar from '@/components/PlayerAvatar.vue';
+import { getPlayerMoney } from '../../api/gameApi.js';
 
 export default {
     name: 'CashBoxComponent',
@@ -84,6 +85,14 @@ export default {
             type: Number,
             default: 0
         },
+        otherPlayerIndex:{
+            type: Number,
+            default: -1
+        },
+        yourPlayerIndex:{
+            type: Number,
+            default: -1
+        }
     },
     data(){
         return {
@@ -107,7 +116,6 @@ export default {
                     cash5000:0,
                 }
             },
-            otherPlayerIndex:-1,
             you:{
                 cash1: 2,
                 cash20:2,
@@ -128,11 +136,57 @@ export default {
                     cash5000:0,
                 }
             },
-            yourPlayerIndex:1
         }
     },
     mounted(){
         console.log("mounted.....");
+        if(this.otherPlayerIndex>=0){
+            getPlayerMoney(this.otherPlayerIndex).then((money)=>{
+                console.log("other player money:",money);
+                this.other.cash1 = money.cash1;
+                this.other.cash20 = money.cash20;
+                this.other.cash100 = money.cash100;
+                this.other.cash200 = money.cash200;
+                this.other.cash500 = money.cash500;
+                this.other.cash1000 = money.cash1000;
+                this.other.cash2000 = money.cash2000;
+                this.other.cash5000 = money.cash5000;
+                this.other.selected = {
+                    cash1: 0,
+                    cash20:0,
+                    cash100:0,
+                    cash200:0,
+                    cash500:0,
+                    cash1000:0,
+                    cash2000:0,
+                    cash5000:0,
+                }
+            });
+        }
+        if(this.yourPlayerIndex>=0){
+            getPlayerMoney(this.yourPlayerIndex).then((money)=>{
+                console.log("your player money:",money);
+                this.you.cash1 = money.cash1;
+                this.you.cash20 = money.cash20;
+                this.you.cash100 = money.cash100;
+                this.you.cash200 = money.cash200;
+                this.you.cash500 = money.cash500;
+                this.you.cash1000 = money.cash1000;
+                this.you.cash2000 = money.cash2000;
+                this.you.cash5000 = money.cash5000;
+                this.you.selected = {
+                    cash1: 0,
+                    cash20:0,
+                    cash100:0,
+                    cash200:0,
+                    cash500:0,
+                    cash1000:0,
+                    cash2000:0,
+                    cash5000:0,
+                }
+            });
+        }
+
     },
     methods:{
         cashPosition(denomination,index,isSelected=false ){
