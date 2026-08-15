@@ -215,8 +215,31 @@ const payRentAndEndTurn = async (req, res) => {
     
     const rentAmount = cell.rent * (cell.level + 1);
     
-    currentPlayer.money -= rentAmount;
-    owner.money += rentAmount;
+    const data = req.body;
+    const yourSelectedMoney = data.yourSelectedMoney;
+    const ownerSelectedMoney = data.otherSelectedMoney;
+    //检查两者之差是否是rentAmount?
+    let yourTotal = 0;
+    let ownerTotal = 0;
+    for (const [denomination, amount] of Object.entries(yourSelectedMoney)) {
+        yourTotal += denomination * amount;
+    }
+    for (const [denomination, amount] of Object.entries(ownerSelectedMoney)) {
+        ownerTotal += denomination * amount;
+    }
+    if (yourTotal - ownerTotal !== rentAmount) {
+        console.log(`Selected money does not match rent amount. Your total: ${yourTotal}, Owner total: ${ownerTotal}, Rent amount: ${rentAmount}`);
+        return res.status(400).json({ message: 'Selected money does not match rent amount.' });
+    }
+
+    for (const [denomination, amount] of Object.entries(yourSelectedMoney)) {
+        currentPlayer.money[denomination] -= amount;
+        owner.money[denomination] += amount;
+    }
+    for (const [denomination, amount] of Object.entries(ownerSelectedMoney)) {
+        owner.money[denomination] += amount;
+        currentPlayer.money[denomination] -= amount;
+    }
 
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
