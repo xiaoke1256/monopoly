@@ -219,33 +219,56 @@ const payRentAndEndTurn = async (req, res) => {
     console.log('Received rent payment data:', data);
     const yourSelectedMoney = data.yourSelectedMoney;
     const ownerSelectedMoney = data.otherSelectedMoney;
-    //检查两者之差是否是rentAmount?
-    let yourTotal = 0;
-    let ownerTotal = 0;
-    for (const [denomination, amount] of Object.entries(yourSelectedMoney)) {
-        yourTotal += denomination.replace('cash', '') * amount;
-    }
-    for (const [denomination, amount] of Object.entries(ownerSelectedMoney)) {
-        ownerTotal += denomination.replace('cash', '') * amount;
-    }
-    if (yourTotal - ownerTotal !== rentAmount) {
-        console.log(`Selected money does not match rent amount. Your total: ${yourTotal}, Owner total: ${ownerTotal}, Rent amount: ${rentAmount}`);
-        return res.status(400).json({ message: 'Selected money does not match rent amount.' });
-    }
 
-    for (const [denomination, amount] of Object.entries(yourSelectedMoney)) {
-        currentPlayer.money[denomination] -= amount;
-        owner.money[denomination] += amount;
-    }
-    for (const [denomination, amount] of Object.entries(ownerSelectedMoney)) {
-        owner.money[denomination] += amount;
-        currentPlayer.money[denomination] -= amount;
+    try {
+        pay(currentPlayer, owner, yourSelectedMoney, ownerSelectedMoney, rentAmount);
+    } catch (error) {
+        console.error('Error during rent payment:', error);
+        return res.status(400).json({ message: error.message });
     }
 
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
     await game.save();
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
+}
+
+const pay = (currentPlayer, otherPlayer, yourSelectedMoney, otherSelectedMoney, rentAmount) => {
+    //检查两者之差是否是rentAmount?
+    let yourTotal = 0;
+    let otherTotal = 0;
+    for (const [denomination, amount] of Object.entries(yourSelectedMoney)) {
+        yourTotal += denomination.replace('cash', '') * amount;
+    }
+    for (const [denomination, amount] of Object.entries(otherSelectedMoney)) {
+        otherTotal += denomination.replace('cash', '') * amount;
+    }
+    if (yourTotal - otherTotal !== rentAmount) {
+        console.log(`Selected money does not match rent amount. Your total: ${yourTotal}, Other total: ${otherTotal}, Rent amount: ${rentAmount}`);
+        throw new Error('Selected money does not match rent amount.');
+    }
+
+    //具体支付
+    for (const [denomination, amount] of Object.entries(yourSelectedMoney)) {
+        if(currentPlayer.money[denomination] < amount) {
+            console.log(`Player does not have enough ${denomination}.`);
+            throw new Error(`Player does not have enough ${denomination}.`);
+        }
+        currentPlayer.money[denomination] -= amount;
+        if(otherPlayer){/* 为空表示对方是柜坊 */
+            otherPlayer.money[denomination] += amount;
+        }
+    }
+    for (const [denomination, amount] of Object.entries(otherSelectedMoney)) {
+        if(otherPlayer) {/* 为空表示对方是柜坊 */
+            if(otherPlayer.money[denomination] < amount) {
+                console.log(`Player does not have enough ${denomination}.`);
+                throw new Error(`Player does not have enough ${denomination}.`);
+            }
+            otherPlayer.money[denomination] -= amount;
+        }
+        currentPlayer.money[denomination] += amount;
+    }
 }
 
 const getPlayerStatus = async (req, res) => {
