@@ -216,16 +216,17 @@ const payRentAndEndTurn = async (req, res) => {
     const rentAmount = cell.rent * (cell.level + 1);
     
     const data = req.body;
+    console.log('Received rent payment data:', data);
     const yourSelectedMoney = data.yourSelectedMoney;
     const ownerSelectedMoney = data.otherSelectedMoney;
     //检查两者之差是否是rentAmount?
     let yourTotal = 0;
     let ownerTotal = 0;
     for (const [denomination, amount] of Object.entries(yourSelectedMoney)) {
-        yourTotal += denomination * amount;
+        yourTotal += denomination.replace('cash', '') * amount;
     }
     for (const [denomination, amount] of Object.entries(ownerSelectedMoney)) {
-        ownerTotal += denomination * amount;
+        ownerTotal += denomination.replace('cash', '') * amount;
     }
     if (yourTotal - ownerTotal !== rentAmount) {
         console.log(`Selected money does not match rent amount. Your total: ${yourTotal}, Owner total: ${ownerTotal}, Rent amount: ${rentAmount}`);

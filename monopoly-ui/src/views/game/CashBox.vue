@@ -117,14 +117,14 @@ export default {
                 }
             },
             you:{
-                cash1: 2,
-                cash20:2,
-                cash100:2,
-                cash200:5,
+                cash1: 0,
+                cash20:0,
+                cash100:0,
+                cash200:0,
                 cash500:0,
-                cash1000:2,
-                cash2000:2,
-                cash5000:2,
+                cash1000:0,
+                cash2000:0,
+                cash5000:0,
                 selected:{
                     cash1: 0,
                     cash20:0,
@@ -428,7 +428,10 @@ export default {
             }
             
             this.$nextTick(()=>{
-                this.exchangeFrom(undefined,callback);
+                //把selected的货币记录下来，后面将作为callback的参数传递给父组件
+                const yourSelectedMoney = {...this.you.selected};
+                const otherSelectedMoney = {...this.other.selected};
+                this.exchangeFrom(undefined,({...params})=>callback({...params,yourSelectedMoney,otherSelectedMoney}));
             });
         },
         exchangeFrom(from,callback){

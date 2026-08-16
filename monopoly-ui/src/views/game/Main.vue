@@ -150,7 +150,6 @@ export default {
     },
     async onPlayerMoveComplete(newPosition) {
         console.log('玩家移动完成，新位置:', newPosition);
-        // TODO: 在此处添加移动完成后的业务逻辑,购买地产等。
         // 查询后台，以确认后续操作。
         const response = await axios.get(`/api/game/player/${this.currentPlayerIndex}/arrived`);
         console.log('下一回合:', response.data);
@@ -231,10 +230,11 @@ export default {
             console.error('升级地产失败:', error);
         });
     },
-    payRent(){
+    payRent({yourSelectedMoney,otherSelectedMoney}) {
         console.log('玩家确认支付租金');
+        console.log('Received rent payment data:', {yourSelectedMoney,otherSelectedMoney});
         axios.post(`/api/game/player/${this.currentPlayerIndex}/payRent`, {
-            cellId: this.currentCell.id
+            cellId: this.currentCell.id,yourSelectedMoney,otherSelectedMoney
         }).then(response => {
             console.log('支付租金成功:', response.data);
             this.$Modal.success({

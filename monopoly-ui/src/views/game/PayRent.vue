@@ -80,11 +80,13 @@ export default {
             this.$nextTick(()=>{
                 console.log("this.$refs.cashBox.exchange:",this.$refs.cashBox.exchange);
                 this.$refs.cashBox.exchange(
-                    ({isSuccess})=>{
+                    ({isSuccess,yourSelectedMoney,otherSelectedMoney})=>{
                         console.log("exchange finished, isSuccess:",isSuccess);
                         this.payModalLoading = false;
                         if(isSuccess){
                             this.showPayModal = false;
+                            console.log('支付租金成功，准备回调父组件:', { yourSelectedMoney, otherSelectedMoney });
+                            this.$emit('confirm', { yourSelectedMoney, otherSelectedMoney });
                         }
                     }
                 );
