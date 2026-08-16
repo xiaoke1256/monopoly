@@ -52,7 +52,7 @@
             </div>
         </template>
         <div style="padding:4px 0;">
-            <BuyProperty :cell="currentCell" :forUpgrade="true" @confirm="upgradeProperty" @cancel="endTurn" />
+            <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" :forUpgrade="true" @confirm="upgradeProperty" @cancel="endTurn" />
         </div>
         <template #footer>
             <div></div>
@@ -205,11 +205,13 @@ export default {
             console.error('购买地产失败:', error);
         });
     },
-    upgradeProperty(){
+    upgradeProperty({yourSelectedMoney,otherSelectedMoney}){
         // 处理升级地产逻辑
         console.log('玩家确认升级地产');
         axios.post(`/api/game/player/${this.currentPlayerIndex}/payForUpgradeProperty`, {
-            cellId: this.currentCell.id
+            cellId: this.currentCell.id,
+            yourSelectedMoney,
+            otherSelectedMoney
         }).then(response => {
             console.log('升级地产成功:', response.data);
             //界面上提示“商铺升级成功”

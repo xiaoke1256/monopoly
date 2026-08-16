@@ -399,6 +399,7 @@ export default {
             this.selectOtherBox(denomination,currentIndex,true,maxIndex);
         },
         exchange(callback){
+            console.log("exchange.....");
             //交易之前先抵消同面值货币
             for(let denomination of [1,20,100,200,500,1000,2000,5000]){
                 const otherSelected = this.other.selected[`cash${denomination}`];

@@ -184,8 +184,20 @@ const payForUpgradePropertyAndEndTurn = async (req, res) => {
         console.log(`Property is already at max level. Cannot upgrade.`);
         return res.status(400).json({ message: 'Property is already at max level. Cannot upgrade.' });
     }
-    // 从玩家账户中扣除费用
-    currentPlayer.money -= cell.upgradeCost;
+    
+    // 支付费用
+    const data = req.body;
+    console.log('Received rent payment data:', data);
+    const yourSelectedMoney = data.yourSelectedMoney;
+    const ownerSelectedMoney = data.otherSelectedMoney;
+
+    try {
+        pay(currentPlayer, null, yourSelectedMoney, ownerSelectedMoney, cell.upgradeCost);
+    } catch (error) {
+        console.error('Error during rent payment:', error);
+        return res.status(400).json({ message: error.message });
+    }
+
     // 将地产的所有者设置为当前玩家
     if (String(cell.owner) !== String(currentPlayer.id)){
         console.log(`Property is not owned by the current player. Cannot upgrade.`);

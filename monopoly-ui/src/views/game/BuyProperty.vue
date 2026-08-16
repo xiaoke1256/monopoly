@@ -26,14 +26,18 @@
     </div>
     <Modal
         v-model="showPayModal"
-        width="520">
-        <div style="padding:4px 0;">
-            <CashBox />
+        width="90%"
+        class-name="vertical-center-modal"
+        @on-ok="pay">
+        <div style="height: 100%;padding:4px 0;">
+            <CashBox v-if="showPayModal" otherPlayerIndex="-1" :yourPlayerIndex="playerIndex" :payAmount="cell.upgradeCost" ref="cashBox" />
         </div>
         <template #footer>
-            <div></div>
+            <div style="text-align:center;">
+                <Button :loading="payModalLoading" type="primary" size="large" @click="pay">确认</Button>
+            </div>
         </template>
-    </Modal> 
+    </Modal>  
 </template>
 <script>
 import { Button } from 'view-ui-plus';
@@ -51,19 +55,36 @@ export default {
         forUpgrade: {
             type: Boolean,
             default: false
-        }
+        },
+        playerIndex: {
+            type: Number,
+            default: -1
+        },
     },
     data(){
         return {
-            showPayModal:false
+            showPayModal:false,
+            payModalLoading:false,
         }
     },
     methods: {
         confirmPurchase() {
-            this.$emit('confirm');
+            this.showPayModal = true;
         },
         cancelPurchase() {
             this.$emit('cancel');
+        },
+        pay() {
+            this.payModalLoading = true;
+            this.$refs.cashBox.exchange(({isSuccess,yourSelectedMoney,otherSelectedMoney})=>{
+                console.log("exchange finished, isSuccess:",isSuccess);
+                this.payModalLoading = false;
+                if(isSuccess){
+                    this.showPayModal = false;
+                    console.log('支付租金成功，准备回调父组件:', { yourSelectedMoney, otherSelectedMoney });
+                    this.$emit('confirm', { yourSelectedMoney, otherSelectedMoney });
+                }
+            });
         }
     }
 }
