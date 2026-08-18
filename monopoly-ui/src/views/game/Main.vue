@@ -33,7 +33,7 @@
             </div>
         </template>
         <div style="padding:4px 0;">
-            <BuyProperty :cell="currentCell" @confirm="buyProperty" @cancel="endTurn" />
+            <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" @confirm="buyProperty" @cancel="endTurn" />
         </div>
         <template #footer>
             <div></div>
@@ -180,11 +180,13 @@ export default {
         }
 
     },
-    buyProperty() {
+    buyProperty({yourSelectedMoney,otherSelectedMoney}) {
         // 处理购买地产逻辑
         console.log('玩家确认购买地产');
         axios.post(`/api/game/player/${this.currentPlayerIndex}/payForProperty`, {
-            cellId: this.currentCell.id
+            cellId: this.currentCell.id,
+            yourSelectedMoney,
+            otherSelectedMoney
         }).then(response => {
             console.log('购买地产成功:', response.data);
             //界面上提示“商铺购买成功”

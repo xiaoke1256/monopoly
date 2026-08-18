@@ -30,7 +30,7 @@
         class-name="vertical-center-modal"
         @on-ok="pay">
         <div style="height: 100%;padding:4px 0;">
-            <CashBox v-if="showPayModal" otherPlayerIndex="-1" :yourPlayerIndex="playerIndex" :payAmount="cell.upgradeCost" ref="cashBox" />
+            <CashBox v-if="showPayModal" otherPlayerIndex="-1" :yourPlayerIndex="playerIndex" :payAmount="forUpgrade ? cell.upgradeCost : cell.price" ref="cashBox" />
         </div>
         <template #footer>
             <div style="text-align:center;">

@@ -158,7 +158,13 @@ const payForPropertyAndEndTurn = async (req, res) => {
     const cell = game.cells[currentPlayer.position];
     console.log(`currentPlayer:`,currentPlayer);
     // 从玩家账户中扣除费用
-    currentPlayer.money -= cell.price;
+    try {
+        pay(currentPlayer, null, req.body.yourSelectedMoney, req.body.otherSelectedMoney, cell.price);
+    } catch (error) {
+        console.error('Error during property purchase payment:', error);
+        return res.status(400).json({ message: error.message });
+    }
+
     // 将地产的所有者设置为当前玩家
     if (cell.owner){
         console.log(`Property is already owned by another player. Cannot purchase.`);
@@ -194,7 +200,7 @@ const payForUpgradePropertyAndEndTurn = async (req, res) => {
     try {
         pay(currentPlayer, null, yourSelectedMoney, ownerSelectedMoney, cell.upgradeCost);
     } catch (error) {
-        console.error('Error during rent payment:', error);
+        console.error('Error during upgrade payment:', error);
         return res.status(400).json({ message: error.message });
     }
 
