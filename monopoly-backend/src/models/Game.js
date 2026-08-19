@@ -54,7 +54,9 @@ const PlayerSchema = new mongoose.Schema({
       cash2000: 4,
       cash5000: 1,
     }
-  }
+  },
+  /*是否要领取路过柜坊的奖励 */
+  hasPassedGo: { type: Boolean, default: false },
 });
 
 const GameSchema = new mongoose.Schema({

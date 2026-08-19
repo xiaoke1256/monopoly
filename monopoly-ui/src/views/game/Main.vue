@@ -77,6 +77,21 @@
             <div></div>
         </template>
     </Modal> 
+    <Modal
+        v-model="showMessageModal"
+        footer-hide
+        :closable="false"
+        :mask-closable="false">
+        <template #header>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <PlayerAvatar :playerIndex="currentPlayerIndex" />
+                <span style="font-size:20px;font-weight:600;color:#ed4014;">消息</span>
+            </div>
+        </template>
+        <div style="padding:4px 0;">
+            <Message v-if="showMessageModal" :playerIndex="currentPlayerIndex" />
+        </div>
+    </Modal>
 </template>
 <script>
 import axios from 'axios';
@@ -86,6 +101,7 @@ import BuyProperty from './BuyProperty.vue';
 import PayRent from './PayRent.vue';
 import PlayerAvatar from '@/components/PlayerAvatar.vue';
 import { Modal, Button } from 'view-ui-plus';
+import Message from './Message.vue';
 
 export default {
   name: 'MainIndex',
@@ -96,7 +112,8 @@ export default {
     BuyProperty,
     PayRent,
     Button,
-    PlayerAvatar
+    PlayerAvatar,
+    Message
   },
   props: {
   },
@@ -106,6 +123,7 @@ export default {
       showBuyPropertyModal:false,
       showUpgradePropertyModal:false,
       showPayRentModal:false,
+      showMessageModal:false,
       currentCell:{},
       rentOwner:{},
       rentAmount:0,
@@ -174,6 +192,9 @@ export default {
             console.log("this.rentOwner:",this.rentOwner);
             this.rentAmount = response.data.rentAmount;
             this.showPayRentModal = true;
+        }else if('passGo'===action){
+            console.log('玩家经过起点，获得奖励:', response.data.reward);
+            this.showMessageModal = true;
         }else if('nothing'===action){
             console.log('玩家无需操作，直接结束回合');
             this.endTurn();

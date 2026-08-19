@@ -29,6 +29,8 @@ const movePlayer = async (req, res ) => {
         if (!player) {
             throw new Error('Player not found');
         }  
+
+        player.hasPassedGo = player.position + steps >= game.cells.length;
         player.position = (player.position + steps) % game.cells.length;
         game.save();
         return res.json({ newPosition: player.position });
@@ -103,6 +105,12 @@ const onArrived = async (req, res) => {
         const currentPlayerIndex = game.currentPlayerIndex ;
         console.log(`Player at index ${currentPlayerIndex} `);  
         const currentPlayer = game.players[currentPlayerIndex];
+
+        if (currentPlayer.hasPassedGo) {
+            // 玩家经过起点，发放奖励
+            return res.json({ action: 'passGo', reward: 3000 });
+        }
+
         const cell = game.cells[currentPlayer.position];
         if(cell.type === 'property' && cell.owner === null){
             //询问是否需要购买地产
@@ -296,6 +304,25 @@ const getPlayerStatus = async (req, res) => {
     return res.json({ playerStatus: game.playerStatus,currentPlayerPosition: currentPlayer.position });
 };
 
+const getCurrentMessage = async (req, res) => {
+    req.params.playerIndex = parseInt(req.params.playerIndex);
+    const {playerIndex} = req.params;
+    try {
+        const game = await queryCurrentGame();  
+        const currentPlayer = game.players[playerIndex];
+        if(!currentPlayer){
+            return res.status(404).json({ message: 'Player not found' });
+        }
+        if(currentPlayer.hasPassedGo){
+            return res.json({ exists: true, messageType: 'passedGo', message: '路过柜坊，请领取3000文', payAmount: -3000 });
+        }
+        return res.json({ exists: false, messageType: 'noMessage' });
+    } catch (error) {
+        console.error('Error occurred while fetching current message:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 export {
     dice,
     getCurrentGame,
@@ -308,5 +335,6 @@ export {
     payForUpgradePropertyAndEndTurn,
     payRentAndEndTurn,
     getCurrentMap,
-    getMoney
+    getMoney,
+    getCurrentMessage
 };
