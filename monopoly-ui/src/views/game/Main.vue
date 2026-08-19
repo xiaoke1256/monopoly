@@ -81,7 +81,8 @@
         v-model="showMessageModal"
         footer-hide
         :closable="false"
-        :mask-closable="false">
+        :mask-closable="false"
+        width="520">
         <template #header>
             <div style="display:flex;align-items:center;gap:12px;">
                 <PlayerAvatar :playerIndex="currentPlayerIndex" />
@@ -89,7 +90,7 @@
             </div>
         </template>
         <div style="padding:4px 0;">
-            <Message v-if="showMessageModal" :playerIndex="currentPlayerIndex" />
+            <Message v-if="showMessageModal" :playerIndex="currentPlayerIndex" @confirm="closeMessageModal" />
         </div>
     </Modal>
 </template>
@@ -166,8 +167,7 @@ export default {
         });
         this.showDiceModal = false;
     },
-    async onPlayerMoveComplete(newPosition) {
-        console.log('玩家移动完成，新位置:', newPosition);
+    async onPlayerMoveComplete() {
         // 查询后台，以确认后续操作。
         const response = await axios.get(`/api/game/player/${this.currentPlayerIndex}/arrived`);
         console.log('下一回合:', response.data);
@@ -276,6 +276,12 @@ export default {
         }).catch(error => {
             console.error('支付租金失败:', error);
         });
+    },
+    closeMessageModal() {
+        console.log('玩家关闭消息弹窗');
+        this.showMessageModal = false;
+        //检查当前的状态
+        this.onPlayerMoveComplete();
     },
     endTurn(){
         axios.post(`/api/game/player/${this.currentPlayerIndex}/endTurn`)

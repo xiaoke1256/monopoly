@@ -21,3 +21,16 @@ export const getPlayerMessage = async (playerIndex) => {
         throw error;
     }
 };
+
+export const payForMessage = async ({playerIndex,yourSelectedMoney,otherSelectedMoney}) => {
+    try {
+        const response = await axios.post(`/api/game/player/${playerIndex}/payForMessage`, {
+            yourSelectedMoney,
+            otherSelectedMoney
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error paying for message:', error);
+        throw error;
+    }
+};

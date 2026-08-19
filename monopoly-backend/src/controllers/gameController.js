@@ -151,6 +151,7 @@ const onArrived = async (req, res) => {
 }
 
 const endTurn = async (req, res) => {
+    //TODO 需要检查有无待处理的消息，和未支付的东西
     const game = await queryCurrentGame(); 
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
@@ -259,7 +260,7 @@ const payRentAndEndTurn = async (req, res) => {
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
 }
 
-const pay = (currentPlayer, otherPlayer, yourSelectedMoney, otherSelectedMoney, rentAmount) => {
+const pay = (currentPlayer, otherPlayer, yourSelectedMoney, otherSelectedMoney, payAmount) => {
     //检查两者之差是否是rentAmount?
     let yourTotal = 0;
     let otherTotal = 0;
@@ -269,9 +270,9 @@ const pay = (currentPlayer, otherPlayer, yourSelectedMoney, otherSelectedMoney, 
     for (const [denomination, amount] of Object.entries(otherSelectedMoney)) {
         otherTotal += denomination.replace('cash', '') * amount;
     }
-    if (yourTotal - otherTotal !== rentAmount) {
-        console.log(`Selected money does not match rent amount. Your total: ${yourTotal}, Other total: ${otherTotal}, Rent amount: ${rentAmount}`);
-        throw new Error('Selected money does not match rent amount.');
+    if (yourTotal - otherTotal !== payAmount) {
+        console.log(`Selected money does not match pay amount. Your total: ${yourTotal}, Other total: ${otherTotal}, Pay amount: ${payAmount}`);
+        throw new Error('Selected money does not match pay amount.');
     }
 
     //具体支付
@@ -323,6 +324,42 @@ const getCurrentMessage = async (req, res) => {
     }
 };
 
+const payForMessage = async (req, res) => {
+    req.params.playerIndex = parseInt(req.params.playerIndex);
+    const {playerIndex} = req.params;
+    try {
+        const game = await queryCurrentGame();  
+        const currentPlayer = game.players[playerIndex];
+        if(!currentPlayer){
+            return res.status(404).json({ message: 'Player not found' });
+        }
+        const ret = {};
+        if(currentPlayer.hasPassedGo){
+
+            const data = req.body;
+            console.log('Received rent payment data:', data);
+            const yourSelectedMoney = data.yourSelectedMoney;
+            const otherSelectedMoney = data.otherSelectedMoney;
+
+            currentPlayer.hasPassedGo = false;
+            pay(currentPlayer, null, yourSelectedMoney, otherSelectedMoney, -3000); // 领取3000文
+            ret.message = '领取成功';
+            ret.payAmount = 3000;
+            ret.action = 'endTurn';
+        }else{
+            return res.status(400).json({ message: 'No message to pay for' });
+        }
+        
+        await game.save();
+        return res.json(ret);        
+        
+    } catch (error) {
+        console.error('Error occurred while processing message payment:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+        
+
 export {
     dice,
     getCurrentGame,
@@ -336,5 +373,6 @@ export {
     payRentAndEndTurn,
     getCurrentMap,
     getMoney,
-    getCurrentMessage
+    getCurrentMessage,
+    payForMessage
 };
