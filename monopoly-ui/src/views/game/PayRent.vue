@@ -78,10 +78,10 @@ export default {
         pay(){
             this.payModalLoading = true;
             this.$nextTick(()=>{
-                console.log("this.$refs.cashBox.exchange:",this.$refs.cashBox.exchange);
-                this.$refs.cashBox.exchange(
+                console.log("this.$refs.cashBox.pay:",this.$refs.cashBox.pay);
+                this.$refs.cashBox.pay(
                     ({isSuccess,yourSelectedMoney,otherSelectedMoney})=>{
-                        console.log("exchange finished, isSuccess:",isSuccess);
+                        console.log("pay finished, isSuccess:",isSuccess);
                         this.payModalLoading = false;
                         if(isSuccess){
                             this.showPayModal = false;

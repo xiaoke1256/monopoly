@@ -1,8 +1,13 @@
 <template>
+    <div v-if="otherPlayerIndex>=0" @click="switchBank" style="height: 8%;aspect-ratio: 1 / 1;position: absolute;z-index: 10;">
+        <Poptip trigger="hover" :content="exchangeing?'返回支付':'兑换现金'" placement="top">
+            <PlayerAvatar width="100%" :playerIndex="exchangeing?otherPlayerIndex:-1"></PlayerAvatar>
+        </Poptip>
+    </div>
     <div class="cash-box-container">
         <div class="box-row">
             <div style="width: 10%;">
-                <PlayerAvatar width="100%" show-name="true" :playerIndex="otherPlayerIndex"></PlayerAvatar>
+                <PlayerAvatar width="100%" show-name="true" :playerIndex="exchangeing?-1:otherPlayerIndex"></PlayerAvatar>
                 <div style="text-align: center;">({{ otherAmount }}文)</div>
             </div>
             <div id="otherBox" ref="otherBox" class="cash-box" >
@@ -66,9 +71,6 @@
                 <img class="selected silver2" data-denomination="5000" v-for="i in you.selected.cash5000" @click="unSelectYourBox(5000,i)" :key="i" src="@/assets/cash/cash-5000.svg" :style="cashPosition(5000, i,true)" />
             </div>
         </div>
-        <!-- <div>
-            <Button type="primary" @click="exchange" >交换</Button>
-        </div> -->
     </div>
 </template>
 <script>
@@ -136,59 +138,62 @@ export default {
                     cash5000:0,
                 }
             },
+            exchangeing:false,
         }
     },
     mounted(){
         console.log("mounted.....");
-        if(this.otherPlayerIndex>=0){
-            getPlayerMoney(this.otherPlayerIndex).then((money)=>{
-                console.log("other player money:",money);
-                this.other.cash1 = money.cash1;
-                this.other.cash20 = money.cash20;
-                this.other.cash100 = money.cash100;
-                this.other.cash200 = money.cash200;
-                this.other.cash500 = money.cash500;
-                this.other.cash1000 = money.cash1000;
-                this.other.cash2000 = money.cash2000;
-                this.other.cash5000 = money.cash5000;
-                this.other.selected = {
-                    cash1: 0,
-                    cash20:0,
-                    cash100:0,
-                    cash200:0,
-                    cash500:0,
-                    cash1000:0,
-                    cash2000:0,
-                    cash5000:0,
-                }
-            });
-        }
-        if(this.yourPlayerIndex>=0){
-            getPlayerMoney(this.yourPlayerIndex).then((money)=>{
-                console.log("your player money:",money);
-                this.you.cash1 = money.cash1;
-                this.you.cash20 = money.cash20;
-                this.you.cash100 = money.cash100;
-                this.you.cash200 = money.cash200;
-                this.you.cash500 = money.cash500;
-                this.you.cash1000 = money.cash1000;
-                this.you.cash2000 = money.cash2000;
-                this.you.cash5000 = money.cash5000;
-                this.you.selected = {
-                    cash1: 0,
-                    cash20:0,
-                    cash100:0,
-                    cash200:0,
-                    cash500:0,
-                    cash1000:0,
-                    cash2000:0,
-                    cash5000:0,
-                }
-            });
-        }
-
+        this.loadMoney();
     },
     methods:{
+        loadMoney(){
+            if(this.otherPlayerIndex>=0){
+                getPlayerMoney(this.otherPlayerIndex).then((money)=>{
+                    console.log("other player money:",money);
+                    this.other.cash1 = money.cash1;
+                    this.other.cash20 = money.cash20;
+                    this.other.cash100 = money.cash100;
+                    this.other.cash200 = money.cash200;
+                    this.other.cash500 = money.cash500;
+                    this.other.cash1000 = money.cash1000;
+                    this.other.cash2000 = money.cash2000;
+                    this.other.cash5000 = money.cash5000;
+                    this.other.selected = {
+                        cash1: 0,
+                        cash20:0,
+                        cash100:0,
+                        cash200:0,
+                        cash500:0,
+                        cash1000:0,
+                        cash2000:0,
+                        cash5000:0,
+                    }
+                });
+            }
+            if(this.yourPlayerIndex>=0){
+                getPlayerMoney(this.yourPlayerIndex).then((money)=>{
+                    console.log("your player money:",money);
+                    this.you.cash1 = money.cash1;
+                    this.you.cash20 = money.cash20;
+                    this.you.cash100 = money.cash100;
+                    this.you.cash200 = money.cash200;
+                    this.you.cash500 = money.cash500;
+                    this.you.cash1000 = money.cash1000;
+                    this.you.cash2000 = money.cash2000;
+                    this.you.cash5000 = money.cash5000;
+                    this.you.selected = {
+                        cash1: 0,
+                        cash20:0,
+                        cash100:0,
+                        cash200:0,
+                        cash500:0,
+                        cash1000:0,
+                        cash2000:0,
+                        cash5000:0,
+                    }
+                });
+            }
+        },
         cashPosition(denomination,index,isSelected=false ){
             let baseOffset = 0;
             if(isSelected){
@@ -398,8 +403,8 @@ export default {
         unSelectOtherBox(denomination,currentIndex,maxIndex){
             this.selectOtherBox(denomination,currentIndex,true,maxIndex);
         },
-        exchange(callback){
-            console.log("exchange.....");
+        pay(callback){
+            console.log("pay.....");
             //交易之前先抵消同面值货币
             for(let denomination of [1,20,100,200,500,1000,2000,5000]){
                 const otherSelected = this.other.selected[`cash${denomination}`];
@@ -432,10 +437,10 @@ export default {
                 //把selected的货币记录下来，后面将作为callback的参数传递给父组件
                 const yourSelectedMoney = {...this.you.selected};
                 const otherSelectedMoney = {...this.other.selected};
-                this.exchangeFrom(undefined,({...params})=>callback({...params,yourSelectedMoney,otherSelectedMoney}));
+                this.payFrom(undefined,({...params})=>callback({...params,yourSelectedMoney,otherSelectedMoney}));
             });
         },
-        exchangeFrom(from,callback){
+        payFrom(from,callback){
             if(!from){
                 from = "other"
             }
@@ -505,11 +510,11 @@ export default {
                             //移动下一枚钱币
                             if(hasNext){
                                 this.$nextTick(()=>{
-                                    this.exchangeFrom(from,callback);
+                                    this.payFrom(from,callback);
                                 });
                             }else if("other"===from){
                                 this.$nextTick(()=>{
-                                    this.exchangeFrom('you',callback);
+                                    this.payFrom('you',callback);
                                 });
                             }else if(callback){
                                 this.$nextTick(()=>{
@@ -521,7 +526,7 @@ export default {
                 });  
             }else if("other"===from){
                 this.$nextTick(()=>{
-                    this.exchangeFrom('you',callback);
+                    this.payFrom('you',callback);
                 });
             }else if(callback){
                 this.$nextTick(()=>{
@@ -530,6 +535,40 @@ export default {
                 });
             }
         },
+        switchBank(){
+            if(!this.exchangeing){
+                this.enterBank();
+            }else{
+                this.exitBank();
+            }
+        },
+        enterBank(){
+            console.log("switchToBank clicked");
+            this.exchangeing = true;
+            this.other.cash1 = 80;
+            this.other.cash20 = 20;
+            this.other.cash100 = 20;
+            this.other.cash200 = 20;
+            this.other.cash500 = 20;
+            this.other.cash1000 = 20;
+            this.other.cash2000 = 12;
+            this.other.cash5000 = 12;
+            this.other.selected = {
+                cash1: 0,
+                cash20:0,
+                cash100:0,
+                cash200:0,
+                cash500:0,
+                cash1000:0,
+                cash2000:0,
+                cash5000:0,
+            }
+        },
+        exitBank(){
+            this.exchangeing = false;
+            //重新加载玩家的现金数据
+            this.loadMoney();
+        }
     },
     computed:{
         otherAmount(){

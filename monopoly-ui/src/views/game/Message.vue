@@ -73,8 +73,8 @@ export default {
         },
         pay(){
             this.payModalLoading = true;
-            this.$refs.cashBox.exchange(({isSuccess,yourSelectedMoney,otherSelectedMoney})=>{
-                console.log("exchange finished, isSuccess:",isSuccess);
+            this.$refs.cashBox.pay(({isSuccess,yourSelectedMoney,otherSelectedMoney})=>{
+                console.log("pay finished, isSuccess:",isSuccess);
                 payForMessage({playerIndex:this.playerIndex,yourSelectedMoney,otherSelectedMoney}).then((data)=>{
                     console.log("payForMessage data:",data);
                     this.payModalLoading = false;
