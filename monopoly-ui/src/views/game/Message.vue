@@ -11,30 +11,17 @@
     <Button v-if="payAmount > 0" type="primary" size="large" @click="confirmPayment">确认支付</Button>
     <Button v-if="payAmount < 0 && otherPlayerIndex < 0" type="primary" size="large" @click="confirmPayment">领取</Button>
   </div>
-  <Modal
-        v-model="showPayModal"
-        width="90%"
-        class-name="vertical-center-modal"
-        @on-ok="pay">
-        <div style="height: 100%;padding:4px 0;">
-            <CashBox v-if="showPayModal" :otherPlayerIndex="otherPlayerIndex" :yourPlayerIndex="playerIndex" :payAmount="payAmount" ref="cashBox" />
-        </div>
-        <template #footer>
-            <div style="text-align:center;">
-                <Button :loading="payModalLoading" type="primary" size="large" @click="pay">确认</Button>
-            </div>
-        </template>
-    </Modal> 
+  <CashBoxModal :otherPlayerIndex="otherPlayerIndex" :yourPlayerIndex="playerIndex" :payAmount="payAmount" @confirmPay="pay" ref="cashBoxModal" />
 </template>
 <script>
 import { Button } from 'view-ui-plus';
-import CashBox from './CashBox.vue';
+import CashBoxModal from './CashBoxModal.vue';
 import { getPlayerMessage, payForMessage } from '@/api/gameApi.js';
 
 export default {
     name: 'MessageComponent',
     components: {
-        Button,CashBox
+        Button,CashBoxModal
     },
     props: {
         playerIndex: {
@@ -44,8 +31,6 @@ export default {
     },
     data() {
         return {
-            showPayModal: false,
-            payModalLoading: false,
             content:'',
             otherPlayerIndex:-1,
             payAmount:0
@@ -69,28 +54,16 @@ export default {
     },
     methods: {
         confirmPayment() {
-            this.showPayModal = true;
+            this.$refs.cashBoxModal.show();
         },
-        pay(){
-            this.payModalLoading = true;
-            this.$refs.cashBox.pay(({isSuccess,yourSelectedMoney,otherSelectedMoney})=>{
-                console.log("pay finished, isSuccess:",isSuccess);
-                payForMessage({playerIndex:this.playerIndex,yourSelectedMoney,otherSelectedMoney}).then((data)=>{
-                    console.log("payForMessage data:",data);
-                    this.payModalLoading = false;
-                    if(isSuccess){
-                        this.showPayModal=false;
-                        this.$emit('confirm');
-                    }
-                }).catch((error)=>{
-                    console.error('Error paying for message:', error);
-                    this.payModalLoading = false;
-                });
-                this.payModalLoading = false;
-                if(isSuccess){
-                    this.showPayModal=false;
-                    this.$emit('paymentConfirmed');
-                }
+        pay({yourSelectedMoney,otherSelectedMoney,successCallback,failCallback}) {
+            payForMessage({playerIndex:this.playerIndex,yourSelectedMoney,otherSelectedMoney}).then((data)=>{
+                console.log("payForMessage data:", data);
+                successCallback();
+                this.$emit('confirm');
+            }).catch((error)=>{
+                console.error('Error processing payment:', error);
+                failCallback();
             });
         }
     }
