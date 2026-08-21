@@ -5,11 +5,17 @@
         class-name="vertical-center-modal"
         @on-ok="pay">
         <div style="height: 100%;padding:4px 0;">
-            <CashBox v-if="showPayModal" :otherPlayerIndex="otherPlayerIndex" :yourPlayerIndex="yourPlayerIndex" :payAmount="payAmount" ref="cashBox" />
+            <CashBox v-if="showPayModal" 
+                :otherPlayerIndex="otherPlayerIndex" 
+                :yourPlayerIndex="yourPlayerIndex" 
+                :payAmount="payAmount" 
+                @exchangeChange="onExchangeingChange"
+                ref="cashBox" />
         </div>
         <template #footer>
             <div style="text-align:center;">
-                <Button :loading="payModalLoading" type="primary" size="large" @click="pay">确认</Button>
+                <Button v-if="exchangeing" :loading="payModalLoading" type="primary" size="large" @click="exchange">兑换</Button>
+                <Button v-if="!exchangeing" :loading="payModalLoading" type="primary" size="large" @click="pay">确认</Button>
             </div>
         </template>
     </Modal> 
@@ -17,6 +23,7 @@
 <script>
 import { Modal, Button } from 'view-ui-plus';
 import CashBox from './CashBox.vue';
+import { exchange } from '../../api/gameApi.js'
 export default {
   name: 'MainIndex',
   components: {
@@ -39,7 +46,8 @@ export default {
   data() {
     return {
       showPayModal: false,
-      payModalLoading: false
+      payModalLoading: false,
+      exchangeing:false,
     };
   },
   methods:{
@@ -67,8 +75,36 @@ export default {
                 }
             });
         });
+    },
+    exchange(){
+        this.payModalLoading = true;
+        this.$refs.cashBox.exchange(({isSuccess,yourSelectedMoney,otherSelectedMoney})=>{
+            console.log("pay finished, isSuccess:",isSuccess);
+            if(!isSuccess){
+                this.payModalLoading = false;
+                return;
+            }
+            //传到后台处理兑换
+            exchange({playerIndex:this.yourPlayerIndex,yourSelectedMoney,otherSelectedMoney}).then(()=>{
+                this.$Message['success']({
+                    background: true,
+                    content: '兑换成功'
+                });
+                this.payModalLoading = false;
+            }).catch((error)=>{
+                console.error("兑换失败：",error);
+                this.$Message['error']({
+                    background: true,
+                    content: '兑换失败'
+                });
+                this.payModalLoading = false;
+            });
+        });
+    },
+    onExchangeingChange(exchangeing){
+        this.exchangeing = exchangeing;
     }
-  },
+  }
   
 }
 </script>

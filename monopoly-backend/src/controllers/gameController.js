@@ -298,6 +298,26 @@ const pay = (currentPlayer, otherPlayer, yourSelectedMoney, otherSelectedMoney, 
     }
 }
 
+/**
+ * 兑换
+ */
+const exchange = async (req, res)=>{
+    const game = await queryCurrentGame(); 
+    const currentPlayerIndex = game.currentPlayerIndex ;
+    console.log(`Player at index ${currentPlayerIndex} paying rent`);  
+    const currentPlayer = game.players[currentPlayerIndex];
+
+    const data = req.body;
+    const yourSelectedMoney = data.yourSelectedMoney;
+    const otherSelectedMoney = data.otherSelectedMoney;
+
+    pay(currentPlayer,null,yourSelectedMoney,otherSelectedMoney,0);
+    await game.save();
+
+    return res.json({ isSuccess: true });
+
+}
+
 const getPlayerStatus = async (req, res) => {
     const game = await queryCurrentGame();
     const currentPlayerIndex = game.currentPlayerIndex ;
@@ -349,7 +369,7 @@ const payForMessage = async (req, res) => {
         }else{
             return res.status(400).json({ message: 'No message to pay for' });
         }
-        
+
         await game.save();
         return res.json(ret);        
         
@@ -374,5 +394,6 @@ export {
     getCurrentMap,
     getMoney,
     getCurrentMessage,
-    payForMessage
+    payForMessage,
+    exchange
 };

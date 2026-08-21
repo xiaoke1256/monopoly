@@ -57,9 +57,9 @@ export default {
         confirmPayment() {
             this.$refs.cashBoxModal.show();
         },
-        pay({yourSelectedMoney,otherSelectedMoney,successCallbak,failCallback}){
+        pay({yourSelectedMoney,otherSelectedMoney,successCallback,failCallback}){
             payRent({yourSelectedMoney, otherSelectedMoney}).then(({action, message, currentPlayerIndex})=>{
-                successCallbak();
+                successCallback();
                 this.$emit('confirm', { action, message, currentPlayerIndex }); //执行结果传给父页面
             }).catch((err)=>{
                 console.error(err);

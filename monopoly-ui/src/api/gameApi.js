@@ -48,3 +48,16 @@ export const payForMessage = async ({playerIndex,yourSelectedMoney,otherSelected
         throw error;
     }
 };
+
+export const exchange = async ({playerIndex,yourSelectedMoney,otherSelectedMoney}) => {
+    try {
+        const response = await axios.post(`/api/game/player/${playerIndex}/exchange`, {
+            yourSelectedMoney,
+            otherSelectedMoney
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error paying for message:', error);
+        throw error;
+    }
+};

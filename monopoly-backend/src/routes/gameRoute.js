@@ -12,7 +12,8 @@ import { dice,
     getPlayerStatus,
     getMoney,
     getCurrentMessage,
-    payForMessage
+    payForMessage,
+    exchange
  } from '../controllers/gameController.js';
 
 const gameRouter = new Router();   
@@ -31,5 +32,6 @@ gameRouter.get('/map', getCurrentMap);
 gameRouter.get('/player/:playerIndex/money', getMoney);
 gameRouter.get('/player/:playerIndex/message', getCurrentMessage);
 gameRouter.post('/player/:playerIndex/payForMessage', payForMessage);
+gameRouter.post('/player/:playerIndex/exchange', exchange);
 
 export default gameRouter;

@@ -403,6 +403,43 @@ export default {
         unSelectOtherBox(denomination,currentIndex,maxIndex){
             this.selectOtherBox(denomination,currentIndex,true,maxIndex);
         },
+        exchange(callback){
+            console.log("callback.....");
+            //交易之前先抵消同面值货币
+            for(let denomination of [1,20,100,200,500,1000,2000,5000]){
+                const otherSelected = this.other.selected[`cash${denomination}`];
+                const yourSelected = this.you.selected[`cash${denomination}`];
+                if(otherSelected>0 && yourSelected>0){
+                    const minSelected = Math.min(otherSelected,yourSelected);
+                    this.other.selected[`cash${denomination}`] -= minSelected;
+                    this.you.selected[`cash${denomination}`] -= minSelected;
+                }
+            }
+            //检查交易金额是否正确
+            let otherSelectedAmount = 0;
+            let yourSelectedAmount = 0;
+            for(let denomination of [1,20,100,200,500,1000,2000,5000]){
+                otherSelectedAmount += this.other.selected[`cash${denomination}`]*denomination;
+                yourSelectedAmount += this.you.selected[`cash${denomination}`]*denomination;
+            }
+            if(yourSelectedAmount!=otherSelectedAmount){
+                console.log(`兑换金额不正确: otherSelectedAmount=${otherSelectedAmount}, yourSelectedAmount=${yourSelectedAmount}, payAmount=${this.payAmount}`);
+                let msg = '兑换金额不正确';
+                this.$Message['error']({
+                    background: true,
+                    content: msg
+                });
+                callback({ isSuccess: false });
+                return;
+            }
+
+            this.$nextTick(()=>{
+                //把selected的货币记录下来，后面将作为callback的参数传递给父组件
+                const yourSelectedMoney = {...this.you.selected};
+                const otherSelectedMoney = {...this.other.selected};
+                this.payFrom(undefined,({...params})=>callback({...params,yourSelectedMoney,otherSelectedMoney}));
+            });
+        },
         pay(callback){
             console.log("pay.....");
             //交易之前先抵消同面值货币
@@ -584,6 +621,12 @@ export default {
                 amount += this.you[`cash${denomination}`]*denomination;
             }
             return amount;
+        }
+    },
+    watch:{
+        exchangeing(newVal, oldVal){
+            console.log(`exchangeChange changed from ${oldVal} to ${newVal}`);
+            this.$emit('exchangeChange',newVal);
         }
     }
 }
