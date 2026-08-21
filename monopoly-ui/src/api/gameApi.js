@@ -22,6 +22,20 @@ export const getPlayerMessage = async (playerIndex) => {
     }
 };
 
+export const payRent = async ({playerIndex, rentAmount,yourSelectedMoney, otherSelectedMoney}) => {
+    try {
+        const response = await axios.post(`/api/game/player/${playerIndex}/payRent`, {
+            rentAmount,
+            yourSelectedMoney, 
+            otherSelectedMoney
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error paying rent:', error);
+        throw error;
+    }
+};
+
 export const payForMessage = async ({playerIndex,yourSelectedMoney,otherSelectedMoney}) => {
     try {
         const response = await axios.post(`/api/game/player/${playerIndex}/payForMessage`, {

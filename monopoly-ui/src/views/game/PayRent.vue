@@ -19,28 +19,17 @@
             <Button type="primary" size="large" @click="confirmPayment">确认支付</Button>
         </div>
     </div>
-    <Modal
-        v-model="showPayModal"
-        width="90%"
-        class-name="vertical-center-modal"
-        @on-ok="pay">
-        <div style="height: 100%;padding:4px 0;">
-            <CashBox v-if="showPayModal" :otherPlayerIndex="owner.index" :yourPlayerIndex="playerIndex" :payAmount="rentAmount" ref="cashBox" />
-        </div>
-        <template #footer>
-            <div style="text-align:center;">
-                <Button :loading="payModalLoading" type="primary" size="large" @click="pay">确认</Button>
-            </div>
-        </template>
-    </Modal> 
+    <CashBoxModal :otherPlayerIndex="owner.index" :yourPlayerIndex="playerIndex" :payAmount="rentAmount" @confirmPay="pay" ref="cashBoxModal" />
 </template>
 <script>
 import { Button } from 'view-ui-plus';
-import CashBox from './CashBox.vue';
+import CashBoxModal from './CashBoxModal.vue';
+import { payRent } from '../../api/gameApi.js'
+
 export default {
     name: 'PayRentComponent',
     components: {
-        Button,CashBox
+        Button,CashBoxModal
     },
     props: {
         cell: {
@@ -60,37 +49,23 @@ export default {
             default: 0
         }
     },
-    data(){
-        return {
-            showPayModal:false,
-            payModalLoading:false
-        }
-    },
     mounted(){
         console.log("mounted");
         this.payAmount = this.rentAmount;
     },
     methods: {
         confirmPayment() {
-            this.showPayModal=true;
-            //this.$emit('confirm');
+            this.$refs.cashBoxModal.show();
         },
-        pay(){
-            this.payModalLoading = true;
-            this.$nextTick(()=>{
-                console.log("this.$refs.cashBox.pay:",this.$refs.cashBox.pay);
-                this.$refs.cashBox.pay(
-                    ({isSuccess,yourSelectedMoney,otherSelectedMoney})=>{
-                        console.log("pay finished, isSuccess:",isSuccess);
-                        this.payModalLoading = false;
-                        if(isSuccess){
-                            this.showPayModal = false;
-                            console.log('支付租金成功，准备回调父组件:', { yourSelectedMoney, otherSelectedMoney });
-                            this.$emit('confirm', { yourSelectedMoney, otherSelectedMoney });
-                        }
-                    }
-                );
-            });     
+        pay({yourSelectedMoney,otherSelectedMoney,successCallbak,failCallback}){
+            payRent({yourSelectedMoney, otherSelectedMoney}).then(({action, message, currentPlayerIndex})=>{
+                successCallbak();
+                this.$emit('confirm', { action, message, currentPlayerIndex }); //执行结果传给父页面
+            }).catch((err)=>{
+                console.error(err);
+                failCallback();
+            })
+            
         }
     }
 }

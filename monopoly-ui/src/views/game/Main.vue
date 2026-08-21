@@ -71,7 +71,7 @@
             </div>
         </template>
         <div style="padding:4px 0;">
-            <PayRent :cell="currentCell" :owner="rentOwner" :playerIndex="currentPlayerIndex" :rentAmount="rentAmount" @confirm="payRent" />
+            <PayRent :cell="currentCell" :owner="rentOwner" :playerIndex="currentPlayerIndex" :rentAmount="rentAmount" @confirm="afterPayRent" />
         </div>
         <template #footer>
             <div></div>
@@ -255,26 +255,19 @@ export default {
             console.error('升级地产失败:', error);
         });
     },
-    payRent({yourSelectedMoney,otherSelectedMoney}) {
-        console.log('玩家确认支付租金');
-        console.log('Received rent payment data:', {yourSelectedMoney,otherSelectedMoney});
-        axios.post(`/api/game/player/${this.currentPlayerIndex}/payRent`, {
-            cellId: this.currentCell.id,yourSelectedMoney,otherSelectedMoney
-        }).then(response => {
-            console.log('支付租金成功:', response.data);
-            this.$Modal.success({
-                title: '支付成功',
-                content: `您已成功支付租金 ${this.rentAmount} 文！`,
-                onOk: () => {
-                    this.$refs.map.fetchMapData();
-                    this.currentPlayerIndex = response.data.currentPlayerIndex;
-                    this.showPayRentModal = false;
-                    this.showDiceModal = true;
+    afterPayRent({action, message, currentPlayerIndex}) {
+        console.log('支付租金成功:', {action, message, currentPlayerIndex});
+        this.$Modal.success({
+            title: '支付成功',
+            content: `您已成功支付租金 ${this.rentAmount} 文！`,
+            onOk: () => {
+                this.$refs.map.fetchMapData();
+                if(action==='endTurn'){
+                    this.currentPlayerIndex = currentPlayerIndex;
                 }
-            });
-
-        }).catch(error => {
-            console.error('支付租金失败:', error);
+                this.showPayRentModal = false;
+                this.showDiceModal = true;
+            }
         });
     },
     closeMessageModal() {
