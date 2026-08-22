@@ -24,28 +24,16 @@
             <Button size="large" @click="cancelPurchase">{{ forUpgrade ? '取消升级' : '取消购买' }}</Button>
         </div>
     </div>
-    <Modal
-        v-model="showPayModal"
-        width="90%"
-        class-name="vertical-center-modal"
-        @on-ok="pay">
-        <div style="height: 100%;padding:4px 0;">
-            <CashBox v-if="showPayModal" otherPlayerIndex="-1" :yourPlayerIndex="playerIndex" :payAmount="forUpgrade ? cell.upgradeCost : cell.price" ref="cashBox" />
-        </div>
-        <template #footer>
-            <div style="text-align:center;">
-                <Button :loading="payModalLoading" type="primary" size="large" @click="pay">确认</Button>
-            </div>
-        </template>
-    </Modal>  
+    <CashBoxModal otherPlayerIndex="-1" :yourPlayerIndex="playerIndex" :payAmount="forUpgrade ? cell.upgradeCost : cell.price" @confirmPay="pay" ref="cashBoxModal" />
 </template>
 <script>
 import { Button } from 'view-ui-plus';
-import CashBox from './CashBox.vue';
+import CashBoxModal from './CashBoxModal.vue';
+import { payForProperty , payForUpgradeProperty } from '../../api/gameApi.js'
 export default {
     name: 'BuyPropertyComponent',
     components: {
-        Button,CashBox
+        Button,CashBoxModal
     },
     props: {
         cell: {
@@ -61,30 +49,30 @@ export default {
             default: -1
         },
     },
-    data(){
-        return {
-            showPayModal:false,
-            payModalLoading:false,
-        }
-    },
     methods: {
         confirmPurchase() {
-            this.showPayModal = true;
+            this.$refs.cashBoxModal.show();
         },
         cancelPurchase() {
             this.$emit('cancel');
         },
-        pay() {
-            this.payModalLoading = true;
-            this.$refs.cashBox.pay(({isSuccess,yourSelectedMoney,otherSelectedMoney})=>{
-                console.log("pay finished, isSuccess:",isSuccess);
-                this.payModalLoading = false;
-                if(isSuccess){
-                    this.showPayModal = false;
-                    console.log('支付租金成功，准备回调父组件:', { yourSelectedMoney, otherSelectedMoney });
-                    this.$emit('confirm', { yourSelectedMoney, otherSelectedMoney });
+        async pay({yourSelectedMoney,otherSelectedMoney,successCallback,failCallback}) {
+            try{
+                const playerIndex = this.playerIndex;
+                const cellId = this.cell.id;
+                let result = {};
+                if (this.forUpgrade){
+                    result = await payForUpgradeProperty({cellId,playerIndex,yourSelectedMoney,otherSelectedMoney});
+                }else {
+                    result = await payForProperty({cellId,playerIndex,yourSelectedMoney,otherSelectedMoney});
                 }
-            });
+                successCallback();
+                console.log('支付租金成功，准备回调父组件:', { yourSelectedMoney, otherSelectedMoney });
+                this.$emit('confirm',{...result,forUpgrade:this.forUpgrade});
+            }catch(error){
+                console.error('Error processing payment:', error);
+                failCallback();
+            }
         }
     }
 }

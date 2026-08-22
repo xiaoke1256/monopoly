@@ -61,3 +61,31 @@ export const exchange = async ({playerIndex,yourSelectedMoney,otherSelectedMoney
         throw error;
     }
 };
+
+export const payForProperty = async ({playerIndex,cellId,yourSelectedMoney,otherSelectedMoney}) => {
+    try {
+        const response = await axios.post(`/api/game/player/${playerIndex}/payForProperty`, {
+            cellId,
+            yourSelectedMoney,
+            otherSelectedMoney
+        })
+        return response.data;
+    } catch (error) {
+        console.error('Error paying for message:', error);
+        throw error;
+    }
+};
+
+export const payForUpgradeProperty = async ({playerIndex,cellId,yourSelectedMoney,otherSelectedMoney}) => {
+    try {
+        const response = await axios.post(`/api/game/player/${playerIndex}/payForUpgradeProperty`, {
+            cellId,
+            yourSelectedMoney,
+            otherSelectedMoney
+        })
+        return response.data;
+    } catch (error) {
+        console.error('Error paying for message:', error);
+        throw error;
+    }
+};

@@ -33,7 +33,7 @@
             </div>
         </template>
         <div style="padding:4px 0;">
-            <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" @confirm="buyProperty" @cancel="endTurn" />
+            <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" @confirm="afterPayForProperty" @cancel="endTurn" />
         </div>
         <template #footer>
             <div></div>
@@ -52,7 +52,7 @@
             </div>
         </template>
         <div style="padding:4px 0;">
-            <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" :forUpgrade="true" @confirm="upgradeProperty" @cancel="endTurn" />
+            <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" :forUpgrade="true" @confirm="afterPayForProperty" @cancel="endTurn" />
         </div>
         <template #footer>
             <div></div>
@@ -201,58 +201,23 @@ export default {
         }
 
     },
-    buyProperty({yourSelectedMoney,otherSelectedMoney}) {
-        // 处理购买地产逻辑
-        console.log('玩家确认购买地产');
-        axios.post(`/api/game/player/${this.currentPlayerIndex}/payForProperty`, {
-            cellId: this.currentCell.id,
-            yourSelectedMoney,
-            otherSelectedMoney
-        }).then(response => {
-            console.log('购买地产成功:', response.data);
-            //界面上提示“商铺购买成功”
-            this.$Modal.success({
-                title: '购买成功',
-                content: '您已成功购买该地产！',
-                onOk: () => {
-                    //重新加载地图
-                    this.$refs.map.fetchMapData();
-                    this.currentPlayerIndex = response.data.currentPlayerIndex; // 更新当前玩家索引
-                    this.showBuyPropertyModal = false;
-                    //TODO : 先休眠一下，再显示要切换玩家了。
-                    this.showDiceModal = true; // 显示掷骰子弹窗，开始下一回合
-                }
-            });
-
-        }).catch(error => {
-            console.error('购买地产失败:', error);
-        });
-    },
-    upgradeProperty({yourSelectedMoney,otherSelectedMoney}){
-        // 处理升级地产逻辑
-        console.log('玩家确认升级地产');
-        axios.post(`/api/game/player/${this.currentPlayerIndex}/payForUpgradeProperty`, {
-            cellId: this.currentCell.id,
-            yourSelectedMoney,
-            otherSelectedMoney
-        }).then(response => {
-            console.log('升级地产成功:', response.data);
-            //界面上提示“商铺升级成功”
-            this.$Modal.success({
-                title: '升级成功',
-                content: '您已成功升级该地产！',
-                onOk: () => {
-                    //重新加载地图
-                    this.$refs.map.fetchMapData();
-                    this.currentPlayerIndex = response.data.currentPlayerIndex; // 更新当前玩家索引
+    afterPayForProperty({currentPlayerIndex,forUpgrade}){
+        //界面上提示“商铺购买成功”
+        this.$Modal.success({
+            title: `${forUpgrade?'升级':'购买'}成功`,
+            content: `您已成功${forUpgrade?'升级':'购买'}该地产！`,
+            onOk: () => {
+                //重新加载地图
+                this.$refs.map.fetchMapData();
+                this.currentPlayerIndex = currentPlayerIndex; // 更新当前玩家索引
+                if(forUpgrade){
                     this.showUpgradePropertyModal = false;
-                    //TODO : 先休眠一下，再显示要切换玩家了。
-                    this.showDiceModal = true; // 显示掷骰子弹窗，开始下一回合
+                }else{
+                    this.showBuyPropertyModal = false;
                 }
-            });
-
-        }).catch(error => {
-            console.error('升级地产失败:', error);
+                //TODO : 先休眠一下，再显示要切换玩家了。
+                this.showDiceModal = true; // 显示掷骰子弹窗，开始下一回合
+            }
         });
     },
     afterPayRent({action, message, currentPlayerIndex}) {
