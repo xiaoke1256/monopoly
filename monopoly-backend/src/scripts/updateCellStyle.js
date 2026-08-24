@@ -27,6 +27,11 @@ const updateCellStyle = async () => {
                         "image":'shop-lv2',
                         "textStyle":{"top":"-2%","marginTop":"11%"},
                         "colorStyle":{"width":'20%',"height":'100%',"position": 'relative',"left":'20%'}
+                    },
+                    "lv3":{
+                        image:'shop-lv3',
+                        textStyle:{top:"-5%",marginTop:"11%"},
+                        colorStyle:{borderRadius: '50% / 7%',width:'10%',height:'100%',position: 'relative',top:'-40%',left:'20.8%'}
                     }
                 };
             }
@@ -42,6 +47,11 @@ const updateCellStyle = async () => {
                         "image":'shop-lv2',
                         "textStyle":{"top":"-2%","marginTop":"11%"},
                         "colorStyle":{"width":'20%',"height":'100%',"position": 'relative',"left":'20%'}
+                    },
+                    "lv3":{
+                        image:'shop-lv3',
+                        textStyle:{top:"-5%",marginTop:"11%"},
+                        colorStyle:{borderRadius: '50% / 7%',width:'10%',height:'100%',position: 'relative',top:'-40%',left:'20.8%'}
                     }
                 };
             }else if(cell.type==='utility'){
@@ -63,6 +73,11 @@ const updateCellStyle = async () => {
                         "image":'shop2-lv2',
                         "textStyle":{"writingMode": "vertical-rl","marginLeft":"103%","marginTop":"-5%"},
                         "colorStyle":{width:'10%',height:'36%',position: 'relative',left:'85%',top:'30%'}
+                    },
+                    "lv3":{
+                        image:'shop2-lv3',
+                        textStyle:{"writingMode": "vertical-rl","marginLeft":"110%","marginTop":"-17%"},
+                        colorStyle:{borderRadius: '50% / 7%',width:'10%',height:'100%',position: 'relative',top:'-10%',left:'80%'}
                     }
                 };
             }else if(cell.type==='utility'){
@@ -84,6 +99,11 @@ const updateCellStyle = async () => {
                         "image":'shop2-lv2',
                         "textStyle":{"writingMode": "vertical-rl","marginRight":"93%","marginTop":"-5%"},
                         "colorStyle":{width:'10%',height:'36%',position: 'relative',left:'4%',top:'30%'}
+                    },
+                    "lv3":{
+                        image:'shop2-lv3',
+                        "textStyle":{"writingMode": "vertical-rl","marginRight":"98%","marginTop":"-17%"},
+                        colorStyle:{borderRadius: '50% / 7%',width:'10%',height:'100%',position: 'relative',top:'-10%',left:'10%'}
                     }
                 };
             }else if(cell.type==='utility'){

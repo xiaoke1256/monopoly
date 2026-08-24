@@ -15,6 +15,11 @@ const defaultMapData = [
         image:'shop-lv2',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      },
+      lv3:{
+        image:'shop-lv3',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }
     }
   },
@@ -27,6 +32,11 @@ const defaultMapData = [
       },
       lv2:{
         image:'shop-lv2',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      },
+      lv3:{
+        image:'shop-lv3',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }
@@ -44,6 +54,11 @@ const defaultMapData = [
         image:'shop-lv2',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      },
+      lv3:{
+        image:'shop-lv3',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }
     }
    },
@@ -57,6 +72,11 @@ const defaultMapData = [
       },
       lv2:{
         image:'shop-lv2',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      },
+      lv3:{
+        image:'shop-lv3',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }
@@ -73,6 +93,11 @@ const defaultMapData = [
         image:'shop-lv2',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      },
+      lv3:{
+        image:'shop-lv3',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }
     }
    },
@@ -87,6 +112,11 @@ const defaultMapData = [
         image:'shop-lv2',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      },
+      lv3:{
+        image:'shop-lv3',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }
     }
    },
@@ -99,6 +129,11 @@ const defaultMapData = [
       },
       lv2:{
         image:'shop-lv2',
+        textStyle:{top:"-2%",marginTop:"11%"},
+        colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
+      },
+      lv3:{
+        image:'shop-lv3',
         textStyle:{top:"-2%",marginTop:"11%"},
         colorStyle:{width:'20%',height:'100%',position: 'relative',left:'20%'}
       }
