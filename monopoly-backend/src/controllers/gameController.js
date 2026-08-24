@@ -123,7 +123,7 @@ const onArrived = async (req, res) => {
             console.log('cell.owner:',cell.owner,' currentPlayer._id:',currentPlayer._id,' currentPlayer.id:',currentPlayer.id);
             console.log(`Player at index ${currentPlayerIndex} arrived at a property owned by another player.`);
             return res.json({ action: 'payRent', cell, owner , rentAmount });
-        }else if(cell.type === 'property' && String(cell.owner) === String(currentPlayer.id)){
+        }else if(cell.type === 'property' && String(cell.owner) === String(currentPlayer.id) && cell.level < 3 ){
             //询问是否需要升级地产
             console.log(`Player at index ${currentPlayerIndex} arrived at their own property.`);
             return res.json({ action: 'upgradeProperty', cell });
