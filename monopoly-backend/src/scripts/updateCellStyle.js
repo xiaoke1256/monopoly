@@ -31,7 +31,7 @@ const updateCellStyle = async () => {
                     "lv3":{
                         image:'shop-lv3',
                         textStyle:{top:"-5%",marginTop:"11%"},
-                        colorStyle:{borderRadius: '50% / 7%',width:'10%',height:'100%',position: 'relative',top:'-40%',left:'20.8%'}
+                        colorStyle:{borderRadius: '50% / 7%',width:'8%',height:'100%',position: 'relative',top:'-40%',left:'20.8%'}
                     }
                 };
             }
@@ -51,7 +51,7 @@ const updateCellStyle = async () => {
                     "lv3":{
                         image:'shop-lv3',
                         textStyle:{top:"-5%",marginTop:"11%"},
-                        colorStyle:{borderRadius: '50% / 7%',width:'10%',height:'100%',position: 'relative',top:'-40%',left:'20.8%'}
+                        colorStyle:{borderRadius: '50% / 7%',width:'8%',height:'100%',position: 'relative',top:'-40%',left:'20.8%'}
                     }
                 };
             }else if(cell.type==='utility'){
