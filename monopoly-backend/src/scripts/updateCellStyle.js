@@ -67,7 +67,7 @@ const updateCellStyle = async () => {
                     "lv1":{
                         "image":'shop2-lv1',
                         "textStyle":{"writingMode": "vertical-rl","marginLeft":"100%","marginTop":"-3%"},
-                        "colorStyle":{width:'10%',height:'14%',position: 'relative',left:'82%',top:'43%'}
+                        "colorStyle":{borderRadius: '50%' ,width:'10%',height:'14%',position: 'relative',left:'82%',top:'43%'}
                     },
                     "lv2":{
                         "image":'shop2-lv2',
@@ -93,7 +93,7 @@ const updateCellStyle = async () => {
                     "lv1":{
                         "image":'shop2-lv1',
                         "textStyle":{"writingMode": "vertical-rl","marginRight":"88%","marginTop":"-3%"},
-                        "colorStyle":{width:'10%',height:'14%',position: 'relative',left:'9%',top:'43%'}
+                        "colorStyle":{borderRadius: '50%' ,width:'10%',height:'14%',position: 'relative',left:'9%',top:'43%'}
                     },
                     "lv2":{
                         "image":'shop2-lv2',
