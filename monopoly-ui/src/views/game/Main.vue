@@ -33,7 +33,7 @@
             </div>
         </template>
         <div style="padding:4px 0;">
-            <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" @confirm="afterPayForProperty" @cancel="endTurn" />
+            <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" @confirm="afterPayForProperty" @cancel="afterCancelForProperty" />
         </div>
         <template #footer>
             <div></div>
@@ -52,7 +52,7 @@
             </div>
         </template>
         <div style="padding:4px 0;">
-            <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" :forUpgrade="true" @confirm="afterPayForProperty" @cancel="endTurn" />
+            <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" :forUpgrade="true" @confirm="afterPayForProperty" @cancel="afterCancelForProperty" />
         </div>
         <template #footer>
             <div></div>
@@ -219,6 +219,21 @@ export default {
                 this.showDiceModal = true; // 显示掷骰子弹窗，开始下一回合
             }
         });
+    },
+    afterCancelForProperty({action, message, currentPlayerIndex,forUpgrade}) {
+        console.log('已取消购买地产:', {action, message, currentPlayerIndex});
+        this.$refs.map.fetchMapData();
+        if(action==='endTurn'){
+            console.log('已取消购买地产 - endTurn:', {action, message, currentPlayerIndex});
+            this.currentPlayerIndex = currentPlayerIndex;
+            
+            if(forUpgrade){
+                this.showUpgradePropertyModal = false;
+            }else{
+                this.showBuyPropertyModal = false;
+            }
+        }
+        this.showDiceModal = true;
     },
     afterPayRent({action, message, currentPlayerIndex}) {
         console.log('支付租金成功:', {action, message, currentPlayerIndex});

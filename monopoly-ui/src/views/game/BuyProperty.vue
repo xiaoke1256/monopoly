@@ -29,7 +29,7 @@
 <script>
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
-import { payForProperty , payForUpgradeProperty } from '../../api/gameApi.js'
+import { payForProperty , payForUpgradeProperty , cancelForProperty , cancelUpgradeProperty } from '../../api/gameApi.js'
 export default {
     name: 'BuyPropertyComponent',
     components: {
@@ -53,8 +53,21 @@ export default {
         confirmPurchase() {
             this.$refs.cashBoxModal.show();
         },
-        cancelPurchase() {
-            this.$emit('cancel');
+        async cancelPurchase() {
+            try{
+                const playerIndex = this.playerIndex;
+                let result = {};
+                if (this.forUpgrade){
+                    result = await cancelUpgradeProperty({playerIndex});
+                }else {
+                    result = await cancelForProperty({playerIndex});
+                }
+                console.log('取消支付成功，准备回调父组件:', result);
+                this.$emit('cancel',{...result});
+            }catch(error){
+                console.error('Error processing payment:', error);
+            }
+            
         },
         async pay({yourSelectedMoney,otherSelectedMoney,successCallback,failCallback}) {
             try{

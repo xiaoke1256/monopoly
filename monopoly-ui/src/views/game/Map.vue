@@ -250,6 +250,7 @@ export default {
             });
         },
         async moving(playerDiv,curPosition,targetPosition,callback) {
+            console.log("curPosition,targetPosition:",curPosition,targetPosition);
             if(curPosition==targetPosition) {
                 this.players[this.currentPlayerIndex].position = targetPosition;
                 if (callback) callback(targetPosition);

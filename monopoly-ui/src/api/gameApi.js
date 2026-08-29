@@ -62,6 +62,16 @@ export const exchange = async ({playerIndex,yourSelectedMoney,otherSelectedMoney
     }
 };
 
+export const cancelForProperty = async ({playerIndex}) => {
+    try {
+        const response = await axios.post(`/api/game/player/${playerIndex}/cancelForProperty`)
+        return response.data;
+    } catch (error) {
+        console.error('Error paying for message:', error);
+        throw error;
+    }
+}
+
 export const payForProperty = async ({playerIndex,cellId,yourSelectedMoney,otherSelectedMoney}) => {
     try {
         const response = await axios.post(`/api/game/player/${playerIndex}/payForProperty`, {
@@ -75,6 +85,16 @@ export const payForProperty = async ({playerIndex,cellId,yourSelectedMoney,other
         throw error;
     }
 };
+
+export const cancelUpgradeProperty = async ({playerIndex}) => {
+    try {
+        const response = await axios.post(`/api/game/player/${playerIndex}/cancelUpgradeProperty`)
+        return response.data;
+    } catch (error) {
+        console.error('Error paying for message:', error);
+        throw error;
+    }
+}
 
 export const payForUpgradeProperty = async ({playerIndex,cellId,yourSelectedMoney,otherSelectedMoney}) => {
     try {

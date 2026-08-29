@@ -139,10 +139,15 @@ const onArrived = async (req, res) => {
         }else if(cell.type === 'jail'){
             //进入大理寺
             console.log(`Player at index ${currentPlayerIndex} arrived at the jail.`);
+            //暂停一次
+            //currentPlayer.waitingRound==undefined?1:currentPlayer.waitingRound++;
+
         }else if(cell.type === 'security-company'){
             //进入镖局
             console.log(`Player at index ${currentPlayerIndex} arrived at the security company.`);
         }
+        game.playerStatus = 'completed';//其他情况就视为完成了业务
+        await game.save();
         return res.json({ action: 'nothing', cell });
     } catch (error) {
         console.error('Error occurred after player move:', error);
@@ -151,8 +156,11 @@ const onArrived = async (req, res) => {
 }
 
 const endTurn = async (req, res) => {
-    //TODO 需要检查有无待处理的消息，和未支付的东西
     const game = await queryCurrentGame(); 
+    //  'arrive-cell' 表示刚到达cell还没经行相关业务处理
+    if (game.playerStatus == 'arrive-cell') {
+        return res.status(400).json({ message: '相关业务还没处理完' });
+    }
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
     await game.save();
@@ -161,10 +169,12 @@ const endTurn = async (req, res) => {
 
 const payForPropertyAndEndTurn = async (req, res) => {
     const game = await queryCurrentGame(); 
+    //TODO 检查 game.playerStatus
     const currentPlayerIndex = game.currentPlayerIndex ;
     console.log(`Player at index ${currentPlayerIndex} `);  
     const currentPlayer = game.players[currentPlayerIndex];
     const cell = game.cells[currentPlayer.position];
+    //TODO 检查 cell 是否是购买状态
     console.log(`currentPlayer:`,currentPlayer);
     // 从玩家账户中扣除费用
     try {
@@ -186,6 +196,40 @@ const payForPropertyAndEndTurn = async (req, res) => {
     game.playerStatus = 'before-dice';
     await game.save();
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
+}
+
+const cancelBuyPropertyAndEndTurn = async (req, res) => {
+    const game = await queryCurrentGame(); 
+    //TODO 检查 game.playerStatus
+    const currentPlayerIndex = game.currentPlayerIndex ;
+    console.log(`Player at index ${currentPlayerIndex} `);  
+    const currentPlayer = game.players[currentPlayerIndex];
+    const cell = game.cells[currentPlayer.position];
+    //TODO 检查 cell 是否是购买状态
+    console.log(`currentPlayer:`,currentPlayer);
+
+    // 结束当前玩家的回合
+    game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    game.playerStatus = 'before-dice';
+    await game.save();
+    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex,forUpgrade:false });
+}
+
+const cancelUpgradePropertyAndEndTurn = async (req, res) => {
+    const game = await queryCurrentGame(); 
+    //TODO 检查 game.playerStatus
+    const currentPlayerIndex = game.currentPlayerIndex ;
+    console.log(`Player at index ${currentPlayerIndex} `);  
+    const currentPlayer = game.players[currentPlayerIndex];
+    const cell = game.cells[currentPlayer.position];
+    //TODO 检查 cell 是否是升级状态
+    console.log(`currentPlayer:`,currentPlayer);
+
+    // 结束当前玩家的回合
+    game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    game.playerStatus = 'before-dice';
+    await game.save();
+    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex,forUpgrade:true });
 }
 
 const payForUpgradePropertyAndEndTurn = async (req, res) => {
@@ -370,6 +414,7 @@ const payForMessage = async (req, res) => {
             return res.status(400).json({ message: 'No message to pay for' });
         }
 
+        game.playerStatus = 'completed';
         await game.save();
         return res.json(ret);        
         
@@ -389,7 +434,9 @@ export {
     onArrived,
     endTurn,
     payForPropertyAndEndTurn,
+    cancelBuyPropertyAndEndTurn,
     payForUpgradePropertyAndEndTurn,
+    cancelUpgradePropertyAndEndTurn,
     payRentAndEndTurn,
     getCurrentMap,
     getMoney,

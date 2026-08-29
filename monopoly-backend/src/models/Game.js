@@ -57,6 +57,8 @@ const PlayerSchema = new mongoose.Schema({
   },
   /*是否要领取路过柜坊的奖励 */
   hasPassedGo: { type: Boolean, default: false },
+  /*暂停轮数 */
+  waitingRound: { type: Number, default: 0 },
 });
 
 const GameSchema = new mongoose.Schema({
