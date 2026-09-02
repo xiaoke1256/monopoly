@@ -10,13 +10,14 @@
   <div class="action-buttons">
     <Button v-if="payAmount > 0" type="primary" size="large" @click="confirmPayment">确认支付</Button>
     <Button v-if="payAmount < 0 && otherPlayerIndex < 0" type="primary" size="large" @click="confirmPayment">领取</Button>
+    <Button v-if="!payAmount " type="primary" size="large" @click="confirmMsg">确定</Button>
   </div>
   <CashBoxModal :otherPlayerIndex="otherPlayerIndex" :yourPlayerIndex="playerIndex" :payAmount="payAmount" @confirmPay="pay" ref="cashBoxModal" />
 </template>
 <script>
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
-import { getPlayerMessage, payForMessage } from '@/api/gameApi.js';
+import { getPlayerMessage, payForMessage, consumeMessage } from '@/api/gameApi.js';
 
 export default {
     name: 'MessageComponent',
@@ -27,6 +28,10 @@ export default {
         playerIndex: {
             type: Number,
             default: -1
+        },
+        messageType: {
+            type: String,
+            default: ''
         }
     },
     data() {
@@ -39,7 +44,7 @@ export default {
     mounted() {
         console.log("MessageComponent mounted");
         //从后台查找当前的消息。
-        getPlayerMessage(this.playerIndex).then((data) => {
+        getPlayerMessage(this.playerIndex,this.messageType).then((data) => {
             console.log("getPlayerMessage data:", data);
             if(!data.exists){
                 this.content = "暂无消息";
@@ -53,14 +58,25 @@ export default {
         });
     },
     methods: {
+        /* 支付按钮 */
         confirmPayment() {
             this.$refs.cashBoxModal.show();
         },
+        /* 确定按钮 */
+        confirmMsg() {
+            consumeMessage({playerIndex:this.playerIndex,messageType:this.messageType}).then((data)=>{
+                console.log("consumeMessage data:", data);
+                this.$emit('confirm',data);
+            }).catch((error)=>{
+                console.error('Error processing payment:', error);
+            });
+        },
+        /* 支付操作完成后 */
         pay({yourSelectedMoney,otherSelectedMoney,successCallback,failCallback}) {
             payForMessage({playerIndex:this.playerIndex,yourSelectedMoney,otherSelectedMoney}).then((data)=>{
                 console.log("payForMessage data:", data);
                 successCallback();
-                this.$emit('confirm');
+                this.$emit('confirm',data);
             }).catch((error)=>{
                 console.error('Error processing payment:', error);
                 failCallback();

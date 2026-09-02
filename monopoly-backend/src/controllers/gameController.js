@@ -139,9 +139,8 @@ const onArrived = async (req, res) => {
         }else if(cell.type === 'jail'){
             //进入大理寺
             console.log(`Player at index ${currentPlayerIndex} arrived at the jail.`);
-            //暂停一次
-            //currentPlayer.waitingRound==undefined?1:currentPlayer.waitingRound++;
-
+            //提示需要暂停一轮
+            return res.json({ action: 'showMessage', messageType:'getJail' });
         }else if(cell.type === 'security-company'){
             //进入镖局
             console.log(`Player at index ${currentPlayerIndex} arrived at the security company.`);
@@ -372,6 +371,7 @@ const getPlayerStatus = async (req, res) => {
 const getCurrentMessage = async (req, res) => {
     req.params.playerIndex = parseInt(req.params.playerIndex);
     const {playerIndex} = req.params;
+    const {messageType} =  req.query;
     try {
         const game = await queryCurrentGame();  
         const currentPlayer = game.players[playerIndex];
@@ -380,6 +380,10 @@ const getCurrentMessage = async (req, res) => {
         }
         if(currentPlayer.hasPassedGo){
             return res.json({ exists: true, messageType: 'passedGo', message: '路过柜坊，请领取3000文', payAmount: -3000 });
+        }
+        if( messageType === 'getJail'){
+            //进入大理寺
+            return res.json({ exists: true, messageType, message: '来到大理寺，须暂停一轮' });
         }
         return res.json({ exists: false, messageType: 'noMessage' });
     } catch (error) {
@@ -397,11 +401,13 @@ const payForMessage = async (req, res) => {
         if(!currentPlayer){
             return res.status(404).json({ message: 'Player not found' });
         }
+
+        const data = req.body;
+        console.log('Received rent payment data:', data);
+
         const ret = {};
         if(currentPlayer.hasPassedGo){
 
-            const data = req.body;
-            console.log('Received rent payment data:', data);
             const yourSelectedMoney = data.yourSelectedMoney;
             const otherSelectedMoney = data.otherSelectedMoney;
 
@@ -409,7 +415,7 @@ const payForMessage = async (req, res) => {
             pay(currentPlayer, null, yourSelectedMoney, otherSelectedMoney, -3000); // 领取3000文
             ret.message = '领取成功';
             ret.payAmount = 3000;
-            ret.action = 'endTurn';
+            //ret.action = 'endTurn';//领取成功后可能还有其他事件要处理。
         }else{
             return res.status(400).json({ message: 'No message to pay for' });
         }
@@ -420,6 +426,42 @@ const payForMessage = async (req, res) => {
         
     } catch (error) {
         console.error('Error occurred while processing message payment:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+const consumeMessage = async (req, res) => {
+    req.params.playerIndex = parseInt(req.params.playerIndex);
+    const {playerIndex} = req.params;
+    const {messageType} = req.body;
+    try {
+        const game = await queryCurrentGame();  
+        const currentPlayer = game.players[playerIndex];
+        const ret = {};
+        if(!currentPlayer){
+            return res.status(404).json({ message: 'Player not found' });
+        }
+        if(messageType==='getJail'){
+            console.log(' consume message at getJail ........');
+            //TODO 检查当前位置是否是“大理寺”
+            currentPlayer.waitingRound===undefined?1: currentPlayer.waitingRound++;
+            ret.payAmount = 0;
+            ret.action = 'endTurn';
+            //处理完立即endTurn
+            console.log("before game.currentPlayerIndex:",game.currentPlayerIndex);
+            game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+            game.playerStatus = 'before-dice';
+            ret.currentPlayerIndex=game.currentPlayerIndex;
+            console.log("after game.currentPlayerIndex:",game.currentPlayerIndex);
+            await game.save();
+            return res.json(ret); 
+        }
+
+        game.playerStatus = 'completed';
+        await game.save();
+        return res.json(ret); 
+    } catch (error) {
+        console.error('Error occurred while consuming message:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
@@ -442,5 +484,6 @@ export {
     getMoney,
     getCurrentMessage,
     payForMessage,
+    consumeMessage,
     exchange
 };

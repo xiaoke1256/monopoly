@@ -12,9 +12,9 @@ export const getPlayerMoney = async (playerIndex) => {
     }
 };
 
-export const getPlayerMessage = async (playerIndex) => {
+export const getPlayerMessage = async (playerIndex,messageType) => {
     try {
-        const response = await axios.get(`/api/game/player/${playerIndex}/message`);
+        const response = await axios.get(`/api/game/player/${playerIndex}/message?messageType=${messageType}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching player message:', error);
@@ -48,6 +48,18 @@ export const payForMessage = async ({playerIndex,yourSelectedMoney,otherSelected
         throw error;
     }
 };
+
+export const consumeMessage = async ({playerIndex,messageType}) => {
+    try {
+        const response = await axios.post(`/api/game/player/${playerIndex}/consumeMessage`, {
+            messageType
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error paying for message:', error);
+        throw error;
+    }
+}
 
 export const exchange = async ({playerIndex,yourSelectedMoney,otherSelectedMoney}) => {
     try {

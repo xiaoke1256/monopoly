@@ -13,6 +13,7 @@ import { dice,
     getMoney,
     getCurrentMessage,
     payForMessage,
+    consumeMessage,
     exchange,
     cancelBuyPropertyAndEndTurn,
     cancelUpgradePropertyAndEndTurn
@@ -36,6 +37,7 @@ gameRouter.get('/map', getCurrentMap);
 gameRouter.get('/player/:playerIndex/money', getMoney);
 gameRouter.get('/player/:playerIndex/message', getCurrentMessage);
 gameRouter.post('/player/:playerIndex/payForMessage', payForMessage);
+gameRouter.post('/player/:playerIndex/consumeMessage', consumeMessage);
 gameRouter.post('/player/:playerIndex/exchange', exchange);
 
 export default gameRouter;

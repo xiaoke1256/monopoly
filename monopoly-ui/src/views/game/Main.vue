@@ -90,7 +90,7 @@
             </div>
         </template>
         <div style="padding:4px 0;">
-            <Message v-if="showMessageModal" :playerIndex="currentPlayerIndex" @confirm="closeMessageModal" />
+            <Message v-if="showMessageModal" :playerIndex="currentPlayerIndex" :messageType="messageType" @confirm="closeMessageModal" />
         </div>
     </Modal>
 </template>
@@ -125,6 +125,7 @@ export default {
       showUpgradePropertyModal:false,
       showPayRentModal:false,
       showMessageModal:false,
+      messageType:'',
       currentCell:{},
       rentOwner:{},
       rentAmount:0,
@@ -195,6 +196,10 @@ export default {
         }else if('passGo'===action){
             console.log('玩家经过起点，获得奖励:', response.data.reward);
             this.showMessageModal = true;
+        }else if('showMessage'===action){
+            console.log('显示消息:', response.data);
+            this.showMessageModal = true;
+            this.messageType = response.data.messageType
         }else if('nothing'===action){
             console.log('玩家无需操作，直接结束回合');
             this.endTurn();
@@ -250,9 +255,17 @@ export default {
             }
         });
     },
-    closeMessageModal() {
-        console.log('玩家关闭消息弹窗');
+    closeMessageModal({action, currentPlayerIndex}) {
+        console.log('玩家关闭消息弹窗:',action,currentPlayerIndex);
         this.showMessageModal = false;
+        if(action==='endTurn' && currentPlayerIndex!=undefined){
+            //需要切换玩家
+            console.log("here .....")
+            this.$refs.map.fetchMapData();
+            this.currentPlayerIndex = currentPlayerIndex;
+            this.showDiceModal = true;
+            return;
+        }
         //检查当前的状态
         this.onPlayerMoveComplete();
     },
