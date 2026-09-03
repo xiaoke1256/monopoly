@@ -139,9 +139,14 @@ export default {
        const playerStatus = response.data.playerStatus;
        const currentPlayerPosition = response.data.currentPlayerPosition;
        if(playerStatus==='before-dice') {
-           this.showDiceModal=true;
+            const isWaiting = response.data.isWaiting;
+            if(isWaiting){
+                this.onPlayerMoveComplete();
+                return
+            }
+            this.showDiceModal=true;
        } else {
-           this.onPlayerMoveComplete(currentPlayerPosition);
+            this.onPlayerMoveComplete(currentPlayerPosition);
        }
     });
   },
@@ -206,7 +211,7 @@ export default {
         }
 
     },
-    afterPayForProperty({currentPlayerIndex,forUpgrade}){
+    afterPayForProperty({currentPlayerIndex,forUpgrade,isWaiting}){
         //界面上提示“商铺购买成功”
         this.$Modal.success({
             title: `${forUpgrade?'升级':'购买'}成功`,
@@ -220,13 +225,17 @@ export default {
                 }else{
                     this.showBuyPropertyModal = false;
                 }
-                //TODO : 先休眠一下，再显示要切换玩家了。
+                //TODO 先休眠一下，再显示要切换玩家了。
+                if(isWaiting){
+                    this.onPlayerMoveComplete();
+                    return;
+                }
                 this.showDiceModal = true; // 显示掷骰子弹窗，开始下一回合
             }
         });
     },
-    afterCancelForProperty({action, message, currentPlayerIndex,forUpgrade}) {
-        console.log('已取消购买地产:', {action, message, currentPlayerIndex});
+    afterCancelForProperty({action, message, currentPlayerIndex,forUpgrade,isWaiting}) {
+        console.log('已取消购买地产:', {action, message, currentPlayerIndex,isWaiting});
         this.$refs.map.fetchMapData();
         if(action==='endTurn'){
             console.log('已取消购买地产 - endTurn:', {action, message, currentPlayerIndex});
@@ -238,10 +247,14 @@ export default {
                 this.showBuyPropertyModal = false;
             }
         }
+        if(isWaiting){
+            this.onPlayerMoveComplete();
+            return;
+        }
         this.showDiceModal = true;
     },
-    afterPayRent({action, message, currentPlayerIndex}) {
-        console.log('支付租金成功:', {action, message, currentPlayerIndex});
+    afterPayRent({action, message, currentPlayerIndex,isWaiting}) {
+        console.log('支付租金成功:', {action, message, currentPlayerIndex,isWaiting});
         this.$Modal.success({
             title: '支付成功',
             content: `您已成功支付租金 ${this.rentAmount} 文！`,
@@ -251,11 +264,15 @@ export default {
                     this.currentPlayerIndex = currentPlayerIndex;
                 }
                 this.showPayRentModal = false;
+                if(isWaiting){
+                    this.onPlayerMoveComplete();
+                    return;
+                }
                 this.showDiceModal = true;
             }
         });
     },
-    closeMessageModal({action, currentPlayerIndex}) {
+    closeMessageModal({action, currentPlayerIndex,isWaiting}) {
         console.log('玩家关闭消息弹窗:',action,currentPlayerIndex);
         this.showMessageModal = false;
         if(action==='endTurn' && currentPlayerIndex!=undefined){
@@ -263,6 +280,10 @@ export default {
             console.log("here .....")
             this.$refs.map.fetchMapData();
             this.currentPlayerIndex = currentPlayerIndex;
+            if(isWaiting){
+                this.onPlayerMoveComplete();
+                return;
+            }
             this.showDiceModal = true;
             return;
         }
@@ -279,6 +300,11 @@ export default {
             this.showBuyPropertyModal = false;
             this.showUpgradePropertyModal = false;
             this.showPayRentModal = false;
+            //
+            if(response.data.isWaiting){
+                this.onPlayerMoveComplete();
+                return;
+            }
             this.showDiceModal = true; // 显示掷骰子弹窗，开始下一回合
         })
         .catch(error => {

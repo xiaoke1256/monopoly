@@ -111,6 +111,11 @@ const onArrived = async (req, res) => {
             return res.json({ action: 'passGo', reward: 3000 });
         }
 
+        if (currentPlayer.waitingRound>0){
+            // 暂停一轮
+            return res.json({ action: 'showMessage', messageType:'waiting' });
+        }
+
         const cell = game.cells[currentPlayer.position];
         if(cell.type === 'property' && cell.owner === null){
             //询问是否需要购买地产
@@ -163,6 +168,12 @@ const endTurn = async (req, res) => {
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
     await game.save();
+    //检查切换后玩家是否处于暂停状态？
+    const currentPlayer = game.players[game.currentPlayerIndex];
+    if (currentPlayer.waitingRound>0){
+        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex });
+    }
+
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
 }
 
@@ -194,6 +205,11 @@ const payForPropertyAndEndTurn = async (req, res) => {
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
     await game.save();
+    //检查切换后玩家是否处于暂停状态？
+    const newPlayer = game.players[game.currentPlayerIndex];
+    if (newPlayer.waitingRound>0){
+        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex });
+    }
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
 }
 
@@ -211,6 +227,11 @@ const cancelBuyPropertyAndEndTurn = async (req, res) => {
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
     await game.save();
+    //检查切换后玩家是否处于暂停状态？
+    const newPlayer = game.players[game.currentPlayerIndex];
+    if (newPlayer.waitingRound>0){
+        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex,forUpgrade:false });
+    }
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex,forUpgrade:false });
 }
 
@@ -228,6 +249,11 @@ const cancelUpgradePropertyAndEndTurn = async (req, res) => {
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
     await game.save();
+    //检查切换后玩家是否处于暂停状态？
+    const newPlayer = game.players[game.currentPlayerIndex];
+    if (newPlayer.waitingRound>0){
+        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex,forUpgrade:true });
+    }
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex,forUpgrade:true });
 }
 
@@ -267,6 +293,11 @@ const payForUpgradePropertyAndEndTurn = async (req, res) => {
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
     await game.save();
+    //检查切换后玩家是否处于暂停状态？
+    const newPlayer = game.players[game.currentPlayerIndex];
+    if (newPlayer.waitingRound>0){
+        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex });
+    }
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
 }
 
@@ -300,6 +331,11 @@ const payRentAndEndTurn = async (req, res) => {
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
     await game.save();
+    //检查切换后玩家是否处于暂停状态？
+    const newPlayer = game.players[game.currentPlayerIndex];
+    if (newPlayer.waitingRound>0){
+        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex });
+    }
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
 }
 
@@ -365,7 +401,8 @@ const getPlayerStatus = async (req, res) => {
     const game = await queryCurrentGame();
     const currentPlayerIndex = game.currentPlayerIndex ;
     const currentPlayer = game.players[currentPlayerIndex];
-    return res.json({ playerStatus: game.playerStatus,currentPlayerPosition: currentPlayer.position });
+    const isWaiting = currentPlayer.waitingRound>0
+    return res.json({ playerStatus: game.playerStatus,currentPlayerPosition: currentPlayer.position, isWaiting });
 };
 
 const getCurrentMessage = async (req, res) => {
@@ -380,6 +417,9 @@ const getCurrentMessage = async (req, res) => {
         }
         if(currentPlayer.hasPassedGo){
             return res.json({ exists: true, messageType: 'passedGo', message: '路过柜坊，请领取3000文', payAmount: -3000 });
+        }
+        if(currentPlayer.waitingRound>0){
+            return res.json({ exists: true, messageType: 'waiting', message: `暂停中。剩余${currentPlayer.waitingRound-1}轮` });
         }
         if( messageType === 'getJail'){
             //进入大理寺
@@ -444,7 +484,9 @@ const consumeMessage = async (req, res) => {
         if(messageType==='getJail'){
             console.log(' consume message at getJail ........');
             //TODO 检查当前位置是否是“大理寺”
-            currentPlayer.waitingRound===undefined?1: currentPlayer.waitingRound++;
+            console.log(' before, currentPlayer.waitingRound:',currentPlayer.waitingRound);
+            currentPlayer.waitingRound = (currentPlayer.waitingRound===undefined?1:(currentPlayer.waitingRound+1));
+            console.log(' after, currentPlayer.waitingRound:',currentPlayer.waitingRound);
             ret.payAmount = 0;
             ret.action = 'endTurn';
             //处理完立即endTurn
@@ -454,6 +496,29 @@ const consumeMessage = async (req, res) => {
             ret.currentPlayerIndex=game.currentPlayerIndex;
             console.log("after game.currentPlayerIndex:",game.currentPlayerIndex);
             await game.save();
+            //检查切换后玩家是否处于暂停状态？
+            const newPlayer = game.players[game.currentPlayerIndex];
+            console.log("newPlayer.waitingRound:",newPlayer.waitingRound);
+            if (newPlayer.waitingRound>0){
+                ret.isWaiting=true;
+            }
+            return res.json(ret); 
+        }if(messageType==='waiting'){
+            currentPlayer.waitingRound--;
+            ret.action = 'endTurn';
+            //处理完立即endTurn
+            console.log("before game.currentPlayerIndex:",game.currentPlayerIndex);
+            game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+            game.playerStatus = 'before-dice';
+            ret.currentPlayerIndex=game.currentPlayerIndex;
+            console.log("after game.currentPlayerIndex:",game.currentPlayerIndex);
+            await game.save();
+            //检查切换后玩家是否处于暂停状态？
+            const newPlayer = game.players[game.currentPlayerIndex];
+            console.log("newPlayer.waitingRound:",newPlayer.waitingRound);
+            if (newPlayer.waitingRound>0){
+                ret.isWaiting=true;
+            }
             return res.json(ret); 
         }
 
