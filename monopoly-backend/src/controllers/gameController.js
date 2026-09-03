@@ -141,6 +141,7 @@ const onArrived = async (req, res) => {
         }else if(cell.type === 'hospital'){
             //进入医馆
             console.log(`Player at index ${currentPlayerIndex} arrived at the hospital.`);
+            return res.json({ action: 'showMessage', messageType:'getHospital' });
         }else if(cell.type === 'jail'){
             //进入大理寺
             console.log(`Player at index ${currentPlayerIndex} arrived at the jail.`);
@@ -424,6 +425,9 @@ const getCurrentMessage = async (req, res) => {
         if( messageType === 'getJail'){
             //进入大理寺
             return res.json({ exists: true, messageType, message: '来到大理寺，须暂停一轮' });
+        }else if( messageType === 'getHospital' ){
+            //进入医院
+            return res.json({ exists: true, messageType, message: '进入医院，请支付500文', payAmount: 500 });
         }
         return res.json({ exists: false, messageType: 'noMessage' });
     } catch (error) {
@@ -444,6 +448,7 @@ const payForMessage = async (req, res) => {
 
         const data = req.body;
         console.log('Received rent payment data:', data);
+        const {messageType} = data;
 
         const ret = {};
         if(currentPlayer.hasPassedGo){
@@ -456,7 +461,15 @@ const payForMessage = async (req, res) => {
             ret.message = '领取成功';
             ret.payAmount = 3000;
             //ret.action = 'endTurn';//领取成功后可能还有其他事件要处理。
-        }else{
+        } else if (messageType==='getHospital') {
+            const yourSelectedMoney = data.yourSelectedMoney;
+            const otherSelectedMoney = data.otherSelectedMoney;
+
+            currentPlayer.hasPassedGo = false;
+            pay(currentPlayer, null, yourSelectedMoney, otherSelectedMoney, 500); // 支付500文
+            ret.message = '支付成功';
+            ret.payAmount = 3000;
+        } else{
             return res.status(400).json({ message: 'No message to pay for' });
         }
 

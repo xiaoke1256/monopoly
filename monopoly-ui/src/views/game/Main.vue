@@ -135,26 +135,30 @@ export default {
     };
   },
   mounted() {
-    axios.get('/api/game/player-status').then(response => {
-       const playerStatus = response.data.playerStatus;
-       const currentPlayerPosition = response.data.currentPlayerPosition;
-       if(playerStatus==='before-dice') {
-            const isWaiting = response.data.isWaiting;
-            if(isWaiting){
-                this.onPlayerMoveComplete();
-                return
-            }
-            this.showDiceModal=true;
-       } else {
-            this.onPlayerMoveComplete(currentPlayerPosition);
-       }
-    });
+    this.checkStatus();
   },
   methods: {
     onGameLoaded(playerIndex) {
         this.currentPlayerIndex = playerIndex;
     },
-
+    checkStatus(){
+        axios.get('/api/game/player-status').then(response => {
+            const playerStatus = response.data.playerStatus;
+            const currentPlayerPosition = response.data.currentPlayerPosition;
+            if(playerStatus==='before-dice') {
+                const isWaiting = response.data.isWaiting;
+                if(isWaiting){
+                    this.onPlayerMoveComplete();
+                    return
+                }
+                this.showDiceModal=true;
+            } else if (playerStatus==='completed'){
+                this.endTurn();
+            } else {
+                this.onPlayerMoveComplete(currentPlayerPosition);
+            }
+        });
+    },
     async handleDiceRolled() {
         const response = await axios.get('/api/game/dice-value')
         const diceValue = response.data.dice;
@@ -288,7 +292,7 @@ export default {
             return;
         }
         //检查当前的状态
-        this.onPlayerMoveComplete();
+        this.checkStatus();
     },
     endTurn(){
         axios.post(`/api/game/player/${this.currentPlayerIndex}/endTurn`)

@@ -73,7 +73,7 @@ export default {
         },
         /* 支付操作完成后 */
         pay({yourSelectedMoney,otherSelectedMoney,successCallback,failCallback}) {
-            payForMessage({playerIndex:this.playerIndex,yourSelectedMoney,otherSelectedMoney}).then((data)=>{
+            payForMessage({playerIndex:this.playerIndex,yourSelectedMoney,otherSelectedMoney,messageType:this.messageType}).then((data)=>{
                 console.log("payForMessage data:", data);
                 successCallback();
                 this.$emit('confirm',data);

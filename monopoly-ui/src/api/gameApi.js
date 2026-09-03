@@ -36,11 +36,12 @@ export const payRent = async ({playerIndex, rentAmount,yourSelectedMoney, otherS
     }
 };
 
-export const payForMessage = async ({playerIndex,yourSelectedMoney,otherSelectedMoney}) => {
+export const payForMessage = async ({playerIndex,yourSelectedMoney,otherSelectedMoney,messageType}) => {
     try {
         const response = await axios.post(`/api/game/player/${playerIndex}/payForMessage`, {
             yourSelectedMoney,
-            otherSelectedMoney
+            otherSelectedMoney,
+            messageType
         });
         return response.data;
     } catch (error) {
