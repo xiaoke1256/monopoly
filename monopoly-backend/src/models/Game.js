@@ -61,6 +61,14 @@ const PlayerSchema = new mongoose.Schema({
   waitingRound: { type: Number, default: 0 },
 });
 
+const EventSchema = new mongoose.Schema({
+  actionType: { type: String, enum: ['passGo', 'buyProperty', 'upgradeProperty', 'payRent', 'showMessage'], default: 'showMessage' },
+  payAmount: {type: Number,default: 0},
+  message:{ type: String,default:null },
+  messageType: { type: String,default:null },
+  cellPosition: { type: Number, required: false },
+}, { _id: false });
+
 const GameSchema = new mongoose.Schema({
   roomNo: { type: String, required: true },
   name: { type: String, required: true, default: 'My Monopoly Game' },
@@ -72,6 +80,7 @@ const GameSchema = new mongoose.Schema({
   currentPlayerIndex: { type: Number, default: 0 },
   playerStatus: { type: String, enum: ['before-dice', 'arrive-cell', 'completed'], default: 'before-dice' },
   players: [PlayerSchema],
+  events:[EventSchema],
 });
 
 export default mongoose.model('Game', GameSchema);

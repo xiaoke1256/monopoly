@@ -181,7 +181,7 @@ export default {
         // 查询后台，以确认后续操作。
         const response = await axios.get(`/api/game/player/${this.currentPlayerIndex}/arrived`);
         console.log('下一回合:', response.data);
-        const action = response.data.action; // 可能的值: 'buyProperty', 'payRent', 'upgradeProperty', 'drawCard', 'other'
+        const action = response.data.actionType; // 可能的值: 'buyProperty', 'payRent', 'upgradeProperty', 'drawCard', 'other'
         if('buyProperty'===action){
             // 处理购买地产逻辑
             console.log('玩家可以购买地产');

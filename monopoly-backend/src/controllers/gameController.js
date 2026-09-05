@@ -82,9 +82,75 @@ const dice = async (req, res)=>{
         game.currentDice = diceResult;
         game.playerStatus = 'arrive-cell';
         await game.save();
+        await afterDice(game);
     }
     return res.json({ dice:diceResult });
 }
+
+/* 掷骰子以后的处理 */
+const afterDice = async (game)=>{
+    const currentPlayerIndex = game.currentPlayerIndex;
+    const currentPlayer = game.players[currentPlayerIndex];
+    console.log("(currentPlayer.position+game.currentDice) % game.cells.length:",((currentPlayer.position+game.currentDice) % game.cells.length));
+    const cell = game.cells[(currentPlayer.position+game.currentDice) % game.cells.length];
+    console.log("cell:",cell);
+    const saveEvent = async (game,event)=>{
+        if(!game.events){
+            game.events = [];
+        }
+        game.events.push(event);
+        await game.save();
+    }
+    if (currentPlayer.position + game.currentDice >= game.cells.length) {
+        const event = {actionType:'showMessage',payAmount:-3000,messageType: 'passedGo', message: '路过柜坊，请领取3000文'};
+        await saveEvent(game,event)
+    }
+    if (currentPlayer.waitingRound>0){
+        // 暂停一轮，实际情况不肯能走到这步
+        const event = {actionType: 'showMessage', messageType:'waiting', message: `暂停中。剩余${currentPlayer.waitingRound-1}轮`};
+        await saveEvent(game,event)
+    }
+    if(cell.type === 'property' && cell.owner === null){
+        //询问是否需要购买地产
+        console.log(`Player at index ${currentPlayerIndex} arrived at an unowned property.`);
+        const event = {actionType: 'buyProperty', cellPosition:cell.position,payAmount:cell.price};
+        await saveEvent(game,event)
+    }else if(cell.type === 'property' && cell.owner !== null && String(cell.owner) !== String(currentPlayer.id)){
+        //支付租金
+        const owner = game.players.map((p,index) =>  ({ ...(p.toObject({ getters: true })), index }) ).find(p => String(p.id) === String(cell.owner));
+        const rentAmount = cell.rent * (cell.level + 1);
+        console.log('cell.owner:',cell.owner,' currentPlayer._id:',currentPlayer._id,' currentPlayer.id:',currentPlayer.id);
+        console.log(`Player at index ${currentPlayerIndex} arrived at a property owned by another player.`);
+        const event = {actionType: 'payRent', cellPosition:cell.position,payAmount:rentAmount};
+        await saveEvent(game,event)
+    }else if(cell.type === 'property' && String(cell.owner) === String(currentPlayer.id) && cell.level < 3 ){
+        //询问是否需要升级地产
+        console.log(`Player at index ${currentPlayerIndex} arrived at their own property.`);
+        const event = {actionType: 'upgradeProperty', cellPosition:cell.position,payAmount:cell.upgradeCost};
+        await saveEvent(game,event)
+    }else if(cell.type === 'chance'){
+        //抽取机会卡
+        console.log(`Player at index ${currentPlayerIndex} arrived at a chance card.`);
+    }else if(cell.type === 'question'){
+        //抽取问答卡
+        console.log(`Player at index ${currentPlayerIndex} arrived at a question card.`);
+    }else if(cell.type === 'hospital'){
+        //进入医馆
+        console.log(`Player at index ${currentPlayerIndex} arrived at the hospital.`);
+        const event = {actionType: 'showMessage', messageType:'getHospital' };
+        await saveEvent(game,event)
+    }else if(cell.type === 'jail'){
+        //进入大理寺
+        console.log(`Player at index ${currentPlayerIndex} arrived at the jail.`);
+        //提示需要暂停一轮
+        const event = {actionType: 'showMessage', messageType:'getJail' };
+        await saveEvent(game,event)
+    }else if(cell.type === 'security-company'){
+        //进入镖局
+        console.log(`Player at index ${currentPlayerIndex} arrived at the security company.`);
+    }
+    
+};
 
 const getMoney = async (req, res) => {
     req.params.playerIndex = parseInt(req.params.playerIndex);
@@ -105,69 +171,102 @@ const onArrived = async (req, res) => {
         const currentPlayerIndex = game.currentPlayerIndex ;
         console.log(`Player at index ${currentPlayerIndex} `);  
         const currentPlayer = game.players[currentPlayerIndex];
+        console.log("currentPlayer:",currentPlayer);
 
-        if (currentPlayer.hasPassedGo) {
-            // 玩家经过起点，发放奖励
-            return res.json({ action: 'passGo', reward: 3000 });
+        if( game.events && game.events.length>0 ){
+            const event = game.events[0];
+            const cell = game.cells[event.cellPosition];
+            console.log("event.actionType:",event.actionType);
+            if( 'payRent' === event.actionType ){  
+                const owner = game.players.map((p,index) =>  ({ ...(p.toObject({ getters: true })), index }) ).find(p => String(p.id) === String(cell.owner));
+                return res.json({...event.toObject({ getters: true }),cell,owner,rentAmount:event.payAmount});    
+            }
+            return res.json({...event.toObject({ getters: true }),cell});
+        }else{
+            game.playerStatus = 'completed';//其他情况就视为完成了业务
+            await game.save();
+            return res.json({ actionType: 'nothing' });
         }
 
-        if (currentPlayer.waitingRound>0){
-            // 暂停一轮
-            return res.json({ action: 'showMessage', messageType:'waiting' });
-        }
-
-        const cell = game.cells[currentPlayer.position];
-        if(cell.type === 'property' && cell.owner === null){
-            //询问是否需要购买地产
-            console.log(`Player at index ${currentPlayerIndex} arrived at an unowned property.`);
-            return res.json({ action: 'buyProperty', cell });
-        }else if(cell.type === 'property' && cell.owner !== null && String(cell.owner) !== String(currentPlayer.id)){
-            //支付租金
-            const owner = game.players.map((p,index) =>  ({ ...(p.toObject({ getters: true })), index }) ).find(p => String(p.id) === String(cell.owner));
-            const rentAmount = cell.rent * (cell.level + 1);
-            console.log('cell.owner:',cell.owner,' currentPlayer._id:',currentPlayer._id,' currentPlayer.id:',currentPlayer.id);
-            console.log(`Player at index ${currentPlayerIndex} arrived at a property owned by another player.`);
-            return res.json({ action: 'payRent', cell, owner , rentAmount });
-        }else if(cell.type === 'property' && String(cell.owner) === String(currentPlayer.id) && cell.level < 3 ){
-            //询问是否需要升级地产
-            console.log(`Player at index ${currentPlayerIndex} arrived at their own property.`);
-            return res.json({ action: 'upgradeProperty', cell });
-        }else if(cell.type === 'chance'){
-            //抽取机会卡
-            console.log(`Player at index ${currentPlayerIndex} arrived at a chance card.`);
-        }else if(cell.type === 'question'){
-            //抽取问答卡
-            console.log(`Player at index ${currentPlayerIndex} arrived at a question card.`);
-        }else if(cell.type === 'hospital'){
-            //进入医馆
-            console.log(`Player at index ${currentPlayerIndex} arrived at the hospital.`);
-            return res.json({ action: 'showMessage', messageType:'getHospital' });
-        }else if(cell.type === 'jail'){
-            //进入大理寺
-            console.log(`Player at index ${currentPlayerIndex} arrived at the jail.`);
-            //提示需要暂停一轮
-            return res.json({ action: 'showMessage', messageType:'getJail' });
-        }else if(cell.type === 'security-company'){
-            //进入镖局
-            console.log(`Player at index ${currentPlayerIndex} arrived at the security company.`);
-        }
-        game.playerStatus = 'completed';//其他情况就视为完成了业务
-        await game.save();
-        return res.json({ action: 'nothing', cell });
     } catch (error) {
         console.error('Error occurred after player move:', error);
         return res.status(500).json({ error: error.message });
     }  
-}
+};
+
+// const onArrived = async (req, res) => {
+//     try {
+//         const game = await queryCurrentGame(); 
+//         const currentPlayerIndex = game.currentPlayerIndex ;
+//         console.log(`Player at index ${currentPlayerIndex} `);  
+//         const currentPlayer = game.players[currentPlayerIndex];
+
+//         if (currentPlayer.hasPassedGo) {
+//             // 玩家经过起点，发放奖励
+//             return res.json({ action: 'passGo', reward: 3000 });
+//         }
+
+//         if (currentPlayer.waitingRound>0){
+//             // 暂停一轮
+//             return res.json({ action: 'showMessage', messageType:'waiting' });
+//         }
+
+//         const cell = game.cells[currentPlayer.position];
+//         if(cell.type === 'property' && cell.owner === null){
+//             //询问是否需要购买地产
+//             console.log(`Player at index ${currentPlayerIndex} arrived at an unowned property.`);
+//             return res.json({ action: 'buyProperty', cell });
+//         }else if(cell.type === 'property' && cell.owner !== null && String(cell.owner) !== String(currentPlayer.id)){
+//             //支付租金
+//             const owner = game.players.map((p,index) =>  ({ ...(p.toObject({ getters: true })), index }) ).find(p => String(p.id) === String(cell.owner));
+//             const rentAmount = cell.rent * (cell.level + 1);
+//             console.log('cell.owner:',cell.owner,' currentPlayer._id:',currentPlayer._id,' currentPlayer.id:',currentPlayer.id);
+//             console.log(`Player at index ${currentPlayerIndex} arrived at a property owned by another player.`);
+//             return res.json({ action: 'payRent', cell, owner , rentAmount });
+//         }else if(cell.type === 'property' && String(cell.owner) === String(currentPlayer.id) && cell.level < 3 ){
+//             //询问是否需要升级地产
+//             console.log(`Player at index ${currentPlayerIndex} arrived at their own property.`);
+//             return res.json({ action: 'upgradeProperty', cell });
+//         }else if(cell.type === 'chance'){
+//             //抽取机会卡
+//             console.log(`Player at index ${currentPlayerIndex} arrived at a chance card.`);
+//         }else if(cell.type === 'question'){
+//             //抽取问答卡
+//             console.log(`Player at index ${currentPlayerIndex} arrived at a question card.`);
+//         }else if(cell.type === 'hospital'){
+//             //进入医馆
+//             console.log(`Player at index ${currentPlayerIndex} arrived at the hospital.`);
+//             return res.json({ action: 'showMessage', messageType:'getHospital' });
+//         }else if(cell.type === 'jail'){
+//             //进入大理寺
+//             console.log(`Player at index ${currentPlayerIndex} arrived at the jail.`);
+//             //提示需要暂停一轮
+//             return res.json({ action: 'showMessage', messageType:'getJail' });
+//         }else if(cell.type === 'security-company'){
+//             //进入镖局
+//             console.log(`Player at index ${currentPlayerIndex} arrived at the security company.`);
+//         }
+//         game.playerStatus = 'completed';//其他情况就视为完成了业务
+//         await game.save();
+//         return res.json({ action: 'nothing', cell });
+//     } catch (error) {
+//         console.error('Error occurred after player move:', error);
+//         return res.status(500).json({ error: error.message });
+//     }  
+// }
 
 const endTurn = async (req, res) => {
     const game = await queryCurrentGame(); 
+    if (game.playerStatus == 'before-dice') {
+        return res.status(400).json({ message: '状态错误，仅completed状态才可以调用endTurn.',playerStatus:game.playerStatus });
+    }
     //  'arrive-cell' 表示刚到达cell还没经行相关业务处理
     if (game.playerStatus == 'arrive-cell') {
         return res.status(400).json({ message: '相关业务还没处理完' });
     }
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
+    game.events = [];
     await game.save();
     //检查切换后玩家是否处于暂停状态？
     const currentPlayer = game.players[game.currentPlayerIndex];
@@ -187,6 +286,13 @@ const payForPropertyAndEndTurn = async (req, res) => {
     const cell = game.cells[currentPlayer.position];
     //TODO 检查 cell 是否是购买状态
     console.log(`currentPlayer:`,currentPlayer);
+
+    //检查events
+    const event = game.events.shift()
+    if(event.actionType !== 'buyProperty'){
+        return res.status(400).json({ message: 'the actionType must be buyProperty!' });
+    }
+
     // 从玩家账户中扣除费用
     try {
         pay(currentPlayer, null, req.body.yourSelectedMoney, req.body.otherSelectedMoney, cell.price);
@@ -205,6 +311,7 @@ const payForPropertyAndEndTurn = async (req, res) => {
     // 结束当前玩家的回合
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
+    game.events = [];
     await game.save();
     //检查切换后玩家是否处于暂停状态？
     const newPlayer = game.players[game.currentPlayerIndex];
@@ -224,9 +331,16 @@ const cancelBuyPropertyAndEndTurn = async (req, res) => {
     //TODO 检查 cell 是否是购买状态
     console.log(`currentPlayer:`,currentPlayer);
 
+    //检查events
+    const event = game.events.shift()
+    if(event.actionType !== 'buyProperty'){
+        return res.status(400).json({ message: 'the actionType must be buyProperty!' });
+    }
+
     // 结束当前玩家的回合
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
+    game.events = [];
     await game.save();
     //检查切换后玩家是否处于暂停状态？
     const newPlayer = game.players[game.currentPlayerIndex];
@@ -246,9 +360,16 @@ const cancelUpgradePropertyAndEndTurn = async (req, res) => {
     //TODO 检查 cell 是否是升级状态
     console.log(`currentPlayer:`,currentPlayer);
 
+    //检查events
+    const event = game.events.shift()
+    if(event.actionType !== 'upgradeProperty'){
+        return res.status(400).json({ message: 'the actionType must be upgradeProperty!' });
+    }
+
     // 结束当前玩家的回合
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
+    game.events = [];
     await game.save();
     //检查切换后玩家是否处于暂停状态？
     const newPlayer = game.players[game.currentPlayerIndex];
@@ -268,6 +389,12 @@ const payForUpgradePropertyAndEndTurn = async (req, res) => {
     if( cell.level >= 3 ){
         console.log(`Property is already at max level. Cannot upgrade.`);
         return res.status(400).json({ message: 'Property is already at max level. Cannot upgrade.' });
+    }
+
+    //检查events
+    const event = game.events.shift()
+    if(event.actionType !== 'upgradeProperty'){
+        return res.status(400).json({ message: 'the actionType must be upgradeProperty!' });
     }
     
     // 支付费用
@@ -293,6 +420,7 @@ const payForUpgradePropertyAndEndTurn = async (req, res) => {
     // 结束当前玩家的回合
     game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
+    game.events = [];
     await game.save();
     //检查切换后玩家是否处于暂停状态？
     const newPlayer = game.players[game.currentPlayerIndex];
@@ -308,6 +436,13 @@ const payRentAndEndTurn = async (req, res) => {
     console.log(`Player at index ${currentPlayerIndex} paying rent`);  
     const currentPlayer = game.players[currentPlayerIndex];
     const cell = game.cells[currentPlayer.position];
+
+    
+    //检查events
+    const event = game.events.shift()
+    if(event.actionType !== 'payRent'){
+        return res.status(400).json({ message: 'the actionType must be payRent!' });
+    }
     
     const owner = game.players.find(p => String(p.id) === String(cell.owner));
     if (!owner) {
@@ -416,20 +551,14 @@ const getCurrentMessage = async (req, res) => {
         if(!currentPlayer){
             return res.status(404).json({ message: 'Player not found' });
         }
-        if(currentPlayer.hasPassedGo){
-            return res.json({ exists: true, messageType: 'passedGo', message: '路过柜坊，请领取3000文', payAmount: -3000 });
+        if(game.events.length===0){
+            return res.json({ exists: false, messageType: 'noMessage' });
         }
-        if(currentPlayer.waitingRound>0){
-            return res.json({ exists: true, messageType: 'waiting', message: `暂停中。剩余${currentPlayer.waitingRound-1}轮` });
+        const event = game.events[0];
+        if(event.actionType !== 'showMessage'){
+            return res.json({ exists: false, messageType: 'noMessage' });
         }
-        if( messageType === 'getJail'){
-            //进入大理寺
-            return res.json({ exists: true, messageType, message: '来到大理寺，须暂停一轮' });
-        }else if( messageType === 'getHospital' ){
-            //进入医院
-            return res.json({ exists: true, messageType, message: '进入医院，请支付500文', payAmount: 500 });
-        }
-        return res.json({ exists: false, messageType: 'noMessage' });
+        return res.json({ exists: true, ...event.toJSON() })
     } catch (error) {
         console.error('Error occurred while fetching current message:', error);
         return res.status(500).json({ message: 'Internal server error' });
@@ -446,12 +575,23 @@ const payForMessage = async (req, res) => {
             return res.status(404).json({ message: 'Player not found' });
         }
 
+        if(game.events.length===0){
+            return res.status(400).json({ message: 'No message to pay for' });
+        }
+        const event = game.events.shift();
+        if(event.actionType !== 'showMessage'){
+            return res.status(400).json({ message: 'No message to pay for' });
+        }
+
         const data = req.body;
         console.log('Received rent payment data:', data);
-        const {messageType} = data;
+        const messageType = event.messageType;
 
         const ret = {};
-        if(currentPlayer.hasPassedGo){
+        if(messageType==='passedGo'){
+            if (!currentPlayer.hasPassedGo){
+                return res.status(400).json({ message: 'can not consume message by type "passedGo". hasPassedGo is false!' });
+            }
 
             const yourSelectedMoney = data.yourSelectedMoney;
             const otherSelectedMoney = data.otherSelectedMoney;
@@ -459,7 +599,7 @@ const payForMessage = async (req, res) => {
             currentPlayer.hasPassedGo = false;
             pay(currentPlayer, null, yourSelectedMoney, otherSelectedMoney, -3000); // 领取3000文
             ret.message = '领取成功';
-            ret.payAmount = 3000;
+            ret.payAmount = -3000;
             //ret.action = 'endTurn';//领取成功后可能还有其他事件要处理。
         } else if (messageType==='getHospital') {
             const yourSelectedMoney = data.yourSelectedMoney;
@@ -468,12 +608,14 @@ const payForMessage = async (req, res) => {
             currentPlayer.hasPassedGo = false;
             pay(currentPlayer, null, yourSelectedMoney, otherSelectedMoney, 500); // 支付500文
             ret.message = '支付成功';
-            ret.payAmount = 3000;
+            ret.payAmount = 500;
         } else{
             return res.status(400).json({ message: 'No message to pay for' });
         }
 
-        game.playerStatus = 'completed';
+        if(game.events.length===0){
+            game.playerStatus = 'completed';
+        }
         await game.save();
         return res.json(ret);        
         
@@ -494,50 +636,61 @@ const consumeMessage = async (req, res) => {
         if(!currentPlayer){
             return res.status(404).json({ message: 'Player not found' });
         }
-        if(messageType==='getJail'){
-            console.log(' consume message at getJail ........');
-            //TODO 检查当前位置是否是“大理寺”
-            console.log(' before, currentPlayer.waitingRound:',currentPlayer.waitingRound);
-            currentPlayer.waitingRound = (currentPlayer.waitingRound===undefined?1:(currentPlayer.waitingRound+1));
-            console.log(' after, currentPlayer.waitingRound:',currentPlayer.waitingRound);
-            ret.payAmount = 0;
-            ret.action = 'endTurn';
-            //处理完立即endTurn
-            console.log("before game.currentPlayerIndex:",game.currentPlayerIndex);
-            game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
-            game.playerStatus = 'before-dice';
-            ret.currentPlayerIndex=game.currentPlayerIndex;
-            console.log("after game.currentPlayerIndex:",game.currentPlayerIndex);
-            await game.save();
-            //检查切换后玩家是否处于暂停状态？
-            const newPlayer = game.players[game.currentPlayerIndex];
-            console.log("newPlayer.waitingRound:",newPlayer.waitingRound);
-            if (newPlayer.waitingRound>0){
-                ret.isWaiting=true;
+
+        if(messageType==='waiting'){
+            //waiting特殊处理，因为没有对应的event。
+            if(currentPlayer.waitingRound<=0){
+                console.log("currentPlayer.waitingRound:",currentPlayer.waitingRound);
+                return res.status(400).json({ message: 'Consume message fail.' });
             }
-            return res.json(ret); 
-        }if(messageType==='waiting'){
             currentPlayer.waitingRound--;
-            ret.action = 'endTurn';
-            //处理完立即endTurn
-            console.log("before game.currentPlayerIndex:",game.currentPlayerIndex);
-            game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
-            game.playerStatus = 'before-dice';
-            ret.currentPlayerIndex=game.currentPlayerIndex;
-            console.log("after game.currentPlayerIndex:",game.currentPlayerIndex);
-            await game.save();
-            //检查切换后玩家是否处于暂停状态？
-            const newPlayer = game.players[game.currentPlayerIndex];
-            console.log("newPlayer.waitingRound:",newPlayer.waitingRound);
-            if (newPlayer.waitingRound>0){
-                ret.isWaiting=true;
+        }else{
+
+            if(game.events.length===0){
+                return res.status(400).json({ message: 'No message to pay for' });
             }
-            return res.json(ret); 
+            const event = game.events.shift();
+            if(event.actionType !== 'showMessage'){
+                return res.status(400).json({ message: 'No message to pay for' });
+            }
+
+            if (messageType != event.messageType) {
+                return res.status(400).json({ message: 'messageType not match!' });
+            }
+
+            if(messageType==='getJail'){
+                console.log(' consume message at getJail ........');
+                //TODO 检查当前位置是否是“大理寺”
+                console.log(' before, currentPlayer.waitingRound:',currentPlayer.waitingRound);
+                currentPlayer.waitingRound = (currentPlayer.waitingRound===undefined?1:(currentPlayer.waitingRound+1));
+                console.log(' after, currentPlayer.waitingRound:',currentPlayer.waitingRound);
+                ret.payAmount = 0;
+            }else{
+                return res.status(400).json({ message: 'messageType is not valid' });
+            }
         }
 
-        game.playerStatus = 'completed';
-        await game.save();
-        return res.json(ret); 
+        if(game.events.length===0){
+            ret.action = 'endTurn';
+            //处理完立即endTurn
+            console.log("before game.currentPlayerIndex:",game.currentPlayerIndex);
+            game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+            game.playerStatus = 'before-dice';
+            ret.currentPlayerIndex=game.currentPlayerIndex;
+            console.log("after game.currentPlayerIndex:",game.currentPlayerIndex);
+            await game.save();
+            //检查切换后玩家是否处于暂停状态？
+            const newPlayer = game.players[game.currentPlayerIndex];
+            console.log("newPlayer.waitingRound:",newPlayer.waitingRound);
+            if (newPlayer.waitingRound>0){
+                ret.isWaiting=true;
+            }
+            return res.json(ret); 
+        }else{
+            //game.playerStatus = 'completed';
+            await game.save();
+            return res.json(ret); 
+        }
     } catch (error) {
         console.error('Error occurred while consuming message:', error);
         return res.status(500).json({ message: 'Internal server error' });
