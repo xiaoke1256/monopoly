@@ -182,7 +182,12 @@ const onArrived = async (req, res) => {
                 return res.json({...event.toObject({ getters: true }),cell,owner,rentAmount:event.payAmount});    
             }
             return res.json({...event.toObject({ getters: true }),cell});
-        }else{
+        }else if(currentPlayer.waitingRound>0){//需要暂停一轮
+            const event = {actionType: 'showMessage', messageType:'waiting', message: `暂停中。剩余${currentPlayer.waitingRound-1}轮`};
+            game.events.push(event);
+            await game.save();
+            return res.json({...event,cell});
+        } else{
             game.playerStatus = 'completed';//其他情况就视为完成了业务
             await game.save();
             return res.json({ actionType: 'nothing' });
@@ -576,37 +581,33 @@ const consumeMessage = async (req, res) => {
             return res.status(404).json({ message: 'Player not found' });
         }
 
-        if(messageType==='waiting'){
-            //waiting特殊处理，因为没有对应的event。
+        if(game.events.length===0){
+            return res.status(400).json({ message: 'No message to pay for' });
+        }
+        const event = game.events.shift();
+        if(event.actionType !== 'showMessage'){
+            return res.status(400).json({ message: 'No message to pay for' });
+        }
+
+        if (messageType != event.messageType) {
+            return res.status(400).json({ message: 'messageType not match!' });
+        }
+
+        if(messageType==='getJail'){
+            console.log(' consume message at getJail ........');
+            //TODO 检查当前位置是否是“大理寺”
+            console.log(' before, currentPlayer.waitingRound:',currentPlayer.waitingRound);
+            currentPlayer.waitingRound = (currentPlayer.waitingRound===undefined?1:(currentPlayer.waitingRound+1));
+            console.log(' after, currentPlayer.waitingRound:',currentPlayer.waitingRound);
+            ret.payAmount = 0;
+        }else if(messageType==='waiting'){
             if(currentPlayer.waitingRound<=0){
                 console.log("currentPlayer.waitingRound:",currentPlayer.waitingRound);
                 return res.status(400).json({ message: 'Consume message fail.' });
             }
             currentPlayer.waitingRound--;
         }else{
-
-            if(game.events.length===0){
-                return res.status(400).json({ message: 'No message to pay for' });
-            }
-            const event = game.events.shift();
-            if(event.actionType !== 'showMessage'){
-                return res.status(400).json({ message: 'No message to pay for' });
-            }
-
-            if (messageType != event.messageType) {
-                return res.status(400).json({ message: 'messageType not match!' });
-            }
-
-            if(messageType==='getJail'){
-                console.log(' consume message at getJail ........');
-                //TODO 检查当前位置是否是“大理寺”
-                console.log(' before, currentPlayer.waitingRound:',currentPlayer.waitingRound);
-                currentPlayer.waitingRound = (currentPlayer.waitingRound===undefined?1:(currentPlayer.waitingRound+1));
-                console.log(' after, currentPlayer.waitingRound:',currentPlayer.waitingRound);
-                ret.payAmount = 0;
-            }else{
-                return res.status(400).json({ message: 'messageType is not valid' });
-            }
+            return res.status(400).json({ message: 'messageType is not valid:',messageType });
         }
 
         if(game.events.length===0){
