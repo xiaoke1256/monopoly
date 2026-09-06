@@ -137,13 +137,13 @@ const afterDice = async (game)=>{
     }else if(cell.type === 'hospital'){
         //进入医馆
         console.log(`Player at index ${currentPlayerIndex} arrived at the hospital.`);
-        const event = {actionType: 'showMessage', messageType:'getHospital' };
+        const event = {actionType: 'showMessage', messageType:'getHospital', message:'进入医馆，请支付500文',payAmount:500 };
         await saveEvent(game,event)
     }else if(cell.type === 'jail'){
         //进入大理寺
         console.log(`Player at index ${currentPlayerIndex} arrived at the jail.`);
         //提示需要暂停一轮
-        const event = {actionType: 'showMessage', messageType:'getJail' };
+        const event = {actionType: 'showMessage', messageType:'getJail',message:'来到大理寺，须暂停一轮' };
         await saveEvent(game,event)
     }else if(cell.type === 'security-company'){
         //进入镖局
@@ -193,67 +193,6 @@ const onArrived = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }  
 };
-
-// const onArrived = async (req, res) => {
-//     try {
-//         const game = await queryCurrentGame(); 
-//         const currentPlayerIndex = game.currentPlayerIndex ;
-//         console.log(`Player at index ${currentPlayerIndex} `);  
-//         const currentPlayer = game.players[currentPlayerIndex];
-
-//         if (currentPlayer.hasPassedGo) {
-//             // 玩家经过起点，发放奖励
-//             return res.json({ action: 'passGo', reward: 3000 });
-//         }
-
-//         if (currentPlayer.waitingRound>0){
-//             // 暂停一轮
-//             return res.json({ action: 'showMessage', messageType:'waiting' });
-//         }
-
-//         const cell = game.cells[currentPlayer.position];
-//         if(cell.type === 'property' && cell.owner === null){
-//             //询问是否需要购买地产
-//             console.log(`Player at index ${currentPlayerIndex} arrived at an unowned property.`);
-//             return res.json({ action: 'buyProperty', cell });
-//         }else if(cell.type === 'property' && cell.owner !== null && String(cell.owner) !== String(currentPlayer.id)){
-//             //支付租金
-//             const owner = game.players.map((p,index) =>  ({ ...(p.toObject({ getters: true })), index }) ).find(p => String(p.id) === String(cell.owner));
-//             const rentAmount = cell.rent * (cell.level + 1);
-//             console.log('cell.owner:',cell.owner,' currentPlayer._id:',currentPlayer._id,' currentPlayer.id:',currentPlayer.id);
-//             console.log(`Player at index ${currentPlayerIndex} arrived at a property owned by another player.`);
-//             return res.json({ action: 'payRent', cell, owner , rentAmount });
-//         }else if(cell.type === 'property' && String(cell.owner) === String(currentPlayer.id) && cell.level < 3 ){
-//             //询问是否需要升级地产
-//             console.log(`Player at index ${currentPlayerIndex} arrived at their own property.`);
-//             return res.json({ action: 'upgradeProperty', cell });
-//         }else if(cell.type === 'chance'){
-//             //抽取机会卡
-//             console.log(`Player at index ${currentPlayerIndex} arrived at a chance card.`);
-//         }else if(cell.type === 'question'){
-//             //抽取问答卡
-//             console.log(`Player at index ${currentPlayerIndex} arrived at a question card.`);
-//         }else if(cell.type === 'hospital'){
-//             //进入医馆
-//             console.log(`Player at index ${currentPlayerIndex} arrived at the hospital.`);
-//             return res.json({ action: 'showMessage', messageType:'getHospital' });
-//         }else if(cell.type === 'jail'){
-//             //进入大理寺
-//             console.log(`Player at index ${currentPlayerIndex} arrived at the jail.`);
-//             //提示需要暂停一轮
-//             return res.json({ action: 'showMessage', messageType:'getJail' });
-//         }else if(cell.type === 'security-company'){
-//             //进入镖局
-//             console.log(`Player at index ${currentPlayerIndex} arrived at the security company.`);
-//         }
-//         game.playerStatus = 'completed';//其他情况就视为完成了业务
-//         await game.save();
-//         return res.json({ action: 'nothing', cell });
-//     } catch (error) {
-//         console.error('Error occurred after player move:', error);
-//         return res.status(500).json({ error: error.message });
-//     }  
-// }
 
 const endTurn = async (req, res) => {
     const game = await queryCurrentGame(); 
