@@ -186,6 +186,7 @@ const onArrived = async (req, res) => {
             const event = {actionType: 'showMessage', messageType:'waiting', message: `暂停中。剩余${currentPlayer.waitingRound-1}轮`};
             game.events.push(event);
             await game.save();
+            const cell = game.cells[event.cellPosition];
             return res.json({...event,cell});
         } else{
             game.playerStatus = 'completed';//其他情况就视为完成了业务
