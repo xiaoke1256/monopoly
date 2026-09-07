@@ -276,23 +276,36 @@ export default {
             }
         });
     },
-    closeMessageModal({action, currentPlayerIndex,isWaiting}) {
-        console.log('玩家关闭消息弹窗:',action,currentPlayerIndex);
-        this.showMessageModal = false;
-        if(action==='endTurn' && currentPlayerIndex!=undefined){
-            //需要切换玩家
-            console.log("here .....")
-            this.$refs.map.fetchMapData();
-            this.currentPlayerIndex = currentPlayerIndex;
-            if(isWaiting){
-                this.onPlayerMoveComplete();
+    closeMessageModal({action, currentPlayerIndex,isWaiting,message}) {
+        const doClose = ()=>{
+            this.showMessageModal = false;
+            if(action==='endTurn' && currentPlayerIndex!=undefined){
+                //需要切换玩家
+                console.log("here .....")
+                this.$refs.map.fetchMapData();
+                this.currentPlayerIndex = currentPlayerIndex;
+                if(isWaiting){
+                    this.onPlayerMoveComplete();
+                    return;
+                }
+                this.showDiceModal = true;
                 return;
             }
-            this.showDiceModal = true;
-            return;
+            //检查当前的状态
+            this.checkStatus();
         }
-        //检查当前的状态
-        this.checkStatus();
+        console.log('玩家关闭消息弹窗:',action,currentPlayerIndex,isWaiting,message);
+        
+        if (message){
+            this.$Modal.success({
+                title: '',
+                content: message,
+                onOk: doClose
+            });
+        }else{
+            doClose();
+        }
+        
     },
     endTurn(){
         axios.post(`/api/game/player/${this.currentPlayerIndex}/endTurn`)

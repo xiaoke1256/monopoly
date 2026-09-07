@@ -157,7 +157,7 @@ const defaultMapData = [
   { position: 25, type: 'question', name: '问答卡', color: null },
   { position: 16, type: 'utility', name: '赏踏歌', color: null },
   { position: 27, type: 'property', name: '印刷行', color: 'yellow', price: 260, rent: 22,upgradeCost:160, housePrice: 150, buildingCost: 150, mortgageValue: 130 },
-  { position: 28, type: 'property', name: '笔行', color: 'yellow', price: 260, rent: 22 ,upgradeCost:160,, housePrice: 150, buildingCost: 150, mortgageValue: 130 },
+  { position: 28, type: 'property', name: '笔行', color: 'yellow', price: 260, rent: 22 ,upgradeCost:160, housePrice: 150, buildingCost: 150, mortgageValue: 130 },
   { position: 29, type: 'chance', name: '运气卡', color: null },
   { position: 30, type: 'security-company', name: '镖局', color: null },
   { position: 31, type: 'property', name: '琴行', color: 'green', price: 300, rent: 26,upgradeCost:180, housePrice: 200, buildingCost: 200, mortgageValue: 150 },

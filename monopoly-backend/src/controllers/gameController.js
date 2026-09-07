@@ -128,6 +128,16 @@ const afterDice = async (game)=>{
         console.log(`Player at index ${currentPlayerIndex} arrived at their own property.`);
         const event = {actionType: 'upgradeProperty', cellPosition:cell.position,payAmount:cell.upgradeCost};
         await saveEvent(game,event)
+    }else if(cell.type === 'utility'){
+        //支付费用
+        console.log(`Player at index ${currentPlayerIndex} arrived at a utility.`);
+        let event = {}; 
+        if ( cell.name === '行祈福' ){
+            event = {actionType: 'showMessage', messageType:'getUtility', message:`行祈福，获得500文奖励`,payAmount:-500 };
+        } else {
+            event = {actionType: 'showMessage', messageType:'getUtility', message:`${cell.name}，请支付门票500文`,payAmount:500 };
+        }
+        await saveEvent(game,event)
     }else if(cell.type === 'chance'){
         //抽取机会卡
         console.log(`Player at index ${currentPlayerIndex} arrived at a chance card.`);
@@ -550,10 +560,20 @@ const payForMessage = async (req, res) => {
             const yourSelectedMoney = data.yourSelectedMoney;
             const otherSelectedMoney = data.otherSelectedMoney;
 
-            currentPlayer.hasPassedGo = false;
             pay(currentPlayer, null, yourSelectedMoney, otherSelectedMoney, 500); // 支付500文
             ret.message = '支付成功';
             ret.payAmount = 500;
+        } else if (messageType==='getUtility') {
+            const yourSelectedMoney = data.yourSelectedMoney;
+            const otherSelectedMoney = data.otherSelectedMoney;
+
+            pay(currentPlayer, null, yourSelectedMoney, otherSelectedMoney, event.payAmount); 
+            if(event.payAmount<0){
+                ret.message = '领取成功';
+            }else{
+                ret.message = '支付成功';
+            }
+            ret.payAmount = event.payAmount;
         } else{
             return res.status(400).json({ message: 'No message to pay for' });
         }
