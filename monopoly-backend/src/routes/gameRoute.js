@@ -3,6 +3,7 @@ import { dice,
     getCurrentGame,
     getCurrentDice,
     movePlayer,
+    getPlayers,
     onArrived,
     endTurn,
     payForPropertyAndEndTurn,
@@ -14,6 +15,7 @@ import { dice,
     getCurrentMessage,
     payForMessage,
     consumeMessage,
+    payForSecurityCompany,
     exchange,
     cancelBuyPropertyAndEndTurn,
     cancelUpgradePropertyAndEndTurn
@@ -25,6 +27,7 @@ gameRouter.get('/dice', dice);
 gameRouter.get('/current', getCurrentGame);
 gameRouter.get('/player-status', getPlayerStatus);
 gameRouter.get('/dice-value', getCurrentDice);
+gameRouter.get('/players',getPlayers);
 gameRouter.post('/player/:playerIndex/move', movePlayer);
 gameRouter.get('/player/:playerIndex/arrived', onArrived);
 gameRouter.post('/player/:playerIndex/payForProperty', payForPropertyAndEndTurn);
@@ -33,6 +36,7 @@ gameRouter.post('/player/:playerIndex/payForUpgradeProperty', payForUpgradePrope
 gameRouter.post('/player/:playerIndex/cancelUpgradeProperty',cancelUpgradePropertyAndEndTurn);
 gameRouter.post('/player/:playerIndex/payRent', payRentAndEndTurn);
 gameRouter.post('/player/:playerIndex/endTurn', endTurn);
+gameRouter.post('/player/:playerIndex/payForSecurityCompany', payForSecurityCompany);
 gameRouter.get('/map', getCurrentMap);
 gameRouter.get('/player/:playerIndex/money', getMoney);
 gameRouter.get('/player/:playerIndex/message', getCurrentMessage);

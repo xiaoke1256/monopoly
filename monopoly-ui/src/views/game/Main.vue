@@ -93,6 +93,22 @@
             <Message v-if="showMessageModal" :playerIndex="currentPlayerIndex" :messageType="messageType" @confirm="closeMessageModal" />
         </div>
     </Modal>
+    <Modal
+        v-model="showSecurityCompanyModal"
+        footer-hide
+        :closable="false"
+        :mask-closable="false"
+        width="520">
+        <template #header>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <PlayerAvatar :playerIndex="currentPlayerIndex" />
+                <span style="font-size:20px;font-weight:600;color:#ed4014;">镖局</span>
+            </div>
+        </template>
+        <div style="padding:4px 0;">
+            <SecurityCompany v-if="showSecurityCompanyModal" :playerIndex="currentPlayerIndex" @confirm="afterSelectCell" />
+        </div>
+    </Modal>
 </template>
 <script>
 import axios from 'axios';
@@ -100,6 +116,7 @@ import Dice from './Dice.vue';
 import Map from './Map.vue';
 import BuyProperty from './BuyProperty.vue';
 import PayRent from './PayRent.vue';
+import SecurityCompany from './SecurityCompany.vue';
 import PlayerAvatar from '@/components/PlayerAvatar.vue';
 import { Modal, Button } from 'view-ui-plus';
 import Message from './Message.vue';
@@ -114,7 +131,8 @@ export default {
     PayRent,
     Button,
     PlayerAvatar,
-    Message
+    Message,
+    SecurityCompany
   },
   props: {
   },
@@ -125,6 +143,7 @@ export default {
       showUpgradePropertyModal:false,
       showPayRentModal:false,
       showMessageModal:false,
+      showSecurityCompanyModal:false,
       messageType:'',
       currentCell:{},
       rentOwner:{},
@@ -205,6 +224,9 @@ export default {
         }else if('passGo'===action){
             console.log('玩家经过起点，获得奖励:', response.data.reward);
             this.showMessageModal = true;
+        }else if('getSecurityCompany'===action){
+            console.log('进入镖局:', response.data);
+            this.showSecurityCompanyModal = true;
         }else if('showMessage'===action){
             console.log('显示消息:', response.data);
             this.showMessageModal = true;
@@ -306,6 +328,10 @@ export default {
             doClose();
         }
         
+    },
+    afterSelectCell(){
+        this.showSecurityCompanyModal = false;
+        this.handleDiceRolled();
     },
     endTurn(){
         axios.post(`/api/game/player/${this.currentPlayerIndex}/endTurn`)

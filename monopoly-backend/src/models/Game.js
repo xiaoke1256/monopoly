@@ -62,7 +62,7 @@ const PlayerSchema = new mongoose.Schema({
 });
 
 const EventSchema = new mongoose.Schema({
-  actionType: { type: String, enum: ['passGo', 'buyProperty', 'upgradeProperty', 'payRent', 'showMessage'], default: 'showMessage' },
+  actionType: { type: String, enum: ['passGo', 'buyProperty', 'upgradeProperty', 'payRent', 'showMessage','getSecurityCompany'], default: 'showMessage' },
   payAmount: {type: Number,default: 0},
   message:{ type: String,default:null },
   messageType: { type: String,default:null },

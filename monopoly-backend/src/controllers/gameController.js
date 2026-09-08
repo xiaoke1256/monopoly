@@ -67,6 +67,11 @@ const getCurrentGame = async (req, res) => {
     }
 };
 
+const getPlayers = async (req, res) => {
+    const game = await queryCurrentGame();
+    return res.json({players:game.players});
+}
+
 const getCurrentDice = async(req, res)=> {
     const game = await queryCurrentGame();
     if(game){
@@ -158,6 +163,8 @@ const afterDice = async (game)=>{
     }else if(cell.type === 'security-company'){
         //进入镖局
         console.log(`Player at index ${currentPlayerIndex} arrived at the security company.`);
+        const event = {actionType: 'getSecurityCompany', cellPosition:cell.position,message:'先支付500文，然后选择你要到达的地方',payAmount:500};
+        await saveEvent(game,event)
     }
     
 };
@@ -430,6 +437,43 @@ const payRentAndEndTurn = async (req, res) => {
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
 }
 
+const payForSecurityCompany = async (req, res) => {
+    const game = await queryCurrentGame(); 
+    const currentPlayerIndex = game.currentPlayerIndex ;
+    console.log(`Player at index ${currentPlayerIndex} pay for security company`);  
+    const currentPlayer = game.players[currentPlayerIndex];
+    const securityCompanyCell = game.cells[currentPlayer.position];
+
+    if(securityCompanyCell.type != 'security-company'){
+        return res.status(400).json({ message: 'current cell must be security-company!' });
+    }
+
+    //检查events
+    const event = game.events.shift()
+    if(event.actionType !== 'getSecurityCompany'){
+        return res.status(400).json({ message: 'the actionType must be getSecurityCompany!' });
+    }
+
+    const data = req.body;
+    console.log('Payment data:', data);
+    const yourSelectedMoney = data.yourSelectedMoney;
+    const otherSelectedMoney = data.otherSelectedMoney;
+    const forwardStep = data.forwardStep;
+
+    try {
+        pay(currentPlayer, null, yourSelectedMoney, otherSelectedMoney, 500);
+    } catch (error) {
+        console.error('Error during payment:', error);
+        return res.status(400).json({ message: error.message });
+    }
+
+    game.currentDice = forwardStep;
+    game.playerStatus = 'arrive-cell';
+    await game.save();
+    await afterDice(game);
+    return res.json({ dice:forwardStep });
+}
+
 const pay = (currentPlayer, otherPlayer, yourSelectedMoney, otherSelectedMoney, payAmount) => {
     //检查两者之差是否是rentAmount?
     let yourTotal = 0;
@@ -664,6 +708,7 @@ export {
     getCurrentGame,
     getCurrentDice,
     movePlayer,
+    getPlayers,
     getPlayerStatus,
     onArrived,
     endTurn,
@@ -676,6 +721,7 @@ export {
     getMoney,
     getCurrentMessage,
     payForMessage,
+    payForSecurityCompany,
     consumeMessage,
     exchange
 };

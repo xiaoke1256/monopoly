@@ -2,6 +2,17 @@
 
 import axios from 'axios';
 
+
+export const getCurrentMap = async ()=>{
+    try {
+        const response = await axios.get(`/api/game/map`);
+        return response.data.cells;
+    } catch (error) {
+        console.error('Error fetching map:', error);
+        throw error;
+    }
+} 
+
 export const getPlayerMoney = async (playerIndex) => {
     try {
         const response = await axios.get(`/api/game/player/${playerIndex}/money`);
@@ -11,6 +22,16 @@ export const getPlayerMoney = async (playerIndex) => {
         throw error;
     }
 };
+
+export const getPlayers = async () => {
+    try {
+        const response = await axios.get(`/api/game/players`);
+        return response.data.players;
+    } catch (error) {
+        console.error('Error fetching players:', error);
+        throw error;
+    }
+}
 
 export const getPlayerMessage = async (playerIndex,messageType) => {
     try {
@@ -122,3 +143,17 @@ export const payForUpgradeProperty = async ({playerIndex,cellId,yourSelectedMone
         throw error;
     }
 };
+
+export const payForSecurityCompany = async({playerIndex,yourSelectedMoney,otherSelectedMoney,forwardStep})=>{
+    try {
+        const response = await axios.post(`/api/game/player/${playerIndex}/payForSecurityCompany`, {
+            yourSelectedMoney,
+            otherSelectedMoney,
+            forwardStep
+        })
+        return response.data;
+    } catch (error) {
+        console.error('Error paying for message:', error);
+        throw error;
+    }
+}
