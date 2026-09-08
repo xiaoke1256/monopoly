@@ -175,14 +175,14 @@ const initMap = async () => {
   try {
     await connectDB();
     
-    const existingMap = await Map.findOne();
+    const existingMap = await Map.findOne({ name: '唐朝' });
     if (existingMap) {
       console.log('Map already exists, skipping initialization');
       process.exit(0);
     }
     
     const newMap = new Map({
-      name: 'Standard Monopoly Board',
+      name: '唐朝',
       cells: defaultMapData
     });
     
