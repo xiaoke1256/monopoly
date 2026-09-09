@@ -13,8 +13,10 @@ import { dice,
     getPlayerStatus,
     getMoney,
     getCurrentMessage,
+    getCurrentQuestion,
     payForMessage,
     consumeMessage,
+    answerQuestion,
     payForSecurityCompany,
     exchange,
     cancelBuyPropertyAndEndTurn,
@@ -40,8 +42,10 @@ gameRouter.post('/player/:playerIndex/payForSecurityCompany', payForSecurityComp
 gameRouter.get('/map', getCurrentMap);
 gameRouter.get('/player/:playerIndex/money', getMoney);
 gameRouter.get('/player/:playerIndex/message', getCurrentMessage);
+gameRouter.get('/player/:playerIndex/question', getCurrentQuestion);
 gameRouter.post('/player/:playerIndex/payForMessage', payForMessage);
 gameRouter.post('/player/:playerIndex/consumeMessage', consumeMessage);
+gameRouter.post('/player/:playerIndex/answerQuestion', answerQuestion);
 gameRouter.post('/player/:playerIndex/exchange', exchange);
 
 export default gameRouter;

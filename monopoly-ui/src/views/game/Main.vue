@@ -109,6 +109,22 @@
             <SecurityCompany v-if="showSecurityCompanyModal" :playerIndex="currentPlayerIndex" @confirm="afterSelectCell" />
         </div>
     </Modal>
+    <Modal
+        v-model="showQuestionModal"
+        footer-hide
+        :closable="false"
+        :mask-closable="false"
+        width="520">
+        <template #header>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <PlayerAvatar :playerIndex="currentPlayerIndex" />
+                <span style="font-size:20px;font-weight:600;color:#ed4014;">问答卡</span>
+            </div>
+        </template>
+        <div style="padding:4px 0;">
+            <Question v-if="showQuestionModal" :playerIndex="currentPlayerIndex" @close="closeQuestionModal" />
+        </div>
+    </Modal>
 </template>
 <script>
 import axios from 'axios';
@@ -117,6 +133,7 @@ import Map from './Map.vue';
 import BuyProperty from './BuyProperty.vue';
 import PayRent from './PayRent.vue';
 import SecurityCompany from './SecurityCompany.vue';
+import Question from './Question.vue';
 import PlayerAvatar from '@/components/PlayerAvatar.vue';
 import { Modal, Button } from 'view-ui-plus';
 import Message from './Message.vue';
@@ -132,7 +149,8 @@ export default {
     Button,
     PlayerAvatar,
     Message,
-    SecurityCompany
+    SecurityCompany,
+    Question
   },
   props: {
   },
@@ -144,6 +162,7 @@ export default {
       showPayRentModal:false,
       showMessageModal:false,
       showSecurityCompanyModal:false,
+      showQuestionModal:false,
       messageType:'',
       currentCell:{},
       rentOwner:{},
@@ -231,6 +250,9 @@ export default {
             console.log('显示消息:', response.data);
             this.showMessageModal = true;
             this.messageType = response.data.messageType
+        }else if('question'===action){
+            console.log('玩家抽取问答卡:', response.data);
+            this.showQuestionModal = true;
         }else if('nothing'===action){
             console.log('玩家无需操作，直接结束回合');
             this.endTurn();
@@ -328,6 +350,10 @@ export default {
             doClose();
         }
         
+    },
+    closeQuestionModal(){
+        this.showQuestionModal = false;
+        this.checkStatus();
     },
     afterSelectCell(){
         this.showSecurityCompanyModal = false;

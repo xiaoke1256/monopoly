@@ -43,6 +43,30 @@ export const getPlayerMessage = async (playerIndex,messageType) => {
     }
 };
 
+export const getPlayerQuestion = async (playerIndex) => {
+    try {
+        const response = await axios.get(`/api/game/player/${playerIndex}/question`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching player question:', error);
+        throw error;
+    }
+};
+
+export const answerQuestion = async ({playerIndex,selectedOption,yourSelectedMoney,otherSelectedMoney}) => {
+    try {
+        const response = await axios.post(`/api/game/player/${playerIndex}/answerQuestion`, {
+            selectedOption,
+            yourSelectedMoney,
+            otherSelectedMoney
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error answering question:', error);
+        throw error;
+    }
+};
+
 export const payRent = async ({playerIndex, rentAmount,yourSelectedMoney, otherSelectedMoney}) => {
     try {
         const response = await axios.post(`/api/game/player/${playerIndex}/payRent`, {

@@ -1,5 +1,6 @@
 import Game from '../models/Game.js';
 import Map from '../models/Map.js';
+import Question from '../models/Question.js';
 
 const getCurrentMap = async (req, res) => {
     try {
@@ -149,6 +150,22 @@ const afterDice = async (game)=>{
     }else if(cell.type === 'question'){
         //抽取问答卡
         console.log(`Player at index ${currentPlayerIndex} arrived at a question card.`);
+        const questions = await Question.find({ mapId: game.mapId });
+        const randomIndex = Math.random() * questions.length | 0; // Shuffle the questions
+        const question = questions[randomIndex];
+        const options = question.options.sort(() => Math.random() - 0.5).slice(0, 4); //打乱顺序取前4个
+        options.includes(question.correctOption) || (options[Math.floor(Math.random() * 4)] = question.correctOption); //确保正确答案在选项中
+        const event = {
+            actionType: 'question', 
+            payAmount: -question.reward,
+            question: {
+                stem: question.stem,
+                options: options,
+                correctOption: question.correctOption,
+                reward: question.reward
+            }
+        };
+        await saveEvent(game,event)
     }else if(cell.type === 'hospital'){
         //进入医馆
         console.log(`Player at index ${currentPlayerIndex} arrived at the hospital.`);
@@ -216,6 +233,53 @@ const onArrived = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }  
 };
+
+const getCurrentQuestion = async (req, res) => {
+    try {
+        const game = await queryCurrentGame();
+        if( game.events && game.events.length>0 ){
+            const event = game.events[0];
+            if(event.actionType !== 'question'){
+                return res.status(400).json({ message: 'the actionType must be question!' });
+            }
+            return res.json(event.question.toObject({ getters: true }));
+        }else{
+            return res.status(404).json({ message: 'No current question found' });
+        }
+    } catch (error) {
+        console.error('Error fetching current question:', error);
+        return res.status(500).json({ error: error.message });
+    }
+}
+
+const answerQuestion = async (req, res) => {
+    try {
+        const game = await queryCurrentGame();
+        if( game.events && game.events.length>0 ){
+            const event = game.events.shift();
+            if(event.actionType !== 'question'){
+                return res.status(400).json({ message: 'the actionType must be question!' });
+            }
+            const question = event.question;
+            const {selectedOption,yourSelectedMoney,otherSelectedMoney} = req.body;
+            if (selectedOption === question.correctOption) {
+                // Correct answer
+                pay(game.players[game.currentPlayerIndex], null, yourSelectedMoney, otherSelectedMoney, -question.reward);
+                game.save();
+                return res.json({ message: 'Correct answer! You have been rewarded.', reward: question.reward });
+            }else{
+                // Incorrect answer
+                game.save();
+                return res.json({ message: 'Incorrect answer!' });
+            }
+        }else{
+            return res.status(404).json({ message: 'No current question found' });
+        }
+    } catch (error) {
+        console.error('Error fetching current question:', error);
+        return res.status(500).json({ error: error.message });
+    }
+}
 
 const endTurn = async (req, res) => {
     const game = await queryCurrentGame(); 
@@ -720,8 +784,10 @@ export {
     getCurrentMap,
     getMoney,
     getCurrentMessage,
+    getCurrentQuestion,
     payForMessage,
     payForSecurityCompany,
     consumeMessage,
+    answerQuestion,
     exchange
 };

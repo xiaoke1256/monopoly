@@ -62,11 +62,17 @@ const PlayerSchema = new mongoose.Schema({
 });
 
 const EventSchema = new mongoose.Schema({
-  actionType: { type: String, enum: ['passGo', 'buyProperty', 'upgradeProperty', 'payRent', 'showMessage','getSecurityCompany'], default: 'showMessage' },
+  actionType: { type: String, enum: ['passGo', 'buyProperty', 'upgradeProperty', 'payRent', 'showMessage','getSecurityCompany','question'], default: 'showMessage' },
   payAmount: {type: Number,default: 0},
   message:{ type: String,default:null },
   messageType: { type: String,default:null },
   cellPosition: { type: Number, required: false },
+  question: { 
+    stem: { type: String, default: '' },
+    options: [{ type: String, default: '' }],
+    correctOption: { type: String, default: '' },
+    reward: { type: Number, default: 0 },
+  },
 }, { _id: false });
 
 const GameSchema = new mongoose.Schema({
