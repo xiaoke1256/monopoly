@@ -86,12 +86,20 @@ export default {
                 selectedOption:this.selectedOption
             }).then(() => {
                 successCallback();
-                //TODO 显示领取成功
-                this.$emit('close');
+                this.$Modal.success({
+                    title: `领取成功！`,
+                    onOk: () => {
+                        this.$emit('close');
+                    }
+                });
+                
             }).catch((error) => {
                 console.error('Error answering question:', error);
                 failCallback();
-                //TODO 显示领取失败
+                //显示领取失败
+                this.$Modal.error({
+                    title: `领取失败！`,
+                });
             });
         }
     }
