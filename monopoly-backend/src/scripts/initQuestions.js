@@ -287,7 +287,7 @@ const initQuestions = async () => {
     //console.log(`existingQuestions:`, existingQuestions);
     if(existingQuestions && existingQuestions.length>0){
         console.log(`已存在 ${existingQuestions.length} 条问题.`);
-        return;
+        process.exit(0);
     }
     // Save questions to the database
     for (const questionData of questionsData) {
@@ -296,8 +296,10 @@ const initQuestions = async () => {
     }
 
     console.log('Questions initialized successfully!');
+    process.exit(0);
   } catch (error) {
     console.error('Error initializing questions:', error);
+    process.exit(0);
   }
 }
 
