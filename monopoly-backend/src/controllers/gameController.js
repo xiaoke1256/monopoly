@@ -124,7 +124,7 @@ const afterDice = async (game)=>{
     }else if(cell.type === 'property' && cell.owner !== null && String(cell.owner) !== String(currentPlayer.id)){
         //支付租金
         const owner = game.players.map((p,index) =>  ({ ...(p.toObject({ getters: true })), index }) ).find(p => String(p.id) === String(cell.owner));
-        const rentAmount = cell.rent * (cell.level + 1);
+        const rentAmount = cell.rent * (cell.level||1);
         console.log('cell.owner:',cell.owner,' currentPlayer._id:',currentPlayer._id,' currentPlayer.id:',currentPlayer.id);
         console.log(`Player at index ${currentPlayerIndex} arrived at a property owned by another player.`);
         const event = {actionType: 'payRent', cellPosition:cell.position,payAmount:rentAmount};
@@ -476,7 +476,7 @@ const payRentAndEndTurn = async (req, res) => {
         return res.status(400).json({ message: 'Owner not found.' });
     }
     
-    const rentAmount = cell.rent * (cell.level + 1);
+    const rentAmount = cell.rent * (cell.level||1);
     
     const data = req.body;
     console.log('Received rent payment data:', data);
