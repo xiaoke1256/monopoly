@@ -3,105 +3,50 @@
         <Map ref="map" @game-loaded="onGameLoaded"/>
     </div>
     <Button v-if="!showDiceModal" style="position:absolute;bottom:0;right:0" type="primary" @click="showDiceModal=true" size="large">Continue</Button>
-    <MyModal
+    <GModal
         :show="showDiceModal"
         :maskClosable="true"
         :playerIndex="currentPlayerIndex"
+        @update:show="showDiceModal = $event"
         title="掷骰子">
         <Dice @diceRolled="handleDiceRolled"/>
-    </MyModal> 
-    <MyModal
+    </GModal> 
+    <GModal
         :show="showBuyPropertyModal"
         :playerIndex="currentPlayerIndex"
         title="购买店铺">
         <BuyProperty v-if="showBuyPropertyModal" :cell="currentCell" :playerIndex="currentPlayerIndex" @confirm="afterPayForProperty" @cancel="afterCancelForProperty" />
-    </MyModal> 
-    <Modal
-        v-model="showUpgradePropertyModal"
-        :closable="false"
-        :mask-closable="false"
-        footer-hide
-        width="520">
-        <template #header>
-            <div style="display:flex;align-items:center;gap:12px;">
-                <PlayerAvatar :playerIndex="currentPlayerIndex" />
-                <span style="font-size:20px;font-weight:600;color:#2d8cf0;">升级店铺</span>
-            </div>
-        </template>
-        <div style="padding:4px 0;">
-            <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" :forUpgrade="true" @confirm="afterPayForProperty" @cancel="afterCancelForProperty" />
-        </div>
-        <template #footer>
-            <div></div>
-        </template>
-    </Modal> 
-    <Modal
-        v-model="showPayRentModal"
-        :closable="false"
-        :mask-closable="false"
-        footer-hide
-        width="520">
-        <template #header>
-            <div style="display:flex;align-items:center;gap:12px;">
-                <PlayerAvatar :playerIndex="currentPlayerIndex" />
-                <span style="font-size:20px;font-weight:600;color:#ed4014;">支付租金</span>
-            </div>
-        </template>
-        <div style="padding:4px 0;">
-            <PayRent :cell="currentCell" :owner="rentOwner" :playerIndex="currentPlayerIndex" :rentAmount="rentAmount" @confirm="afterPayRent" />
-        </div>
-        <template #footer>
-            <div></div>
-        </template>
-    </Modal> 
-    <Modal
-        v-model="showMessageModal"
-        footer-hide
-        :closable="false"
-        :mask-closable="false"
-        width="520">
-        <template #header>
-            <div style="display:flex;align-items:center;gap:12px;">
-                <PlayerAvatar :playerIndex="currentPlayerIndex" />
-                <span style="font-size:20px;font-weight:600;color:#ed4014;">消息</span>
-            </div>
-        </template>
-        <div style="padding:4px 0;">
-            <Message v-if="showMessageModal" :playerIndex="currentPlayerIndex" :messageType="messageType" @confirm="closeMessageModal" />
-        </div>
-    </Modal>
-    <Modal
-        v-model="showSecurityCompanyModal"
-        footer-hide
-        :closable="false"
-        :mask-closable="false"
-        width="520">
-        <template #header>
-            <div style="display:flex;align-items:center;gap:12px;">
-                <PlayerAvatar :playerIndex="currentPlayerIndex" />
-                <span style="font-size:20px;font-weight:600;color:#ed4014;">镖局</span>
-            </div>
-        </template>
-        <div style="padding:4px 0;">
-            <SecurityCompany v-if="showSecurityCompanyModal" :playerIndex="currentPlayerIndex" @confirm="afterSelectCell" />
-        </div>
-    </Modal>
-    <Modal
-        v-model="showQuestionModal"
-        footer-hide
-        :closable="false"
-        :mask-closable="false"
-        width="520">
-        <template #header>
-            <div style="display:flex;align-items:center;gap:12px;">
-                <PlayerAvatar :playerIndex="currentPlayerIndex" />
-                <span style="font-size:20px;font-weight:600;color:#ed4014;">问答卡</span>
-            </div>
-        </template>
-        <div style="padding:4px 0;">
-            <Question v-if="showQuestionModal" :playerIndex="currentPlayerIndex" @close="closeQuestionModal" />
-        </div>
-    </Modal>
+    </GModal> 
+    <GModal
+        :show="showUpgradePropertyModal"
+        :playerIndex="currentPlayerIndex"
+        title="升级店铺">
+        <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" :forUpgrade="true" @confirm="afterPayForProperty" @cancel="afterCancelForProperty" />
+    </GModal> 
+    <GModal
+        :show="showPayRentModal"
+        :playerIndex="currentPlayerIndex"
+        title="支付租金">
+        <PayRent :cell="currentCell" :owner="rentOwner" :playerIndex="currentPlayerIndex" :rentAmount="rentAmount" @confirm="afterPayRent" />
+    </GModal> 
+    <GModal
+        :show="showMessageModal"
+        :playerIndex="currentPlayerIndex"
+        title="消息">
+        <Message v-if="showMessageModal" :playerIndex="currentPlayerIndex" :messageType="messageType" @confirm="closeMessageModal" />
+    </GModal> 
+    <GModal
+        :show="showSecurityCompanyModal"
+        :playerIndex="currentPlayerIndex"
+        title="镖局">
+        <SecurityCompany v-if="showSecurityCompanyModal" :playerIndex="currentPlayerIndex" @confirm="afterSelectCell" />
+    </GModal> 
+    <GModal
+        :show="showQuestionModal"
+        :playerIndex="currentPlayerIndex"
+        title="问答卡">
+        <Question v-if="showQuestionModal" :playerIndex="currentPlayerIndex" @close="closeQuestionModal" />
+    </GModal> 
 </template>
 <script>
 import axios from 'axios';
@@ -111,25 +56,22 @@ import BuyProperty from './BuyProperty.vue';
 import PayRent from './PayRent.vue';
 import SecurityCompany from './SecurityCompany.vue';
 import Question from './Question.vue';
-import PlayerAvatar from '@/components/PlayerAvatar.vue';
-import { Button,Modal } from 'view-ui-plus';
-import MyModal from '@/components/Modal.vue';
+import { Button } from 'view-ui-plus';
+import GModal from '@/components/Modal.vue';
 import Message from './Message.vue';
 
 export default {
   name: 'MainIndex',
   components: {
     Dice,
-    Modal,
     Map,
     BuyProperty,
     PayRent,
     Button,
-    PlayerAvatar,
     Message,
     SecurityCompany,
     Question,
-    MyModal
+    GModal
   },
   props: {
   },

@@ -53,7 +53,13 @@ export default {
         show(newVal) {
             this.isVisible = newVal;
             console.log('Modal show prop changed to:', newVal);
+        },
+        isVisible(newVal) {
+            if (!newVal) {
+                this.$emit('update:show', false);
+            }
         }
+
     }
 }
 </script>
