@@ -59,6 +59,8 @@ const PlayerSchema = new mongoose.Schema({
   hasPassedGo: { type: Boolean, default: false },
   /*暂停轮数 */
   waitingRound: { type: Number, default: 0 },
+  /*是否破产 */
+  isBankrupt: { type: Boolean, default: false },
 });
 
 const EventSchema = new mongoose.Schema({
