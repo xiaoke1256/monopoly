@@ -3,42 +3,19 @@
         <Map ref="map" @game-loaded="onGameLoaded"/>
     </div>
     <Button v-if="!showDiceModal" style="position:absolute;bottom:0;right:0" type="primary" @click="showDiceModal=true" size="large">Continue</Button>
-    <Modal
-        v-model="showDiceModal"
-        footer-hide
-        :closable="false">
-        <template #header>
-            <div style="display:flex;align-items:center;gap:12px;">
-                <PlayerAvatar :playerIndex="currentPlayerIndex" />
-                <span style="font-size:20px;font-weight:600;color:#2d8cf0;">掷骰子</span>
-            </div>
-        </template>
-        <div style="text-align:center;padding:12px 0;">
-            <Dice @diceRolled="handleDiceRolled"/>
-        </div>
-        <template #footer>
-            <div></div>
-        </template>
-    </Modal> 
-    <Modal
-        v-model="showBuyPropertyModal"
-        :closable="false"
-        :mask-closable="false"
-        footer-hide
-        width="520">
-        <template #header>
-            <div style="display:flex;align-items:center;gap:12px;">
-                <PlayerAvatar :playerIndex="currentPlayerIndex" />
-                <span style="font-size:20px;font-weight:600;color:#2d8cf0;">购买店铺</span>
-            </div>
-        </template>
-        <div style="padding:4px 0;">
-            <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" @confirm="afterPayForProperty" @cancel="afterCancelForProperty" />
-        </div>
-        <template #footer>
-            <div></div>
-        </template>
-    </Modal> 
+    <MyModal
+        :show="showDiceModal"
+        :maskClosable="true"
+        :playerIndex="currentPlayerIndex"
+        title="掷骰子">
+        <Dice @diceRolled="handleDiceRolled"/>
+    </MyModal> 
+    <MyModal
+        :show="showBuyPropertyModal"
+        :playerIndex="currentPlayerIndex"
+        title="购买店铺">
+        <BuyProperty v-if="showBuyPropertyModal" :cell="currentCell" :playerIndex="currentPlayerIndex" @confirm="afterPayForProperty" @cancel="afterCancelForProperty" />
+    </MyModal> 
     <Modal
         v-model="showUpgradePropertyModal"
         :closable="false"
@@ -135,7 +112,8 @@ import PayRent from './PayRent.vue';
 import SecurityCompany from './SecurityCompany.vue';
 import Question from './Question.vue';
 import PlayerAvatar from '@/components/PlayerAvatar.vue';
-import { Modal, Button } from 'view-ui-plus';
+import { Button,Modal } from 'view-ui-plus';
+import MyModal from '@/components/Modal.vue';
 import Message from './Message.vue';
 
 export default {
@@ -150,7 +128,8 @@ export default {
     PlayerAvatar,
     Message,
     SecurityCompany,
-    Question
+    Question,
+    MyModal
   },
   props: {
   },
@@ -190,6 +169,7 @@ export default {
                     return
                 }
                 this.showDiceModal=true;
+                console.log('玩家需要掷骰子',this.showDiceModal);
             } else if (playerStatus==='completed'){
                 this.endTurn();
             } else {
