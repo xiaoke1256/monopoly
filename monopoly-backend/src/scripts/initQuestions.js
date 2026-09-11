@@ -284,7 +284,6 @@ const initQuestions = async () => {
     ];
 
     const existingQuestions = await Question.deleteMany({mapId: existingMap._id});
-    //console.log(`existingQuestions:`, existingQuestions);
     if(existingQuestions && existingQuestions.length>0){
         console.log(`已删除 ${existingQuestions.length} 条问题.`);
     }

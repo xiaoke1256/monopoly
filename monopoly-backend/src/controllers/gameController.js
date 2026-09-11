@@ -368,6 +368,16 @@ const answerQuestion = async (req, res) => {
     }
 }
 
+const nextPlayerIndex = (game)=>{
+    let index = game.currentPlayerIndex;
+    let player = {isBankrupt:true}
+    do{
+        index = (index + 1) % game.players.length
+        player = game.players[index];
+    }while(!player.isBankrupt)
+    return index;
+}
+
 const endTurn = async (req, res) => {
     const game = await queryCurrentGame(); 
     if (game.playerStatus == 'before-dice') {
@@ -377,7 +387,9 @@ const endTurn = async (req, res) => {
     if (game.playerStatus == 'arrive-cell') {
         return res.status(400).json({ message: '相关业务还没处理完' });
     }
-    game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+
+    game.currentPlayerIndex = nextPlayerIndex(game);
+    
     game.playerStatus = 'before-dice';
     game.events = [];
     await game.save();
@@ -422,7 +434,7 @@ const payForPropertyAndEndTurn = async (req, res) => {
     cell.owner = currentPlayer.id;
 
     // 结束当前玩家的回合
-    game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    game.currentPlayerIndex = nextPlayerIndex(game);
     game.playerStatus = 'before-dice';
     game.events = [];
     await game.save();
@@ -451,7 +463,7 @@ const cancelBuyPropertyAndEndTurn = async (req, res) => {
     }
 
     // 结束当前玩家的回合
-    game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    game.currentPlayerIndex = nextPlayerIndex(game);
     game.playerStatus = 'before-dice';
     game.events = [];
     await game.save();
@@ -480,7 +492,7 @@ const cancelUpgradePropertyAndEndTurn = async (req, res) => {
     }
 
     // 结束当前玩家的回合
-    game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    game.currentPlayerIndex = nextPlayerIndex(game)
     game.playerStatus = 'before-dice';
     game.events = [];
     await game.save();
@@ -531,7 +543,7 @@ const payForUpgradePropertyAndEndTurn = async (req, res) => {
     cell.level++;
 
     // 结束当前玩家的回合
-    game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    game.currentPlayerIndex = nextPlayerIndex(game)//(game.currentPlayerIndex + 1) % game.players.length;
     game.playerStatus = 'before-dice';
     game.events = [];
     await game.save();
@@ -577,7 +589,7 @@ const payRentAndEndTurn = async (req, res) => {
         return res.status(400).json({ message: error.message });
     }
 
-    game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+    game.currentPlayerIndex = nextPlayerIndex(game);
     game.playerStatus = 'before-dice';
     await game.save();
     //检查切换后玩家是否处于暂停状态？
@@ -838,7 +850,7 @@ const consumeMessage = async (req, res) => {
             ret.action = 'endTurn';
             //处理完立即endTurn
             console.log("before game.currentPlayerIndex:",game.currentPlayerIndex);
-            game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+            game.currentPlayerIndex = nextPlayerIndex(game);
             game.playerStatus = 'before-dice';
             ret.currentPlayerIndex=game.currentPlayerIndex;
             console.log("after game.currentPlayerIndex:",game.currentPlayerIndex);
