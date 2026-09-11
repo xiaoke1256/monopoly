@@ -283,11 +283,10 @@ const initQuestions = async () => {
 
     ];
 
-    const existingQuestions = await Question.find({mapId: existingMap._id});
+    const existingQuestions = await Question.deleteMany({mapId: existingMap._id});
     //console.log(`existingQuestions:`, existingQuestions);
     if(existingQuestions && existingQuestions.length>0){
-        console.log(`已存在 ${existingQuestions.length} 条问题.`);
-        process.exit(0);
+        console.log(`已删除 ${existingQuestions.length} 条问题.`);
     }
     // Save questions to the database
     for (const questionData of questionsData) {

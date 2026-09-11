@@ -14,8 +14,10 @@ import { dice,
     getMoney,
     getCurrentMessage,
     getCurrentQuestion,
+    getCurrentChance,
     payForMessage,
     consumeMessage,
+    consumeChance,
     answerQuestion,
     payForSecurityCompany,
     exchange,
@@ -43,8 +45,10 @@ gameRouter.get('/map', getCurrentMap);
 gameRouter.get('/player/:playerIndex/money', getMoney);
 gameRouter.get('/player/:playerIndex/message', getCurrentMessage);
 gameRouter.get('/player/:playerIndex/question', getCurrentQuestion);
+gameRouter.get('/player/:playerIndex/chance', getCurrentChance);
 gameRouter.post('/player/:playerIndex/payForMessage', payForMessage);
 gameRouter.post('/player/:playerIndex/consumeMessage', consumeMessage);
+gameRouter.post('/player/:playerIndex/consumeChance',consumeChance);
 gameRouter.post('/player/:playerIndex/answerQuestion', answerQuestion);
 gameRouter.post('/player/:playerIndex/exchange', exchange);
 

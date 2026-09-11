@@ -1,6 +1,7 @@
 import Game from '../models/Game.js';
 import Map from '../models/Map.js';
 import Question from '../models/Question.js';
+import Chance from '../models/Chance.js';
 
 const getCurrentMap = async (req, res) => {
     try {
@@ -147,6 +148,8 @@ const afterDice = async (game)=>{
     }else if(cell.type === 'chance'){
         //抽取机会卡
         console.log(`Player at index ${currentPlayerIndex} arrived at a chance card.`);
+        const event = await randomSelectChance(game);
+        await saveEvent(game,event)
     }else if(cell.type === 'question'){
         //抽取问答卡
         console.log(`Player at index ${currentPlayerIndex} arrived at a question card.`);
@@ -185,6 +188,72 @@ const afterDice = async (game)=>{
     }
     
 };
+
+const randomSelectChance = async (game) => {
+    const currentPlayerIndex = game.currentPlayerIndex;
+    const chances = await Chance.find({ mapId: game.mapId });
+    const randomIndex = Math.random() * chances.length | 0; // Shuffle the chances
+    const chance = chances[randomIndex];
+    const payments = [];
+    if (chance.payFromType === 'all') {
+        game.players.filter((player) => !player.isBankrupt)
+        .forEach((player, index) => {
+            payments.push({ playerIndex: index, payAmount: chance.payAmount });
+        });
+    }else if (chance.payFromType === 'you') {
+        payments.push({ playerIndex: currentPlayerIndex, payAmount: chance.payAmount });
+    }else if (chance.payFromType === 'min-cash') {
+        const minCashPlayerIndex = game.players.filter((player) => !player.isBankrupt)
+        .reduce((minIndex, player, index) => {
+            if (totalAmt(player.money) < totalAmt(game.players[minIndex].money)) {
+                return index;
+            }
+            return minIndex;
+        }, 0);
+        payments.push({ playerIndex: minCashPlayerIndex, payAmount: chance.payAmount });
+    }else if (chance.payFromType === 'max-cash') {
+        const maxCashPlayerIndex = game.players.filter((player) => !player.isBankrupt)
+        .reduce((maxIndex, player, index) => {
+            if (totalAmt(player.money) > totalAmt(game.players[maxIndex].money)) {
+                return index;
+            }
+            return maxIndex;
+        }, 0);
+        payments.push({ playerIndex: maxCashPlayerIndex, payAmount: chance.payAmount });
+    }else if (chance.payFromType === 'min-property') {
+        const minPropertyPlayerIndex = game.players.filter((player) => !player.isBankrupt)
+        .reduce((minIndex, player, index) => {
+            const propertyCount = game.cells.filter(cell => cell.type === 'property' && String(cell.owner) === String(player.id)).length;
+            const minPropertyCount = game.cells.filter(cell => cell.type === 'property' && String(cell.owner) === String(game.players[minIndex].id)).length;
+            if (propertyCount < minPropertyCount) {
+                return index;
+            }
+            return minIndex;
+        }, 0);
+        payments.push({ playerIndex: minPropertyPlayerIndex, payAmount: chance.payAmount });
+    }else if (chance.payFromType === 'max-property') {
+        const maxPropertyPlayerIndex = game.players.filter((player) => !player.isBankrupt)
+        .reduce((maxIndex, player, index) => {
+            const propertyCount = game.cells.filter(cell => cell.type === 'property' && String(cell.owner) === String(player.id)).length;
+            const maxPropertyCount = game.cells.filter(cell => cell.type === 'property' && String(cell.owner) === String(game.players[maxIndex].id)).length;
+            if (propertyCount > maxPropertyCount) {
+                return index;
+            }
+            return maxIndex;
+        }, 0);
+        payments.push({ playerIndex: maxPropertyPlayerIndex, payAmount: chance.payAmount });
+    }
+
+    const description = chance.description.includes('${payAmount}')?chance.description.replace('${payAmount}',(Math.ceil(Math.random()*20)+80)*10):chance.description;
+
+    const event = {
+        actionType: 'getChance',
+        message: description,
+        payAmount: chance.payAmount,
+        chance:{...chance.toObject({ getters: true }), payments}
+    };
+    return event;
+}
 
 const getMoney = async (req, res) => {
     req.params.playerIndex = parseInt(req.params.playerIndex);
@@ -243,6 +312,24 @@ const getCurrentQuestion = async (req, res) => {
                 return res.status(400).json({ message: 'the actionType must be question!' });
             }
             return res.json(event.question.toObject({ getters: true }));
+        }else{
+            return res.status(404).json({ message: 'No current question found' });
+        }
+    } catch (error) {
+        console.error('Error fetching current question:', error);
+        return res.status(500).json({ error: error.message });
+    }
+}
+
+const getCurrentChance = async (req, res) => {
+    try {
+        const game = await queryCurrentGame();
+        if( game.events && game.events.length>0 ){
+            const event = game.events[0];
+            if(event.actionType !== 'getChance'){
+                return res.status(400).json({ message: 'the actionType must be chance!' });
+            }
+            return res.json(event.chance.toObject({ getters: true }));
         }else{
             return res.status(404).json({ message: 'No current question found' });
         }
@@ -576,6 +663,14 @@ const pay = (currentPlayer, otherPlayer, yourSelectedMoney, otherSelectedMoney, 
     }
 }
 
+const totalAmt = (money) => {
+    let total = 0;
+    for (const [denomination, amount] of Object.entries(money)) {
+        total += denomination.replace('cash', '') * amount;
+    }
+    return total;
+};
+
 /**
  * 兑换
  */
@@ -765,6 +860,43 @@ const consumeMessage = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+const consumeChance = async (req, res) => {
+    const game = await queryCurrentGame();  
+    const {yourSelectedMoney,otherSelectedMoney,payerIndex} = req.body;
+    const currentPlayer = game.players[game.currentPlayerIndex];
+    
+    if(game.events.length===0){
+        return res.status(400).json({ message: 'No chance to consume' });
+    }
+
+    const event = game.events[0];
+    if(event.actionType !== 'getChance'){
+        return res.status(400).json({ message: 'No chance to consume' });
+    }
+
+    const chance = event.chance;
+    const ret = {message:'success!',hasNext:true};
+    //TODO 先记录下来需要处理 payments 、 move 和其他操作
+    if(chance.payments && chance.payments.length>0){
+        const payment = chance.payments.filter((p)=>!p.isPaid&&p.playerIndex==payerIndex)[0];
+        if(!payment){
+            return res.status(400).json({ message: `payerIndex is invalid:${payerIndex}`});
+        }
+        const {playerIndex,payAmount} = payment;
+        const payer = game.players[playerIndex];
+        pay(payer,null,yourSelectedMoney,otherSelectedMoney,payAmount);
+        payment.isPaid=true;
+        if(chance.payments.filter((p)=>!p.isPaid).length==0){
+            game.events.shift();
+            ret.hasNext = false;
+        }
+        await game.save();
+    }
+
+    return res.json(ret);
+
+};
         
 
 export {
@@ -785,9 +917,11 @@ export {
     getMoney,
     getCurrentMessage,
     getCurrentQuestion,
+    getCurrentChance,
     payForMessage,
     payForSecurityCompany,
     consumeMessage,
+    consumeChance,
     answerQuestion,
     exchange
 };

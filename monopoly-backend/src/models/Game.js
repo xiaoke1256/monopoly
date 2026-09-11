@@ -63,8 +63,21 @@ const PlayerSchema = new mongoose.Schema({
   isBankrupt: { type: Boolean, default: false },
 });
 
+const ChanceSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    payAmount: { type: Number, default: null },
+    payFromType: { type: String, enum: ['all', 'you','min-cash','max-cash','min-property','max-property'], default: 'you' },/* you指当前玩家 */
+    payments: [{ 
+      playerIndex: { type: Number, required: true },
+      payAmount: { type: Number, required: true },
+      isPaid: { type: Boolean, default: false },
+     }],
+    moveTo: { type: Number, default: null },
+}, { _id: false });
+
 const EventSchema = new mongoose.Schema({
-  actionType: { type: String, enum: ['passGo', 'buyProperty', 'upgradeProperty', 'payRent', 'showMessage','getSecurityCompany','question'], default: 'showMessage' },
+  actionType: { type: String, enum: ['passGo', 'buyProperty', 'upgradeProperty', 'payRent', 'showMessage','getSecurityCompany','question','getChance'], default: 'showMessage' },
   payAmount: {type: Number,default: 0},
   message:{ type: String,default:null },
   messageType: { type: String,default:null },
@@ -75,6 +88,7 @@ const EventSchema = new mongoose.Schema({
     correctOption: { type: String, default: '' },
     reward: { type: Number, default: 0 },
   },
+  chance: {type: ChanceSchema, default: null}
 }, { _id: false });
 
 const GameSchema = new mongoose.Schema({

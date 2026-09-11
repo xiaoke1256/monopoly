@@ -53,6 +53,16 @@ export const getPlayerQuestion = async (playerIndex) => {
     }
 };
 
+export const getPlayerChance = async (playerIndex) => {
+    try {
+        const response = await axios.get(`/api/game/player/${playerIndex}/chance`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching player chance:', error);
+        throw error;
+    }
+}
+
 export const answerQuestion = async ({playerIndex,selectedOption,yourSelectedMoney,otherSelectedMoney}) => {
     try {
         const response = await axios.post(`/api/game/player/${playerIndex}/answerQuestion`, {
@@ -66,6 +76,22 @@ export const answerQuestion = async ({playerIndex,selectedOption,yourSelectedMon
         throw error;
     }
 };
+
+    
+export const consumeChance = async ({playerIndex,yourSelectedMoney,otherSelectedMoney}) => {
+    try {
+        const response = await axios.post(`/api/game/player/${playerIndex}/consumeChance`, {
+            yourSelectedMoney,
+            otherSelectedMoney,
+            payerIndex:playerIndex
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error consume chance:', error);
+        throw error;
+    }
+};
+
 
 export const payRent = async ({playerIndex, rentAmount,yourSelectedMoney, otherSelectedMoney}) => {
     try {

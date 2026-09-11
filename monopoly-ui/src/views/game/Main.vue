@@ -47,6 +47,12 @@
         title="问答卡">
         <Question v-if="showQuestionModal" :playerIndex="currentPlayerIndex" @close="closeQuestionModal" />
     </GModal> 
+    <GModal
+        :show="showChanceModal"
+        :playerIndex="currentPlayerIndex"
+        title="机会卡">
+        <Chance v-if="showChanceModal" :playerIndex="currentPlayerIndex" @confirm="closeChanceModal" />
+    </GModal>
 </template>
 <script>
 import axios from 'axios';
@@ -59,6 +65,7 @@ import Question from './Question.vue';
 import { Button } from 'view-ui-plus';
 import GModal from '@/components/Modal.vue';
 import Message from './Message.vue';
+import Chance from './Chance.vue';
 
 export default {
   name: 'MainIndex',
@@ -71,6 +78,7 @@ export default {
     Message,
     SecurityCompany,
     Question,
+    Chance,
     GModal
   },
   props: {
@@ -84,6 +92,7 @@ export default {
       showMessageModal:false,
       showSecurityCompanyModal:false,
       showQuestionModal:false,
+      showChanceModal:false,
       messageType:'',
       currentCell:{},
       rentOwner:{},
@@ -175,6 +184,9 @@ export default {
         }else if('question'===action){
             console.log('玩家抽取问答卡:', response.data);
             this.showQuestionModal = true;
+        }else if('getChance'===action){
+            console.log('玩家抽取机会卡:', response.data);
+            this.showChanceModal = true;
         }else if('nothing'===action){
             console.log('玩家无需操作，直接结束回合');
             this.endTurn();
@@ -275,6 +287,10 @@ export default {
     },
     closeQuestionModal(){
         this.showQuestionModal = false;
+        this.checkStatus();
+    },
+    closeChanceModal(){
+         this.showChanceModal = false;
         this.checkStatus();
     },
     afterSelectCell(){
