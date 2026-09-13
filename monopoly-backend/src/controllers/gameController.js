@@ -980,6 +980,13 @@ const bankrupt = async (req, res)=>{
         return res.status(400).json({message:'该玩家目前不能破产'});
     }
     const player = game.plyers[bankruptPlayerIndex];
+    //退还所有地产
+    for(const cell of game.cells){
+        if(String(player.id) === String(cell.owner)){
+            cell.owner = null;
+            cell.level = 1;
+        }
+    }
     player.isBankrupt = true;
     const events = game.events.filter((event)=>{
         if(event.actionType!='getChance'){
