@@ -16,7 +16,7 @@
             </div>
             <div class="info-row">
                 <span class="info-label">店铺租金</span>
-                <span class="info-value rent">{{ cell.rent }}文</span>
+                <span class="info-value rent">{{ rent }}文</span>
             </div>
         </div>
         <div class="action-buttons">
@@ -86,6 +86,11 @@ export default {
                 console.error('Error processing payment:', error);
                 failCallback();
             }
+        }
+    },
+    computed:{
+        rent(){
+            return this.cell.rent * Math.pow(2,(this.cell.level-1));
         }
     }
 }
