@@ -50,8 +50,14 @@
     <GModal
         :show="showChanceModal"
         :playerIndex="currentPlayerIndex"
-        title="机会卡">
+        title="运气卡">
         <Chance v-if="showChanceModal" :playerIndex="currentPlayerIndex" @confirm="closeChanceModal" />
+    </GModal>
+    <GModal
+        :show="showSuccessModal"
+        :playerIndex="currentPlayerIndex"
+        title="胜利！">
+        <Sucess v-if="showSuccessModal" :playerIndex="currentPlayerIndex" />
     </GModal>
 </template>
 <script>
@@ -66,6 +72,7 @@ import { Button } from 'view-ui-plus';
 import GModal from '@/components/Modal.vue';
 import Message from './Message.vue';
 import Chance from './Chance.vue';
+import Sucess from './Sucess.vue';
 
 export default {
   name: 'MainIndex',
@@ -79,7 +86,8 @@ export default {
     SecurityCompany,
     Question,
     Chance,
-    GModal
+    GModal,
+    Sucess
   },
   props: {
   },
@@ -93,6 +101,7 @@ export default {
       showSecurityCompanyModal:false,
       showQuestionModal:false,
       showChanceModal:false,
+      showSuccessModal:false,
       messageType:'',
       currentCell:{},
       rentOwner:{},
@@ -113,6 +122,11 @@ export default {
         axios.get('/api/game/player-status').then(response => {
             const playerStatus = response.data.playerStatus;
             const currentPlayerPosition = response.data.currentPlayerPosition;
+            const isGameOver = response.data.isGameOver
+            if(isGameOver){
+                this.showSuccessModal = true;
+                return;
+            }
             if(playerStatus==='before-dice') {
                 const isWaiting = response.data.isWaiting;
                 if(isWaiting){

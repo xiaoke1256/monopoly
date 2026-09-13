@@ -9,21 +9,34 @@
     </div>
   </div>
   <div class="action-buttons">
-    <Button v-if="payAmount > 0" type="primary" size="large" @click="confirmPayment">支付</Button>
+    <Button v-if="isBankrupt" @click="openBankruptModal" >宣布破产</Button>
+    <Button v-if="payAmount > 0" :disabled="isBankrupt" type="primary" size="large" @click="confirmPayment">支付</Button>
     <Button v-if="payAmount < 0 && otherPlayerIndex < 0" type="primary" size="large" @click="confirmPayment">领取</Button>
     <Button v-if="!payAmount " type="primary" size="large" @click="confirmMsg">确定</Button>
   </div>
   <CashBoxModal :otherPlayerIndex="otherPlayerIndex" :yourPlayerIndex="yourPlayerIndex" :payAmount="payAmount" @confirmPay="pay" ref="cashBoxModal" />
+  <GModal
+    :show="showBankruptModal"
+    :playerIndex="yourPlayerIndex"
+    title="破产"
+    >
+    <div>{{ bankruptMessage }}</div>
+    <div class="action-buttons">
+        <Button type="primary" size="large" @click="confirmBankrupt">确定</Button>
+        <Button size="large" @click="cancleBankrupt">取消</Button>
+    </div>
+  </GModal>
 </template>
 <script>
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
-import { getPlayerChance, consumeChance } from '@/api/gameApi.js';
+import { getPlayerChance, consumeChance,bankrupt } from '@/api/gameApi.js';
+import GModal from '@/components/Modal.vue';
 
 export default {
     name: 'ChanceComponent',
     components: {
-        Button,CashBoxModal
+        Button,CashBoxModal,GModal
     },
     props: {
         playerIndex: {
@@ -37,7 +50,10 @@ export default {
             content:'',
             otherPlayerIndex:-1,
             yourPlayerIndex:-1,
-            payAmount:0
+            payAmount:0,
+            bankruptPlayerIndexs:[],
+            showBankruptModal:false,
+            bankruptMessage:'确认要宣布破产？'
         };
     },
     mounted() {
@@ -51,6 +67,7 @@ export default {
                 console.log("getPlayerMessage data:", data);
                 this.title = data.title
                 this.content = data.description;
+                this.bankruptPlayerIndexs=data.bankruptPlayerIndexs;
                 const payments = data.payments;
                 const payment = payments.filter((p)=>!p.isPaid)[0];
                 if(payment){//需要支付
@@ -92,7 +109,30 @@ export default {
                 console.error('Error processing payment:', error);
                 failCallback();
             });
+        },
+        openBankruptModal(){
+            this.bankruptMessage = '';
+            this.showBankruptModal = true;
+        },
+        confirmBankrupt(){
+            bankrupt({playerIndex:this.yourPlayerIndex}).then(({message,endTurn,isGameOver})=>{
+                this.bankruptMessage = message;
+                setTimeout(()=>{
+                    this.showBankruptModal = false;
+                    if(endTurn){
+                        this.$emit('confirm',{message,endTurn,isGameOver});
+                    }
+                },500)
+            })
+        },
+        cancleBankrupt(){
+            this.showBankruptModal = false;
         }
+    },
+    computed:{
+        isBankrupt(){
+            return this.bankruptPlayerIndexs.includes(this.yourPlayerIndex)
+        },
     }
 }
 </script>

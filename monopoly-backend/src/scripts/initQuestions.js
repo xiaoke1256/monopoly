@@ -178,14 +178,14 @@ const initQuestions = async () => {
         {
             mapId: existingMap._id,
             stem: '唐朝时期盛行的类似于现代足球的运动是什么？答对获得1000文',
-            options: ['蹴鞠', '踢毽子', '拔河', '跳绳', '滚铁环', '打陀螺'],
+            options: ['蹴鞠', '相扑', '拔河', '跳绳', '秋千', '打陀螺'],
             correctOption: '蹴鞠',
             reward: 1000
         },
         {
             mapId: existingMap._id,
             stem: '玄奘西行的目的地是哪里？答对获得800文',
-            options: ['天竺', '西域', '印度', '中亚', '波斯', '阿拉伯'],
+            options: ['天竺', '吐蕃', '占城', '西域', '波斯', '东瀛'],
             correctOption: '天竺',
             reward: 800
         },

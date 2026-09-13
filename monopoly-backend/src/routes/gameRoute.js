@@ -8,6 +8,7 @@ import { dice,
     endTurn,
     payForPropertyAndEndTurn,
     payForUpgradePropertyAndEndTurn,
+    getPayRentEvent,
     payRentAndEndTurn,
     getCurrentMap,
     getPlayerStatus,
@@ -22,7 +23,9 @@ import { dice,
     payForSecurityCompany,
     exchange,
     cancelBuyPropertyAndEndTurn,
-    cancelUpgradePropertyAndEndTurn
+    cancelUpgradePropertyAndEndTurn,
+    bankrupt,
+    getFinalPlayer
  } from '../controllers/gameController.js';
 
 const gameRouter = new Router();   
@@ -38,6 +41,7 @@ gameRouter.post('/player/:playerIndex/payForProperty', payForPropertyAndEndTurn)
 gameRouter.post('/player/:playerIndex/cancelForProperty', cancelBuyPropertyAndEndTurn);
 gameRouter.post('/player/:playerIndex/payForUpgradeProperty', payForUpgradePropertyAndEndTurn);
 gameRouter.post('/player/:playerIndex/cancelUpgradeProperty',cancelUpgradePropertyAndEndTurn);
+gameRouter.get('/player/:playerIndex/payRentEvent',getPayRentEvent);
 gameRouter.post('/player/:playerIndex/payRent', payRentAndEndTurn);
 gameRouter.post('/player/:playerIndex/endTurn', endTurn);
 gameRouter.post('/player/:playerIndex/payForSecurityCompany', payForSecurityCompany);
@@ -51,5 +55,7 @@ gameRouter.post('/player/:playerIndex/consumeMessage', consumeMessage);
 gameRouter.post('/player/:playerIndex/consumeChance',consumeChance);
 gameRouter.post('/player/:playerIndex/answerQuestion', answerQuestion);
 gameRouter.post('/player/:playerIndex/exchange', exchange);
+gameRouter.post('/player/:playerIndex/bankrupt', bankrupt);
+gameRouter.post('/player/final', getFinalPlayer);
 
 export default gameRouter;

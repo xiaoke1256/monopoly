@@ -196,15 +196,19 @@ const randomSelectChance = async (game) => {
     const chance = chances[randomIndex];
     const payments = [];
     if (chance.payFromType === 'all') {
-        game.players.filter((player) => !player.isBankrupt)
-        .forEach((player, index) => {
+        game.players.forEach((player, index) => {
+            if(player.isBankrupt){
+                return;
+            }
             payments.push({ playerIndex: index, payAmount: chance.payAmount });
         });
     }else if (chance.payFromType === 'you') {
         payments.push({ playerIndex: currentPlayerIndex, payAmount: chance.payAmount });
     }else if (chance.payFromType === 'min-cash') {
-        const minCashPlayerIndex = game.players.filter((player) => !player.isBankrupt)
-        .reduce((minIndex, player, index) => {
+        const minCashPlayerIndex = game.players.reduce((minIndex, player, index) => {
+            if(player.isBankrupt){
+                return minIndex;
+            }
             if (totalAmt(player.money) < totalAmt(game.players[minIndex].money)) {
                 return index;
             }
@@ -212,8 +216,10 @@ const randomSelectChance = async (game) => {
         }, 0);
         payments.push({ playerIndex: minCashPlayerIndex, payAmount: chance.payAmount });
     }else if (chance.payFromType === 'max-cash') {
-        const maxCashPlayerIndex = game.players.filter((player) => !player.isBankrupt)
-        .reduce((maxIndex, player, index) => {
+        const maxCashPlayerIndex = game.players.reduce((maxIndex, player, index) => {
+            if(player.isBankrupt){
+                return maxIndex;
+            }
             if (totalAmt(player.money) > totalAmt(game.players[maxIndex].money)) {
                 return index;
             }
@@ -221,8 +227,10 @@ const randomSelectChance = async (game) => {
         }, 0);
         payments.push({ playerIndex: maxCashPlayerIndex, payAmount: chance.payAmount });
     }else if (chance.payFromType === 'min-property') {
-        const minPropertyPlayerIndex = game.players.filter((player) => !player.isBankrupt)
-        .reduce((minIndex, player, index) => {
+        const minPropertyPlayerIndex = game.players.reduce((minIndex, player, index) => {
+            if(player.isBankrupt){
+                return minIndex;
+            }
             const propertyCount = game.cells.filter(cell => cell.type === 'property' && String(cell.owner) === String(player.id)).length;
             const minPropertyCount = game.cells.filter(cell => cell.type === 'property' && String(cell.owner) === String(game.players[minIndex].id)).length;
             if (propertyCount < minPropertyCount) {
@@ -232,8 +240,10 @@ const randomSelectChance = async (game) => {
         }, 0);
         payments.push({ playerIndex: minPropertyPlayerIndex, payAmount: chance.payAmount });
     }else if (chance.payFromType === 'max-property') {
-        const maxPropertyPlayerIndex = game.players.filter((player) => !player.isBankrupt)
-        .reduce((maxIndex, player, index) => {
+        const maxPropertyPlayerIndex = game.players.reduce((maxIndex, player, index) => {
+            if(player.isBankrupt){
+                return maxIndex;
+            }
             const propertyCount = game.cells.filter(cell => cell.type === 'property' && String(cell.owner) === String(player.id)).length;
             const maxPropertyCount = game.cells.filter(cell => cell.type === 'property' && String(cell.owner) === String(game.players[maxIndex].id)).length;
             if (propertyCount > maxPropertyCount) {
@@ -321,6 +331,33 @@ const getCurrentQuestion = async (req, res) => {
     }
 }
 
+const canBankrupt = (game)=>{
+    const event = game.events[0];
+    if(event.payAmount>0){
+        const currentPlayerIndex = game.currentPlayerIndex ;
+        console.log(`Player at index ${currentPlayerIndex} `);  
+        const currentPlayer = game.players[currentPlayerIndex];
+        if(totalAmt(currentPlayer.money)<event.payAmount){
+            return [currentPlayerIndex];
+        }
+    }
+    if (event?.chance?.payments) {
+        const bankruptPlayerIndexs = [];
+        for(const payment of event?.chance?.payments){
+            const {playerIndex,payAmount,isPaid} = payment;
+            if(isPaid){
+                continue;
+            }
+            const player = game.players[playerIndex];
+            if(totalAmt(player.money)<payAmount){
+                bankruptPlayerIndexs.push(playerIndex);
+            }
+        }
+        return bankruptPlayerIndexs
+    }
+    return [];
+}
+
 const getCurrentChance = async (req, res) => {
     try {
         const game = await queryCurrentGame();
@@ -329,7 +366,9 @@ const getCurrentChance = async (req, res) => {
             if(event.actionType !== 'getChance'){
                 return res.status(400).json({ message: 'the actionType must be chance!' });
             }
-            return res.json(event.chance.toObject({ getters: true }));
+            // 检查是否会照成某玩家破产
+            const bankruptPlayerIndexs = canBankrupt(game);
+            return res.json({...event.chance.toObject({ getters: true }),bankruptPlayerIndexs});
         }else{
             return res.status(404).json({ message: 'No current question found' });
         }
@@ -338,6 +377,43 @@ const getCurrentChance = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 }
+
+const consumeChance = async (req, res) => {
+    const game = await queryCurrentGame();  
+    const {yourSelectedMoney,otherSelectedMoney,payerIndex} = req.body;
+    const currentPlayer = game.players[game.currentPlayerIndex];
+    
+    if(game.events.length===0){
+        return res.status(400).json({ message: 'No chance to consume' });
+    }
+
+    const event = game.events[0];
+    if(event.actionType !== 'getChance'){
+        return res.status(400).json({ message: 'No chance to consume' });
+    }
+
+    const chance = event.chance;
+    const ret = {message:'success!',hasNext:true};
+    //TODO 先记录下来需要处理 payments 、 move 和其他操作
+    if(chance.payments && chance.payments.length>0){
+        const payment = chance.payments.filter((p)=>!p.isPaid&&p.playerIndex==payerIndex)[0];
+        if(!payment){
+            return res.status(400).json({ message: `payerIndex is invalid:${payerIndex}`});
+        }
+        const {playerIndex,payAmount} = payment;
+        const payer = game.players[playerIndex];
+        pay(payer,null,yourSelectedMoney,otherSelectedMoney,payAmount);
+        payment.isPaid=true;
+        if(chance.payments.filter((p)=>!p.isPaid).length==0){
+            game.events.shift();
+            ret.hasNext = false;
+        }
+        await game.save();
+    }
+
+    return res.json(ret);
+
+};
 
 const answerQuestion = async (req, res) => {
     try {
@@ -371,10 +447,15 @@ const answerQuestion = async (req, res) => {
 const nextPlayerIndex = (game)=>{
     let index = game.currentPlayerIndex;
     let player = {isBankrupt:true}
+    let count = game.players.length;
     do{
         index = (index + 1) % game.players.length
         player = game.players[index];
-    }while(!player.isBankrupt)
+        count--;
+        if(count<0){
+            throw new Error("all players are bankrupt!");
+        }
+    }while(player.isBankrupt)
     return index;
 }
 
@@ -535,6 +616,8 @@ const payForUpgradePropertyAndEndTurn = async (req, res) => {
         return res.status(400).json({ message: error.message });
     }
 
+    console.log("pay success!");
+
     // 将地产的所有者设置为当前玩家
     if (String(cell.owner) !== String(currentPlayer.id)){
         console.log(`Property is not owned by the current player. Cannot upgrade.`);
@@ -553,6 +636,19 @@ const payForUpgradePropertyAndEndTurn = async (req, res) => {
         return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex });
     }
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
+}
+
+const getPayRentEvent = async (req, res)=>{
+    const game = await queryCurrentGame(); 
+    const currentPlayerIndex = game.currentPlayerIndex ;
+    console.log(`Player at index ${currentPlayerIndex} paying rent`);  
+    const currentPlayer = game.players[currentPlayerIndex];
+    const event = game.events[0]
+    if(!event || event.actionType !== 'payRent'){
+        return res.status(404).json({ message: 'can not find payRent type event!' });
+    }
+    //检查是否会造成玩家破产
+    return res.json({...event.toObject({ getters: true })});
 }
 
 const payRentAndEndTurn = async (req, res) => {
@@ -707,8 +803,9 @@ const getPlayerStatus = async (req, res) => {
     const game = await queryCurrentGame();
     const currentPlayerIndex = game.currentPlayerIndex ;
     const currentPlayer = game.players[currentPlayerIndex];
-    const isWaiting = currentPlayer.waitingRound>0
-    return res.json({ playerStatus: game.playerStatus,currentPlayerPosition: currentPlayer.position, isWaiting });
+    const isWaiting = currentPlayer.waitingRound>0;
+    const isGameOver = game.players.filter((player)=>!player.isBankrupt).length<=1
+    return res.json({ playerStatus: game.playerStatus,currentPlayerPosition: currentPlayer.position, isWaiting,isGameOver });
 };
 
 const getCurrentMessage = async (req, res) => {
@@ -725,6 +822,7 @@ const getCurrentMessage = async (req, res) => {
             return res.json({ exists: false, messageType: 'noMessage' });
         }
         const event = game.events[0];
+        //检查是否会造成玩家破产
         if(event.actionType !== 'showMessage'){
             return res.json({ exists: false, messageType: 'noMessage' });
         }
@@ -873,42 +971,52 @@ const consumeMessage = async (req, res) => {
     }
 };
 
-const consumeChance = async (req, res) => {
+/** 宣布破产 */
+const bankrupt = async (req, res)=>{
+    const {playerIndex:bankruptPlayerIndex} = req.body;
     const game = await queryCurrentGame();  
-    const {yourSelectedMoney,otherSelectedMoney,payerIndex} = req.body;
-    const currentPlayer = game.players[game.currentPlayerIndex];
-    
+    const bankruptPlayerIndexs = canBankrupt(game);
+    if(!bankruptPlayerIndexs.includes(bankruptPlayerIndex)){
+        return res.status(400).json({message:'该玩家目前不能破产'});
+    }
+    const player = game.plyers[bankruptPlayerIndex];
+    player.isBankrupt = true;
+    const events = game.events.filter((event)=>{
+        if(event.actionType!='getChance'){
+            return false;
+        }
+        const chance = event.chance;
+        for(const payment of chance.payments){
+            const playerIndex = payment.playerIndex
+            if(playerIndex==bankruptPlayerIndex){
+                payment.isPaid = true;
+            }
+        }
+        if(chance.payments.filter((payment)=>!payment.isPaid).length>0){
+            return true;
+        }else{
+            return false;
+        }
+    });
+    console.log("new events:",events);
+    game.events = events;
     if(game.events.length===0){
-        return res.status(400).json({ message: 'No chance to consume' });
+        game.playerStatus = 'completed';
     }
+    await game.save();
+    //检查一下是否只剩一个玩家？
+    const isGameOver = game.plyers.filter((player)=>!player.isBankrupt).length<=1
+    return res.json({message:`${player.name}已宣布破产！`,endTurn:game.events.length==0,isGameOver}); 
+}
 
-    const event = game.events[0];
-    if(event.actionType !== 'getChance'){
-        return res.status(400).json({ message: 'No chance to consume' });
+const getFinalPlayer = async (req, res)=>{
+    const game = await queryCurrentGame();  
+    const players = game.players.filter((player)=>!player.isBankrupt)
+    if(players.length!=1){
+        return res.status(400).json({message:`目前不止一个玩家`}); 
     }
-
-    const chance = event.chance;
-    const ret = {message:'success!',hasNext:true};
-    //TODO 先记录下来需要处理 payments 、 move 和其他操作
-    if(chance.payments && chance.payments.length>0){
-        const payment = chance.payments.filter((p)=>!p.isPaid&&p.playerIndex==payerIndex)[0];
-        if(!payment){
-            return res.status(400).json({ message: `payerIndex is invalid:${payerIndex}`});
-        }
-        const {playerIndex,payAmount} = payment;
-        const payer = game.players[playerIndex];
-        pay(payer,null,yourSelectedMoney,otherSelectedMoney,payAmount);
-        payment.isPaid=true;
-        if(chance.payments.filter((p)=>!p.isPaid).length==0){
-            game.events.shift();
-            ret.hasNext = false;
-        }
-        await game.save();
-    }
-
-    return res.json(ret);
-
-};
+    return res.json({...player}); 
+}
         
 
 export {
@@ -930,10 +1038,13 @@ export {
     getCurrentMessage,
     getCurrentQuestion,
     getCurrentChance,
+    getPayRentEvent,
     payForMessage,
     payForSecurityCompany,
     consumeMessage,
     consumeChance,
     answerQuestion,
-    exchange
+    exchange,
+    bankrupt,
+    getFinalPlayer
 };

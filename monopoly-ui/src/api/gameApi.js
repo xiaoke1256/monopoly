@@ -207,3 +207,24 @@ export const payForSecurityCompany = async({playerIndex,yourSelectedMoney,otherS
         throw error;
     }
 }
+
+export const bankrupt = async ({playerIndex}) => {
+    try {
+        const response = await axios.post(`/api/game/player/${playerIndex}/bankrupt`, {
+            playerIndex
+        })
+        return response.data;
+    } catch (error) {
+        console.error('Error bankrupt for message:', error);
+        throw error;
+    }
+}
+export const getFinalPlayer = async ()=>{
+    try {
+        const response = await axios.get('/api/game/player/final');
+        return response.data;
+    } catch (error) {
+        console.error('Error bankrupt for message:', error);
+        throw error;
+    }
+}
