@@ -1,0 +1,65 @@
+.pay-rent {
+    padding: 8px 4px 0;
+
+    .question {
+        font-size: 16px;
+        color: #333;
+        text-align: center;
+        margin: 16px 0 20px;
+    }
+
+    .info-card {
+        background: #f8fafc;
+        border: 1px solid #e8eaec;
+        border-radius: 8px;
+        padding: 12px 20px;
+        margin-bottom: 24px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px dashed #e8eaec;
+        font-size: 15px;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    .info-label {
+        color: #666;
+        font-weight: 500;
+    }
+
+    .info-value {
+        font-weight: 600;
+
+        &.name {
+            color: #2d8cf0;
+            font-size: 16px;
+        }
+
+        &.owner {
+            color: #19be6b;
+        }
+
+        &.rent {
+            color: #ed4014;
+            font-size: 18px;
+        }
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+
+        .ivu-btn {
+            min-width: 120px;
+            font-size: 15px;
+        }
+    }
+}
