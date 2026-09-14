@@ -734,9 +734,8 @@ const payForSecurityCompany = async (req, res) => {
     }
 
     game.currentDice = forwardStep;
-    game.playerStatus = 'arrive-cell';
+    game.playerStatus = 'after-dice';
     await game.save();
-    await generateEvents(game);
     return res.json({ dice:forwardStep });
 }
 
