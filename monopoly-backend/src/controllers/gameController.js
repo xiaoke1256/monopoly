@@ -34,6 +34,11 @@ const movePlayer = async (req, res ) => {
 
         player.hasPassedGo = player.position + steps >= game.cells.length;
         player.position = (player.position + steps) % game.cells.length;
+        if('after-dice' === game.playerStatus) {
+            await generateEvents(game);
+            game.playerStatus = 'arrive-cell';
+            await game.save();
+        }
         game.save();
         return res.json({ newPosition: player.position });
     } catch (error) {
@@ -87,19 +92,18 @@ const dice = async (req, res)=>{
     const game = await queryCurrentGame();
     if(game){
         game.currentDice = diceResult;
-        game.playerStatus = 'arrive-cell';
+        game.playerStatus = 'after-dice';
         await game.save();
-        await afterDice(game);
     }
     return res.json({ dice:diceResult });
 }
 
 /* 掷骰子以后的处理 */
-const afterDice = async (game)=>{
+const generateEvents = async (game)=>{
     const currentPlayerIndex = game.currentPlayerIndex;
     const currentPlayer = game.players[currentPlayerIndex];
-    console.log("(currentPlayer.position+game.currentDice) % game.cells.length:",((currentPlayer.position+game.currentDice) % game.cells.length));
-    const cell = game.cells[(currentPlayer.position+game.currentDice) % game.cells.length];
+    console.log("(currentPlayer.position) :",currentPlayer.position);
+    const cell = game.cells[currentPlayer.position];
     console.log("cell:",cell);
     const saveEvent = async (game,event)=>{
         if(!game.events){
@@ -108,7 +112,7 @@ const afterDice = async (game)=>{
         game.events.push(event);
         await game.save();
     }
-    if (currentPlayer.position + game.currentDice >= game.cells.length) {
+    if (currentPlayer.hasPassedGo) {
         const event = {actionType:'showMessage',payAmount:-3000,messageType: 'passedGo', message: '路过柜坊，请领取3000文'};
         await saveEvent(game,event)
     }
@@ -337,12 +341,13 @@ const canBankrupt = (game)=>{
         const currentPlayerIndex = game.currentPlayerIndex ;
         console.log(`Player at index ${currentPlayerIndex} `);  
         const currentPlayer = game.players[currentPlayerIndex];
+        console.log("totalAmt(currentPlayer.money):",totalAmt(currentPlayer.money),"event.payAmount:",event.payAmount)
         if(totalAmt(currentPlayer.money)<event.payAmount){
-            return [currentPlayerIndex];
+            return [{playerIndex:currentPlayerIndex,payAmount:event.payAmount,totalCash:totalAmt(currentPlayer.money)}];
         }
     }
     if (event?.chance?.payments) {
-        const bankruptPlayerIndexs = [];
+        const bankruptPlayers = [];
         for(const payment of event?.chance?.payments){
             const {playerIndex,payAmount,isPaid} = payment;
             if(isPaid){
@@ -350,10 +355,10 @@ const canBankrupt = (game)=>{
             }
             const player = game.players[playerIndex];
             if(totalAmt(player.money)<payAmount){
-                bankruptPlayerIndexs.push(playerIndex);
+                bankruptPlayer.push({playerIndex,payAmount,totalCash:totalAmt(player.money)});
             }
         }
-        return bankruptPlayerIndexs
+        return bankruptPlayers
     }
     return [];
 }
@@ -367,7 +372,7 @@ const getCurrentChance = async (req, res) => {
                 return res.status(400).json({ message: 'the actionType must be chance!' });
             }
             // 检查是否会照成某玩家破产
-            const bankruptPlayerIndexs = canBankrupt(game);
+            const bankruptPlayerIndexs = canBankrupt(game).map(p=>p.playerIndex);
             return res.json({...event.chance.toObject({ getters: true }),bankruptPlayerIndexs});
         }else{
             return res.status(404).json({ message: 'No current question found' });
@@ -476,11 +481,13 @@ const endTurn = async (req, res) => {
     await game.save();
     //检查切换后玩家是否处于暂停状态？
     const currentPlayer = game.players[game.currentPlayerIndex];
+    //是否结束游戏？
+    const isGameOver = game.players.filter((player)=>!player.isBankrupt).length<=1
     if (currentPlayer.waitingRound>0){
-        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex });
+        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, isGameOver , currentPlayerIndex: game.currentPlayerIndex });
     }
 
-    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
+    return res.json({ action: 'endTurn', message: 'Turn ended', isGameOver , currentPlayerIndex: game.currentPlayerIndex });
 }
 
 const payForPropertyAndEndTurn = async (req, res) => {
@@ -647,7 +654,7 @@ const getPayRentEvent = async (req, res)=>{
     if(!event || event.actionType !== 'payRent'){
         return res.status(404).json({ message: 'can not find payRent type event!' });
     }
-    //检查是否会造成玩家破产
+    //TODO 检查是否会造成玩家破产
     return res.json({...event.toObject({ getters: true })});
 }
 
@@ -729,7 +736,7 @@ const payForSecurityCompany = async (req, res) => {
     game.currentDice = forwardStep;
     game.playerStatus = 'arrive-cell';
     await game.save();
-    await afterDice(game);
+    await generateEvents(game);
     return res.json({ dice:forwardStep });
 }
 
@@ -772,8 +779,13 @@ const pay = (currentPlayer, otherPlayer, yourSelectedMoney, otherSelectedMoney, 
 }
 
 const totalAmt = (money) => {
+    const moneyJson = money.toObject?money.toObject({ getters: true }):money
     let total = 0;
-    for (const [denomination, amount] of Object.entries(money)) {
+    for (const [denomination, amount] of Object.entries(moneyJson)) {
+        console.log("denomination:",denomination)
+        if(!denomination.startsWith('cash')){
+            continue;
+        }
         total += denomination.replace('cash', '') * amount;
     }
     return total;
@@ -822,7 +834,7 @@ const getCurrentMessage = async (req, res) => {
             return res.json({ exists: false, messageType: 'noMessage' });
         }
         const event = game.events[0];
-        //检查是否会造成玩家破产
+        //TODO 检查是否会造成玩家破产
         if(event.actionType !== 'showMessage'){
             return res.json({ exists: false, messageType: 'noMessage' });
         }
@@ -971,15 +983,29 @@ const consumeMessage = async (req, res) => {
     }
 };
 
+const getBankruptInfo = async (req, res)=>{
+    req.params.playerIndex = parseInt(req.params.playerIndex);
+    const {playerIndex} = req.params;
+    const game = await queryCurrentGame();  
+    const currentPlayer = game.players[playerIndex];
+    const bankruptInfo = canBankrupt(game).filter((b)=>b.playerIndex===playerIndex)[0];
+    if(bankruptInfo){
+        return res.json({...bankruptInfo,message:`${currentPlayer.name}需要支付${bankruptInfo.payAmount}文，目前仅有${bankruptInfo.totalCash}文现金。`});
+    }else{
+        res.status(404).json({ playerIndex,message: '该玩家没有破产' });
+    }
+        
+}
+
 /** 宣布破产 */
 const bankrupt = async (req, res)=>{
     const {playerIndex:bankruptPlayerIndex} = req.body;
     const game = await queryCurrentGame();  
-    const bankruptPlayerIndexs = canBankrupt(game);
+    const bankruptPlayerIndexs = canBankrupt(game).map(p=>p.playerIndex);
     if(!bankruptPlayerIndexs.includes(bankruptPlayerIndex)){
         return res.status(400).json({message:'该玩家目前不能破产'});
     }
-    const player = game.plyers[bankruptPlayerIndex];
+    const player = game.players[bankruptPlayerIndex];
     //退还所有地产
     for(const cell of game.cells){
         if(String(player.id) === String(cell.owner)){
@@ -1012,7 +1038,7 @@ const bankrupt = async (req, res)=>{
     }
     await game.save();
     //检查一下是否只剩一个玩家？
-    const isGameOver = game.plyers.filter((player)=>!player.isBankrupt).length<=1
+    const isGameOver = game.players.filter((player)=>!player.isBankrupt).length<=1
     return res.json({message:`${player.name}已宣布破产！`,endTurn:game.events.length==0,isGameOver}); 
 }
 
@@ -1022,7 +1048,7 @@ const getFinalPlayer = async (req, res)=>{
     if(players.length!=1){
         return res.status(400).json({message:`目前不止一个玩家`}); 
     }
-    return res.json({...player}); 
+    return res.json({...players[0].toObject({getters: true })}); 
 }
         
 
@@ -1052,6 +1078,7 @@ export {
     consumeChance,
     answerQuestion,
     exchange,
+    getBankruptInfo,
     bankrupt,
     getFinalPlayer
 };

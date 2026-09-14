@@ -8,7 +8,7 @@
     </div>
   </div>
   <div class="action-buttons">
-    <Button type="primary" size="large" @click="confirmMsg">返回主页面</Button>
+    <Button type="primary" size="large" @click="returnMain">返回主页面</Button>
   </div>
 </template>
 <script>

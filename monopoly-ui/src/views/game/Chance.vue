@@ -9,7 +9,7 @@
     </div>
   </div>
   <div class="action-buttons">
-    <Button v-if="isBankrupt" @click="openBankruptModal" >宣布破产</Button>
+    <Button v-if="isBankrupt" size="large" @click="openBankruptModal" >宣布破产</Button>
     <Button v-if="payAmount > 0" :disabled="isBankrupt" type="primary" size="large" @click="confirmPayment">支付</Button>
     <Button v-if="payAmount < 0 && otherPlayerIndex < 0" type="primary" size="large" @click="confirmPayment">领取</Button>
     <Button v-if="!payAmount " type="primary" size="large" @click="confirmMsg">确定</Button>
@@ -20,17 +20,19 @@
     :playerIndex="yourPlayerIndex"
     title="破产"
     >
-    <div>{{ bankruptMessage }}</div>
-    <div class="action-buttons">
-        <Button type="primary" size="large" @click="confirmBankrupt">确定</Button>
-        <Button size="large" @click="cancleBankrupt">取消</Button>
+    <div>
+        <div style="text-align: center;">{{ bankruptMessage }}</div>
+        <div class="action-buttons">
+            <Button type="primary" size="large" @click="confirmBankrupt">确定</Button>
+            <Button size="large" @click="cancleBankrupt">取消</Button>
+        </div>
     </div>
   </GModal>
 </template>
 <script>
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
-import { getPlayerChance, consumeChance,bankrupt } from '@/api/gameApi.js';
+import { getPlayerChance, consumeChance,bankrupt,getBankruptInfo } from '@/api/gameApi.js';
 import GModal from '@/components/Modal.vue';
 
 export default {
@@ -111,8 +113,10 @@ export default {
             });
         },
         openBankruptModal(){
-            this.bankruptMessage = '';
-            this.showBankruptModal = true;
+            getBankruptInfo({playerIndex:this.yourPlayerIndex}).then(({message})=>{
+                this.bankruptMessage = `${message}确认要宣布破产？`;
+                this.showBankruptModal = true;
+            });
         },
         confirmBankrupt(){
             bankrupt({playerIndex:this.yourPlayerIndex}).then(({message,endTurn,isGameOver})=>{

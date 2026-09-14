@@ -122,12 +122,12 @@ export default {
         axios.get('/api/game/player-status').then(response => {
             const playerStatus = response.data.playerStatus;
             const currentPlayerPosition = response.data.currentPlayerPosition;
-            const isGameOver = response.data.isGameOver
-            if(isGameOver){
-                this.showSuccessModal = true;
-                return;
-            }
             if(playerStatus==='before-dice') {
+                const isGameOver = response.data.isGameOver
+                if(isGameOver){
+                    this.showSuccessModal = true;
+                    return;
+                }
                 const isWaiting = response.data.isWaiting;
                 if(isWaiting){
                     this.onPlayerMoveComplete();
@@ -135,6 +135,8 @@ export default {
                 }
                 this.showDiceModal=true;
                 console.log('玩家需要掷骰子',this.showDiceModal);
+            } else if (playerStatus==='after-dice'){
+                this.handleDiceRolled()
             } else if (playerStatus==='completed'){
                 this.endTurn();
             } else {
@@ -321,7 +323,9 @@ export default {
             this.showBuyPropertyModal = false;
             this.showUpgradePropertyModal = false;
             this.showPayRentModal = false;
-            //
+            if(response.data.isGameOver){
+                this.showSuccessModal = true;
+            }
             if(response.data.isWaiting){
                 this.onPlayerMoveComplete();
                 return;

@@ -208,6 +208,16 @@ export const payForSecurityCompany = async({playerIndex,yourSelectedMoney,otherS
     }
 }
 
+export const getBankruptInfo = async ({playerIndex}) => {
+    try {
+        const response = await axios.get(`/api/game/player/${playerIndex}/bankrupt`);
+        return response.data;
+    } catch (error) {
+        console.error('Error geting for bankrupt info :', error);
+        throw error;
+    }
+}
+
 export const bankrupt = async ({playerIndex}) => {
     try {
         const response = await axios.post(`/api/game/player/${playerIndex}/bankrupt`, {

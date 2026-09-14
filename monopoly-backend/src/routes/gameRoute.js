@@ -24,6 +24,7 @@ import { dice,
     exchange,
     cancelBuyPropertyAndEndTurn,
     cancelUpgradePropertyAndEndTurn,
+    getBankruptInfo,
     bankrupt,
     getFinalPlayer
  } from '../controllers/gameController.js';
@@ -55,7 +56,8 @@ gameRouter.post('/player/:playerIndex/consumeMessage', consumeMessage);
 gameRouter.post('/player/:playerIndex/consumeChance',consumeChance);
 gameRouter.post('/player/:playerIndex/answerQuestion', answerQuestion);
 gameRouter.post('/player/:playerIndex/exchange', exchange);
+gameRouter.get('/player/:playerIndex/bankrupt',getBankruptInfo)
 gameRouter.post('/player/:playerIndex/bankrupt', bankrupt);
-gameRouter.post('/player/final', getFinalPlayer);
+gameRouter.get('/player/final', getFinalPlayer);
 
 export default gameRouter;
