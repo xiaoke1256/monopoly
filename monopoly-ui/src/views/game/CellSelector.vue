@@ -87,32 +87,5 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.selector-containner{
-    width: 100%;
-    display: flex;
-    justify-content: start;
-    overflow-x: auto;
-    .cell-card{
-        flex: 0 0 19%;
-        margin: 5px;
-        position: relative;
-        .cell-containner{
-            position: relative;
-            width:100%;
-            aspect-ratio: 2 / 1;
-            right: 0;
-            .color-div{
-                position: absolute;
-                right: 0;
-                bottom: 0;
-            }
-            img{
-                position: absolute;
-                height: auto;
-                right: 0;
-                bottom: 0;
-            }
-        }
-    }
-}
+@import "@/assets/styles/cell-selector.scss";;
 </style>

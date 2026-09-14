@@ -646,5 +646,5 @@ function getRelativePosition(element, relativeToElement) {
 }
 </script>
 <style lang="scss" scoped>
-@import "@/assets/styles/cash-box.scss";;
+@import "@/assets/styles/cash-box.scss";
 </style>
