@@ -834,11 +834,13 @@ const getCurrentMessage = async (req, res) => {
             return res.json({ exists: false, messageType: 'noMessage' });
         }
         const event = game.events[0];
-        //TODO 检查是否会造成玩家破产
+        
         if(event.actionType !== 'showMessage'){
             return res.json({ exists: false, messageType: 'noMessage' });
         }
-        return res.json({ exists: true, ...event.toJSON() })
+        //TODO 检查是否会造成玩家破产
+        const bankruptPlayerIndexs = canBankrupt(game).map(p=>p.playerIndex);
+        return res.json({ exists: true, ...event.toJSON(),bankruptPlayerIndexs })
     } catch (error) {
         console.error('Error occurred while fetching current message:', error);
         return res.status(500).json({ message: 'Internal server error' });

@@ -33,7 +33,7 @@
         :show="showMessageModal"
         :playerIndex="currentPlayerIndex"
         title="消息">
-        <Message v-if="showMessageModal" :playerIndex="currentPlayerIndex" :messageType="messageType" @confirm="closeMessageModal" />
+        <Message v-if="showMessageModal" :playerIndex="currentPlayerIndex" :messageType="messageType" @confirm="closeMessageModal" @bankrupted="afterBankrupt" />
     </GModal> 
     <GModal
         :show="showSecurityCompanyModal"

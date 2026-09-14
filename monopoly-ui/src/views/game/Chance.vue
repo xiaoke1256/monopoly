@@ -32,6 +32,7 @@ import GModal from '@/components/Modal.vue';
 
 export default {
     name: 'ChanceComponent',
+    emits: ['confirm'],
     components: {
         Button,CashBoxModal,GModal,Bankrupt
     },

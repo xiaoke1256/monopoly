@@ -12,7 +12,7 @@ export default {
     name: 'PlayerAvatar',
     props: {
         playerIndex: {
-            type: String,
+            type: Number,
             required: true
         },
         size: {
