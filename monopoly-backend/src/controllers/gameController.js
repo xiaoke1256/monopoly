@@ -654,8 +654,9 @@ const getPayRentEvent = async (req, res)=>{
     if(!event || event.actionType !== 'payRent'){
         return res.status(404).json({ message: 'can not find payRent type event!' });
     }
-    //TODO 检查是否会造成玩家破产
-    return res.json({...event.toObject({ getters: true })});
+    // 检查是否会造成玩家破产
+    const bankruptPlayerIndexs = canBankrupt(game).map(p=>p.playerIndex);
+    return res.json({...event.toObject({ getters: true }),bankruptPlayerIndexs});
 }
 
 const payRentAndEndTurn = async (req, res) => {

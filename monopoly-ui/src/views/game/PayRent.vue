@@ -16,20 +16,30 @@
             </div>
         </div>
         <div class="action-buttons">
-            <Button type="primary" size="large" @click="confirmPayment">确认支付</Button>
+            <Button v-if="isBankrupt" size="large" @click="openBankruptModal" >宣布破产</Button>
+            <Button type="primary" :disabled="isBankrupt" size="large" @click="confirmPayment">确认支付</Button>
         </div>
     </div>
     <CashBoxModal :otherPlayerIndex="owner.index" :yourPlayerIndex="playerIndex" :payAmount="rentAmount" @confirmPay="pay" ref="cashBoxModal" />
+    <GModal
+        :show="showBankruptModal"
+        :playerIndex="playerIndex"
+        title="破产"
+        >
+        <Bankrupt v-if="showBankruptModal" :playerIndex="playerIndex" @close="closeBankruptModal" />
+    </GModal>
 </template>
 <script>
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
-import { payRent } from '../../api/gameApi.js'
+import Bankrupt from './Bankrupt.vue';
+import GModal from '@/components/Modal.vue';
+import { payRent,getPayRentEvent } from '../../api/gameApi.js'
 
 export default {
     name: 'PayRentComponent',
     components: {
-        Button,CashBoxModal
+        Button,CashBoxModal,Bankrupt,GModal
     },
     props: {
         cell: {
@@ -49,9 +59,17 @@ export default {
             default: 0
         }
     },
-    mounted(){
+    data(){
+        return {
+            showBankruptModal:false,
+            bankruptPlayerIndexs:[]
+        }
+    },
+    async mounted(){
         console.log("mounted");
         this.payAmount = this.rentAmount;
+        const eventInfo = await getPayRentEvent({playerIndex:this.playerIndex});
+        this.bankruptPlayerIndexs = eventInfo.bankruptPlayerIndexs
     },
     methods: {
         confirmPayment() {
@@ -66,7 +84,22 @@ export default {
                 failCallback();
             })
             
+        },
+        openBankruptModal(){
+            console.log("点击了破产按钮")
+            this.showBankruptModal = true;
+        },
+        closeBankruptModal({message,endTurn,isGameOver}){
+            this.showBankruptModal = false;
+            if(endTurn){
+                this.$emit('bankrupted',{message,action:endTurn?'endTurn':'',endTurn,isGameOver});
+            }
         }
+    },
+    computed:{
+        isBankrupt(){
+            return this.bankruptPlayerIndexs.includes(this.playerIndex)
+        },
     }
 }
 </script>

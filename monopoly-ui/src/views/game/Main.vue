@@ -27,7 +27,7 @@
         :show="showPayRentModal"
         :playerIndex="currentPlayerIndex"
         title="支付租金">
-        <PayRent :cell="currentCell" :owner="rentOwner" :playerIndex="currentPlayerIndex" :rentAmount="rentAmount" @confirm="afterPayRent" />
+        <PayRent v-if="showPayRentModal" :cell="currentCell" :owner="rentOwner" :playerIndex="currentPlayerIndex" :rentAmount="rentAmount" @confirm="afterPayRent" @bankrupted="afterBankrupt" />
     </GModal> 
     <GModal
         :show="showMessageModal"
@@ -269,6 +269,11 @@ export default {
                 this.showDiceModal = true;
             }
         });
+    },
+    afterBankrupt(){
+        this.showPayRentModal = false;
+        this.showMessageModal = false;
+        this.endTurn();
     },
     closeMessageModal({action, currentPlayerIndex,isWaiting,message}) {
         const doClose = ()=>{
