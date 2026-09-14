@@ -208,6 +208,16 @@ export const payForSecurityCompany = async({playerIndex,yourSelectedMoney,otherS
     }
 }
 
+export const cancelSecurityCompany = async ({playerIndex}) => {
+    try {
+        const response = await axios.post(`/api/game/player/${playerIndex}/cancelSecurityCompany`)
+        return response.data;
+    } catch (error) {
+        console.error('Error paying for message:', error);
+        throw error;
+    }
+}
+
 export const getPayRentEvent = async ({playerIndex}) => {
     try {
         const response = await axios.get(`/api/game/player/${playerIndex}/payRentEvent`);

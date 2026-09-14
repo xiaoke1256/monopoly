@@ -740,6 +740,31 @@ const payForSecurityCompany = async (req, res) => {
     return res.json({ dice:forwardStep });
 }
 
+const cancelSecurityCompany = async (req, res) => {
+    const game = await queryCurrentGame(); 
+    const currentPlayerIndex = game.currentPlayerIndex ;
+    console.log(`Player at index ${currentPlayerIndex} pay for security company`);  
+    const currentPlayer = game.players[currentPlayerIndex];
+    const securityCompanyCell = game.cells[currentPlayer.position];
+
+    if(securityCompanyCell.type != 'security-company'){
+        return res.status(400).json({ message: 'current cell must be security-company!' });
+    }
+
+    //检查events
+    const event = game.events.shift()
+    if(event.actionType !== 'getSecurityCompany'){
+        return res.status(400).json({ message: 'the actionType must be getSecurityCompany!' });
+    }
+
+    if(game.events.length===0){
+        game.playerStatus = 'completed';
+    }
+
+    await game.save();
+    return res.json({ message:'cancle success!' });
+}
+
 const pay = (currentPlayer, otherPlayer, yourSelectedMoney, otherSelectedMoney, payAmount) => {
     //检查两者之差是否是rentAmount?
     let yourTotal = 0;
@@ -1076,6 +1101,7 @@ export {
     getPayRentEvent,
     payForMessage,
     payForSecurityCompany,
+    cancelSecurityCompany,
     consumeMessage,
     consumeChance,
     answerQuestion,

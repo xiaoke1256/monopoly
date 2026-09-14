@@ -10,6 +10,7 @@
     <div class="action-buttons">
         <CellSelector v-if="showCellSelector" @selectd="selectdCell" ></CellSelector>
         <Button v-if="!showCellSelector"  type="primary" size="large" @click="confirmPayment">确认支付</Button>
+        <Button v-if="!showCellSelector"  size="large" @click="cancel">取消</Button>
     </div>
     <CashBoxModal otherPlayerIndex="-1" :yourPlayerIndex="playerIndex" :payAmount="500" @confirmPay="pay" ref="cashBoxModal" />
 </template>
@@ -17,7 +18,7 @@
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
 import CellSelector from './CellSelector.vue';
-import { payForSecurityCompany} from '../../api/gameApi.js'
+import { payForSecurityCompany,cancelSecurityCompany} from '../../api/gameApi.js'
 
 export default {
     name: 'SecurityCompanyComponent',
@@ -53,8 +54,10 @@ export default {
             this.$emit('confirm');
 
         },
-        async cancelPurchase() {
-            console.log("cancelPurchase...");
+        async cancel() {
+            console.log("cancel...");
+            await cancelSecurityCompany({playerIndex:this.playerIndex});
+            this.$emit('close');
         },
         async pay({yourSelectedMoney,otherSelectedMoney,successCallback,failCallback}) {
             console.log("after pay ... ,",yourSelectedMoney,otherSelectedMoney,successCallback,failCallback);

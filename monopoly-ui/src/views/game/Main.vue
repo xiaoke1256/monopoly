@@ -39,7 +39,7 @@
         :show="showSecurityCompanyModal"
         :playerIndex="currentPlayerIndex"
         title="镖局">
-        <SecurityCompany v-if="showSecurityCompanyModal" :playerIndex="currentPlayerIndex" @confirm="afterSelectCell" />
+        <SecurityCompany v-if="showSecurityCompanyModal" :playerIndex="currentPlayerIndex" @confirm="afterSelectCell" @close="closeSecurityCompany" />
     </GModal> 
     <GModal
         :show="showQuestionModal"
@@ -311,12 +311,16 @@ export default {
         this.checkStatus();
     },
     closeChanceModal(){
-         this.showChanceModal = false;
+        this.showChanceModal = false;
         this.checkStatus();
     },
     afterSelectCell(){
         this.showSecurityCompanyModal = false;
         this.handleDiceRolled();
+    },
+    closeSecurityCompany(){
+        this.showSecurityCompanyModal = false;
+        this.checkStatus();
     },
     endTurn(){
         axios.post(`/api/game/player/${this.currentPlayerIndex}/endTurn`)

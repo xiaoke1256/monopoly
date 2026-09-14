@@ -21,6 +21,7 @@ import { dice,
     consumeChance,
     answerQuestion,
     payForSecurityCompany,
+    cancelSecurityCompany,
     exchange,
     cancelBuyPropertyAndEndTurn,
     cancelUpgradePropertyAndEndTurn,
@@ -46,6 +47,7 @@ gameRouter.get('/player/:playerIndex/payRentEvent',getPayRentEvent);
 gameRouter.post('/player/:playerIndex/payRent', payRentAndEndTurn);
 gameRouter.post('/player/:playerIndex/endTurn', endTurn);
 gameRouter.post('/player/:playerIndex/payForSecurityCompany', payForSecurityCompany);
+gameRouter.post('/player/:playerIndex/cancelSecurityCompany',cancelSecurityCompany);
 gameRouter.get('/map', getCurrentMap);
 gameRouter.get('/player/:playerIndex/money', getMoney);
 gameRouter.get('/player/:playerIndex/message', getCurrentMessage);
