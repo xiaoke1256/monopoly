@@ -20,25 +20,20 @@
     :playerIndex="yourPlayerIndex"
     title="破产"
     >
-    <div>
-        <div style="text-align: center;">{{ bankruptMessage }}</div>
-        <div class="action-buttons">
-            <Button type="primary" size="large" @click="confirmBankrupt">确定</Button>
-            <Button size="large" @click="cancleBankrupt">取消</Button>
-        </div>
-    </div>
+    <Bankrupt v-if="showBankruptModal" :playerIndex="yourPlayerIndex" @close="closeBankruptModal" />
   </GModal>
 </template>
 <script>
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
-import { getPlayerChance, consumeChance,bankrupt,getBankruptInfo } from '@/api/gameApi.js';
+import Bankrupt from './Bankrupt.vue';
+import { getPlayerChance, consumeChance } from '@/api/gameApi.js';
 import GModal from '@/components/Modal.vue';
 
 export default {
     name: 'ChanceComponent',
     components: {
-        Button,CashBoxModal,GModal
+        Button,CashBoxModal,GModal,Bankrupt
     },
     props: {
         playerIndex: {
@@ -55,7 +50,6 @@ export default {
             payAmount:0,
             bankruptPlayerIndexs:[],
             showBankruptModal:false,
-            bankruptMessage:'确认要宣布破产？'
         };
     },
     mounted() {
@@ -113,24 +107,13 @@ export default {
             });
         },
         openBankruptModal(){
-            getBankruptInfo({playerIndex:this.yourPlayerIndex}).then(({message})=>{
-                this.bankruptMessage = `${message}确认要宣布破产？`;
-                this.showBankruptModal = true;
-            });
+            this.showBankruptModal = true;
         },
-        confirmBankrupt(){
-            bankrupt({playerIndex:this.yourPlayerIndex}).then(({message,endTurn,isGameOver})=>{
-                this.bankruptMessage = message;
-                setTimeout(()=>{
-                    this.showBankruptModal = false;
-                    if(endTurn){
-                        this.$emit('confirm',{message,endTurn,isGameOver});
-                    }
-                },500)
-            })
-        },
-        cancleBankrupt(){
+        closeBankruptModal({message,endTurn,isGameOver}){
             this.showBankruptModal = false;
+            if(endTurn){
+                this.$emit('confirm',{message,endTurn,isGameOver});
+            }
         }
     },
     computed:{
