@@ -92,11 +92,8 @@
                     </div>
                 </div>
                 <div id="other">
-                     <div id="player0" style="z-index: 10;position: absolute;font-size: 1.5vh;">
-                        <img src="@/assets/player1.svg" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
-                    </div>
-                    <div id="player1" style="z-index: 11;position: absolute;font-size: 1.5vh;">
-                        <img src="@/assets/player2.png" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
+                     <div v-for="(player,index) in players" :key="index"  :id="`player${index}`" style="z-index: 10;position: absolute;font-size: 1.5vh;">
+                        <img :src="playerImage(player)" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
                     </div>
                 </div>
                
@@ -124,9 +121,6 @@ export default {
     },
     mounted() {
         this.fetchMapData();
-
-        // this.locatePlayerToBlock(0, 30);
-        // this.locatePlayerToBlock(1, 30);
     },
     methods:{
         async fetchMapData() {
@@ -298,8 +292,7 @@ export default {
             const player = this.players.find(p => String(p._id) === String(ownerId));
             console.log("player:", player);
             if (player) {
-                if (player.name === '舞姬') return 'limeGreen';
-                if (player.name === '大理寺卿') return 'lightcoral';
+                return player.color;
             }
             return '#aaa';
         },
@@ -315,6 +308,9 @@ export default {
         },
         colorStyle(cell){
             return {...cell.buildStyle[`lv${cell.level}`].colorStyle,background:this.buildingColor(cell)};
+        },
+        playerImage(player){
+            return imageMap[player?.image];
         }
     }
 }

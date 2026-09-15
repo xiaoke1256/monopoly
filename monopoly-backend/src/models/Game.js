@@ -33,6 +33,8 @@ const CellSchema = new mongoose.Schema({
 const PlayerSchema = new mongoose.Schema({
   roleId: { type: Number, required: false },
   name: { type: String, required: true },
+  image: { type: String, required: false },
+  color:  { type: String, required: false },
   position: { type: Number, default: 0 },
   money: { type: {
       cash1: { type: Number, default: 0 },
