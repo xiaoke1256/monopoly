@@ -1,8 +1,20 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { randomUUID } from 'crypto';
 import User from '../models/User.js';
+import Session from '../models/Session.js';
 
 const JWT_SECRET = 'monopoly_jwt_secret_key_change_in_production';
+const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 天
+
+// 创建会话的工具函数
+async function createSession(userId) {
+  const sessionId = randomUUID();
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + SESSION_TTL_MS);
+  await Session.create({ sessionId, userId, createdAt: now, expiresAt });
+  return sessionId;
+}
 
 // 注册
 export const register = async (req, res) => {
@@ -37,11 +49,15 @@ export const register = async (req, res) => {
       { expiresIn: '7d' }
     );
 
+    // 生成 sessionId 并存库
+    const sessionId = await createSession(user._id);
+
     res.status(201).json({
       success: true,
       message: '注册成功',
       data: {
         token,
+        sessionId,
         user: { id: user._id, username: user.username, nickname: user.nickname },
       },
     });
@@ -79,11 +95,15 @@ export const login = async (req, res) => {
       { expiresIn: '7d' }
     );
 
+    // 生成 sessionId 并存库
+    const sessionId = await createSession(user._id);
+
     res.status(200).json({
       success: true,
       message: '登录成功',
       data: {
         token,
+        sessionId,
         user: { id: user._id, username: user.username, nickname: user.nickname },
       },
     });

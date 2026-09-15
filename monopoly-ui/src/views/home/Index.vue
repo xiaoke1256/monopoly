@@ -42,6 +42,7 @@ export default {
   methods: {
     handleLogout() {
       localStorage.removeItem('token');
+      localStorage.removeItem('sessionId');
       localStorage.removeItem('userInfo');
       this.userInfo = null;
       this.$Message.success('已退出登录');

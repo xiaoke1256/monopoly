@@ -81,6 +81,7 @@ export default {
         if (res.success) {
           // 注册成功后自动登录
           localStorage.setItem('token', res.data.token);
+          localStorage.setItem('sessionId', res.data.sessionId);
           localStorage.setItem('userInfo', JSON.stringify(res.data.user));
           this.$Message.success('注册成功，欢迎加入！');
           this.$router.push('/game');

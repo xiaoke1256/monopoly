@@ -52,8 +52,9 @@ export default {
         this.loading = true;
         const res = await login(this.form);
         if (res.success) {
-          // 保存 token 和用户信息
+          // 保存 sessionId 和用户信息
           localStorage.setItem('token', res.data.token);
+          localStorage.setItem('sessionId', res.data.sessionId);
           localStorage.setItem('userInfo', JSON.stringify(res.data.user));
           this.$Message.success('登录成功');
           this.$router.push('/game');
