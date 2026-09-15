@@ -75,32 +75,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.player-avatar {
-    border-radius: 50%;
-    width: 100%;
-    aspect-ratio: 1 / 1 !important;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.player-avatar-img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-}
-.avatar-div{
-    width:10%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    .name{
-        font-weight: 600;
-        font-size: 16px;
-    }
-}
+@import "@/assets/styles/player-avatar.scss";
 </style>
