@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div v-if="isLoggedIn" class="user-info">
-      <span>欢迎回来，<strong>{{ userInfo.nickname }}</strong>！</span>
+      <span>欢迎回来，<strong>{{ userInfo?.nickname }}</strong>！</span>
       <button @click="handleLogout" class="logout-btn">退出登录</button>
     </div>
     <div class="hero">
@@ -9,7 +9,6 @@
       <p>This is the home page of the Monopoly Game. Please click the button below to start playing.</p>
     </div>
     <div class="actions">
-      <button @click="$router.push('/game')">Start Game</button>
       <button v-if="!isLoggedIn" @click="$router.push('/login')">去登录</button>
       <button v-if="!isLoggedIn" @click="$router.push('/register')">去注册</button>
     </div>
@@ -26,7 +25,7 @@ export default {
   },
   computed: {
     isLoggedIn() {
-      return !!localStorage.getItem('token');
+      return !!this.userInfo;
     },
   },
   created() {

@@ -57,7 +57,8 @@ export default {
           localStorage.setItem('sessionId', res.data.sessionId);
           localStorage.setItem('userInfo', JSON.stringify(res.data.user));
           this.$Message.success('登录成功');
-          this.$router.push('/game');
+          //跳转向游戏选择页面
+          this.$router.push('/gameManage');
         } else {
           this.$Message.error(res.message || '登录失败');
         }

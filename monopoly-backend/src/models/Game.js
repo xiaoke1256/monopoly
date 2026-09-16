@@ -36,7 +36,7 @@ const PlayerSchema = new mongoose.Schema({
   image: { type: String, required: false },
   color:  { type: String, required: false },
   position: { type: Number, default: 0 },
-  loginName: {type: String, required: false},
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
   money: { type: {
       cash1: { type: Number, default: 0 },
       cash20: { type: Number, default: 0 },

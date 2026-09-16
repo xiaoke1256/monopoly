@@ -11,6 +11,14 @@ const routes = [
     name: "Main",
     component: () => import("../views/game/Main.vue"),
   },
+  // {
+  //     path: "/home",
+  //     component: HomeMain,
+  //     children: [
+  //       { path: 'profile', component: UserProfile }, // 匹配 /user/:id/profile
+  //       { path: 'posts', component: UserPosts }       // 匹配 /user/:id/posts
+  //     ]
+  // },
   {
     path: "/login",
     name: "Login",
@@ -20,6 +28,11 @@ const routes = [
     path: "/register",
     name: "Register",
     component: () => import("../views/home/Register.vue"),
+  },
+  {
+    path: "/gameManage",
+    name: "GameManager",
+    component: () => import("../views/home/GameManager.vue"),
   },
 ];
 

@@ -2,17 +2,18 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { randomUUID } from 'crypto';
 import User from '../models/User.js';
+import Game from '../models/Game.js';
 import Session from '../models/Session.js';
+import {JWT_SECRET} from '../config/securityConfig.js';
 
-const JWT_SECRET = 'monopoly_jwt_secret_key_change_in_production';
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 天
 
 // 创建会话的工具函数
-async function createSession(userId) {
+async function createSession(userId,gameId) {
   const sessionId = randomUUID();
   const now = new Date();
   const expiresAt = new Date(now.getTime() + SESSION_TTL_MS);
-  await Session.create({ sessionId, userId, createdAt: now, expiresAt });
+  await Session.create({ sessionId, userId, createdAt: now, gameId , expiresAt });
   return sessionId;
 }
 
@@ -42,15 +43,15 @@ export const register = async (req, res) => {
       nickname,
     });
 
+    // 生成 sessionId 并存库
+    const sessionId = await createSession(user._id);
+
     // 生成 token
     const token = jwt.sign(
-      { id: user._id, username: user.username, nickname: user.nickname },
+      { id: user._id, username: user.username, nickname: user.nickname, sessionId },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
-
-    // 生成 sessionId 并存库
-    const sessionId = await createSession(user._id);
 
     res.status(201).json({
       success: true,
@@ -88,15 +89,15 @@ export const login = async (req, res) => {
       return res.status(400).json({ success: false, message: '用户名或密码错误' });
     }
 
+    // 生成 sessionId 并存库
+    const sessionId = await createSession(user._id);
+
     // 生成 token
     const token = jwt.sign(
-      { id: user._id, username: user.username, nickname: user.nickname },
+      { id: user._id, username: user.username, nickname: user.nickname,sessionId },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
-
-    // 生成 sessionId 并存库
-    const sessionId = await createSession(user._id);
 
     res.status(200).json({
       success: true,

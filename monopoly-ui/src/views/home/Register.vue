@@ -84,6 +84,7 @@ export default {
           localStorage.setItem('sessionId', res.data.sessionId);
           localStorage.setItem('userInfo', JSON.stringify(res.data.user));
           this.$Message.success('注册成功，欢迎加入！');
+          //跳转到选择游戏的画面
           this.$router.push('/game');
         } else {
           this.$Message.error(res.message || '注册失败');

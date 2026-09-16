@@ -2,6 +2,7 @@ import { Router } from 'express';
 import mapRouter from './routes/mapRoute.js';
 import gameRouter from './routes/gameRoute.js';
 import userRouter from './routes/userRoute.js';
+import gameManageRouter from './routes/gameManageRoute.js';
 
 const webRouter = new Router();
 
@@ -12,5 +13,6 @@ webRouter.get('/', (req, res) => {
 webRouter.use('/map', mapRouter);
 webRouter.use('/game', gameRouter);
 webRouter.use('/user', userRouter);
+webRouter.use('/gameManage', gameManageRouter);
 
 export default webRouter;
