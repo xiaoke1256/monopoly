@@ -38,5 +38,19 @@ export const getValidGames = async (req, res) => {
 }
 
 export const startExistGame = async (req, res) => {
-    
+    const user = getCurrentUser(req)
+
+    const { sessionId, id:userId} = user;
+    console.log("sessionId, userId:",sessionId, userId);
+    const session = await Session.findOne({ sessionId, userId });
+    if (!session) {
+      return res.status(401).json({ success: false, message: '会话已失效，请重新登录' });
+    }
+
+    const { gameId } = req.body;
+
+    session.gameId = gameId;
+
+    await session.save();
+    return res.json({ success: true, message: '保存成功' });
 }

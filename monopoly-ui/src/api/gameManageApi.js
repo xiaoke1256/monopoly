@@ -14,3 +14,21 @@ export const getValidGames = async ()=>{
         throw error;
     }
 }
+
+export const startExistGame = async ({gameId})=>{
+    try {
+        const response = await axios.post(`/api/gameManage/startExistGame`,{
+            gameId
+        },
+        {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching map:', error);
+        throw error;
+    }
+};

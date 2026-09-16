@@ -2,17 +2,17 @@
   <div >
     <div >
       <h1 class="title">请选择游戏</h1>
-      <select multiple="true" >
-        <option v-for="game in games" :key="game._id" >{{game.name}}({{formatDate(game.updatedAt) }})</option>
+      <select multiple="true" v-model="selected" >
+        <option v-for="game in games" :key="game._id" :value="game._id" >{{game.name}}({{formatDate(game.updatedAt) }})</option>
       </select>
     </div>
     <div class="actions">
-      <button @click="$router.push('/game')">开始游戏</button>
+      <Button type="primary" size="large"  @click="startGame">开始游戏</Button>
     </div>
   </div>
 </template>
 <script>
-import {getValidGames} from '../../api/gameManageApi'
+import {getValidGames,startExistGame} from '../../api/gameManageApi'
 import {formatDate} from '../../util/dateUtils'
 
 export default {
@@ -23,6 +23,7 @@ export default {
   data(){
     return {
       games:[],
+      selected:''
     }
   },
   async mounted(){
@@ -30,6 +31,13 @@ export default {
   },
   methods:{
     formatDate,
+    async startGame(){
+      const gameId = this.selected[0];
+      const result = await startExistGame({gameId})
+      if(result.success){
+        this.$router.push('/game');
+      }
+    }
   }
 }
 </script>
