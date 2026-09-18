@@ -9,7 +9,7 @@
       <p>This is the home page of the Monopoly Game. Please click the button below to start playing.</p>
     </div>
     <div class="actions">
-      <button v-if="isLoggedIn" @click="$router.push('/game')">Start Game</button>
+      <button v-if="isLoggedIn" @click="$router.push('/gameManage')">开始游戏</button>
       <button v-if="!isLoggedIn" @click="$router.push('/login')">去登录</button>
       <button v-if="!isLoggedIn" @click="$router.push('/register')">去注册</button>
     </div>

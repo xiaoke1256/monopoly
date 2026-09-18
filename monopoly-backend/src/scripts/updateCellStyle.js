@@ -20,17 +20,17 @@ const updateCellStyle = async () => {
                 cell.buildStyle={
                     "lv1":{
                         "image":'shop-lv1',
-                        "textStyle":{"top":"-2%","marginTop":"15%"},
+                        "textStyle":{"textAlign":'center',"top":"-2%","marginTop":"15%"},
                         "colorStyle":{"width":'20%',"height":'60%',"position": 'relative',"left":'20%',"top":'20%'}
                     },
                     "lv2":{
                         "image":'shop-lv2',
-                        "textStyle":{"top":"-2%","marginTop":"11%"},
+                        "textStyle":{"textAlign":'center',"top":"-2%","marginTop":"11%"},
                         "colorStyle":{"width":'20%',"height":'100%',"position": 'relative',"left":'20%'}
                     },
                     "lv3":{
                         image:'shop-lv3',
-                        textStyle:{top:"-5%",marginTop:"11%"},
+                        textStyle:{"textAlign":'center',top:"-5%",marginTop:"11%"},
                         colorStyle:{borderRadius: '50% / 7%',width:'8%',height:'100%',position: 'relative',top:'-40%',left:'20.8%'}
                     }
                 };
@@ -40,17 +40,17 @@ const updateCellStyle = async () => {
                 cell.buildStyle={
                     "lv1":{
                         "image":'shop-lv1',
-                        "textStyle":{"top":"-2%","marginTop":"15%"},
+                        "textStyle":{"textAlign":'center',"top":"-2%","marginTop":"15%"},
                         "colorStyle":{"width":'20%',"height":'60%',"position": 'relative',"left":'20%',"top":'20%'}
                     },
                     "lv2":{
                         "image":'shop-lv2',
-                        "textStyle":{"top":"-2%","marginTop":"11%"},
+                        "textStyle":{"textAlign":'center',"top":"-2%","marginTop":"11%"},
                         "colorStyle":{"width":'20%',"height":'100%',"position": 'relative',"left":'20%'}
                     },
                     "lv3":{
                         image:'shop-lv3',
-                        textStyle:{top:"-5%",marginTop:"11%"},
+                        textStyle:{"textAlign":'center',top:"-5%",marginTop:"11%"},
                         colorStyle:{borderRadius: '50% / 7%',width:'8%',height:'100%',position: 'relative',top:'-40%',left:'20.8%'}
                     }
                 };

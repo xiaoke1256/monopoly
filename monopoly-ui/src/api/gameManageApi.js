@@ -28,7 +28,23 @@ export const startExistGame = async ({gameId})=>{
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching map:', error);
+        console.error('Error start game:', error);
         throw error;
     }
 };
+
+export const createGame = async (form)=>{
+    try {
+        const response = await axios.post(`/api/gameManage/createGame`,form,
+        {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error start game:', error);
+        throw error;
+    }
+}

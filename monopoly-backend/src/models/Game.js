@@ -7,7 +7,7 @@ const BuildStyleSchema = new mongoose.Schema({
 }, { _id: false });
 
 const CellSchema = new mongoose.Schema({
-  position: { type: Number, required: true, unique: true },
+  position: { type: Number, required: true },
   type: { 
     type: String, 
     required: true, 

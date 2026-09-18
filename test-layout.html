@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head><style>
+  .ivu-form-item-label { float:left; font-size:14px; padding:10px 12px 10px 0; line-height:1; }
+  .ivu-form-item-content { position:relative; line-height:32px; font-size:14px; }
+  .ivu-select { display:inline-block; width:100%; box-sizing:border-box; background:#ccc; border:1px solid #999; height:32px; }
+  .ivu-input { display:inline-block; width:100%; box-sizing:border-box; background:#ccc; border:1px solid #999; height:32px; }
+  .ivu-row { display:flex; flex-flow:row wrap; }
+  .ivu-form-item { border:1px solid #00f; margin-bottom:20px; padding:10px; }
+  .ivu-form-item:after { content:""; display:table; clear:both; visibility:hidden; font-size:0; height:0; }
+</style></head>
+<body>
+  <h3>Case 1: 选择地图 (label + Select directly)</h3>
+  <div class="ivu-form-item">
+    <label class="ivu-form-item-label">选择地图</label>
+    <div class="ivu-form-item-content">
+      <div class="ivu-select">Select</div>
+    </div>
+  </div>
+  
+  <h3>Case 2: 游戏名称 (label + Input directly)</h3>
+  <div class="ivu-form-item">
+    <label class="ivu-form-item-label">游戏名称</label>
+    <div class="ivu-form-item-content">
+      <div class="ivu-input">Input</div>
+    </div>
+  </div>
+
+  <h3>Case 3: 玩家 (label + div > Row > Select)</h3>
+  <div class="ivu-form-item">
+    <label class="ivu-form-item-label">玩家</label>
+    <div class="ivu-form-item-content">
+      <div>
+        <div class="ivu-row">
+          <div class="ivu-select">Select in Row</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <h3>Case 3b: 玩家 with Col spans (当前代码)</h3>
+  <div class="ivu-form-item">
+    <label class="ivu-form-item-label">玩家</label>
+    <div class="ivu-form-item-content">
+      <div>
+        <div class="ivu-row">
+          <div style="flex:1"><div class="ivu-select">Select 1</div></div>
+          <div style="flex:1"><div class="ivu-select">Select 2</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

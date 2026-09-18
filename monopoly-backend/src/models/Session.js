@@ -4,6 +4,7 @@ const SessionSchema = new mongoose.Schema({
   sessionId: { type: String, required: true, unique: true, index: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   gameId: { type: mongoose.Schema.Types.ObjectId, ref: 'Game', required: false },
+  roomNo: {  type: String, required: false },
   createdAt: { type: Date, default: Date.now },
   expiresAt: { type: Date, required: true },
 });
