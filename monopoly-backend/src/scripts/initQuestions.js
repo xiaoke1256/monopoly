@@ -101,7 +101,7 @@ const initQuestions = async () => {
         {
             mapId: existingMap._id,
             stem: '与白居易并称为“刘白”的诗人是谁？答对获得500文',
-            options: ['刘禹锡', '杜甫', '李白', '王维', '苏轼', '韩愈', '柳宗元'],
+            options: ['刘禹锡', '刘方平‌', '刘希夷‌', '刘长卿', '刘基', '刘勰', '柳宗元'],
             correctOption: '刘禹锡',
             reward: 500
         },
@@ -122,7 +122,7 @@ const initQuestions = async () => {
         {
             mapId: existingMap._id,
             stem: '唐玄宗最有名的妃子是谁？答对获得1000文',
-            options: ['杨贵妃', '武则天', '慈禧太后', '吕雉', '孝庄文皇后', '孝惠皇后', '孝昭皇后'],
+            options: ['杨贵妃', '武则天', '赵飞燕', '吕雉', '孝庄文皇后', '孝惠皇后', '孝昭皇后'],
             correctOption: '杨贵妃',
             reward: 1000
         },

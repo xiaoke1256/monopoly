@@ -91,7 +91,10 @@ export const createGame = async (req, res) => {
       return {...role,userId,money:map.defaultMoney}
     });
 
-    const game = await Game.create({...map,name,mapId,roomNo,players });
+    const cells = map.cells.map(cell=>{return {...cell,level:1}});
+    //console.log("cells:",cells);
+
+    const game = await Game.create({...map,cells,name,mapId,roomNo,players });
     
     session.gameId = game._id;
     await session.save();

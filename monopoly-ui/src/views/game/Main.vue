@@ -61,7 +61,6 @@
     </GModal>
 </template>
 <script>
-import axios from 'axios';
 import Dice from './Dice.vue';
 import Map from './Map.vue';
 import BuyProperty from './BuyProperty.vue';
@@ -73,6 +72,7 @@ import GModal from '@/components/Modal.vue';
 import Message from './Message.vue';
 import Chance from './Chance.vue';
 import Sucess from './Sucess.vue';
+import { getPlayerStatus,getDiceValue,movePlayer,onArrived,postEndTurn } from '@/api/gameApi.js';
 
 export default {
   name: 'MainIndex',
@@ -119,16 +119,17 @@ export default {
         this.currentPlayerIndex = playerIndex;
     },
     checkStatus(){
-        axios.get('/api/game/player-status').then(response => {
-            const playerStatus = response.data.playerStatus;
-            const currentPlayerPosition = response.data.currentPlayerPosition;
+        getPlayerStatus().then((data) => {
+            console.log("data:",data)
+            const playerStatus = data.playerStatus;
+            const currentPlayerPosition = data.currentPlayerPosition;
             if(playerStatus==='before-dice') {
-                const isGameOver = response.data.isGameOver
+                const isGameOver = data.isGameOver
                 if(isGameOver){
                     this.showSuccessModal = true;
                     return;
                 }
-                const isWaiting = response.data.isWaiting;
+                const isWaiting = data.isWaiting;
                 if(isWaiting){
                     this.onPlayerMoveComplete();
                     return
@@ -145,14 +146,12 @@ export default {
         });
     },
     async handleDiceRolled() {
-        const response = await axios.get('/api/game/dice-value')
-        const diceValue = response.data.dice;
+        const data = await getDiceValue()
+        const diceValue = data.dice;
         console.log('骰子点数:', diceValue);
-
-        axios.post(`/api/game/player/${this.currentPlayerIndex}/move`, {
-            steps: diceValue
-        }).then(response => {
-            const newPosition = response.data.newPosition;
+        movePlayer({playerIndex:this.currentPlayerIndex,steps:diceValue})
+        .then(data => {
+            const newPosition = data.newPosition;
             this.$refs.map.movePlayerToBlock(newPosition, () => {
                 console.log('玩家移动完成，新位置:', newPosition);
                 this.onPlayerMoveComplete(newPosition);
@@ -164,44 +163,44 @@ export default {
     },
     async onPlayerMoveComplete() {
         // 查询后台，以确认后续操作。
-        const response = await axios.get(`/api/game/player/${this.currentPlayerIndex}/arrived`);
-        console.log('下一回合:', response.data);
-        const action = response.data.actionType; // 可能的值: 'buyProperty', 'payRent', 'upgradeProperty', 'drawCard', 'other'
+        const data = await onArrived(this.currentPlayerIndex)
+        console.log('下一回合:',data);
+        const action = data.actionType; // 可能的值: 'buyProperty', 'payRent', 'upgradeProperty', 'drawCard', 'other'
         if('buyProperty'===action){
             // 处理购买地产逻辑
             console.log('玩家可以购买地产');
             // 打开购买地产的弹窗
-            this.currentCell = response.data.cell;
+            this.currentCell = data.cell;
             this.showBuyPropertyModal = true;
         }else if ('upgradeProperty'===action) {
             // 处理升级地产逻辑
             console.log('玩家可以升级地产');   
             // 打开升级地产的弹窗
-            this.currentCell = response.data.cell;
+            this.currentCell = data.cell;
             this.showUpgradePropertyModal = true;
 
         }else if('payRent'===action){
             console.log('玩家需要支付租金');
-            this.currentCell = response.data.cell;
-            this.rentOwner = response.data.owner;
+            this.currentCell = data.cell;
+            this.rentOwner = data.owner;
             console.log("this.rentOwner:",this.rentOwner);
-            this.rentAmount = response.data.rentAmount;
+            this.rentAmount = data.rentAmount;
             this.showPayRentModal = true;
         }else if('passGo'===action){
-            console.log('玩家经过起点，获得奖励:', response.data.reward);
+            console.log('玩家经过起点，获得奖励:', data.reward);
             this.showMessageModal = true;
         }else if('getSecurityCompany'===action){
-            console.log('进入镖局:', response.data);
+            console.log('进入镖局:', data);
             this.showSecurityCompanyModal = true;
         }else if('showMessage'===action){
-            console.log('显示消息:', response.data);
+            console.log('显示消息:', data);
             this.showMessageModal = true;
-            this.messageType = response.data.messageType
+            this.messageType = data.messageType
         }else if('question'===action){
-            console.log('玩家抽取问答卡:', response.data);
+            console.log('玩家抽取问答卡:', data);
             this.showQuestionModal = true;
         }else if('getChance'===action){
-            console.log('玩家抽取机会卡:', response.data);
+            console.log('玩家抽取机会卡:', data);
             this.showChanceModal = true;
         }else if('nothing'===action){
             console.log('玩家无需操作，直接结束回合');
@@ -323,19 +322,19 @@ export default {
         this.checkStatus();
     },
     endTurn(){
-        axios.post(`/api/game/player/${this.currentPlayerIndex}/endTurn`)
-        .then(response => {
-            console.log('回合结束:', response.data);
+        postEndTurn(this.currentPlayerIndex)
+        .then(data => {
+            console.log('回合结束:', data);
             // 处理回合结束后的逻辑，例如切换到下一个玩家
-            this.currentPlayerIndex = response.data.currentPlayerIndex; // 更新当前玩家索引
+            this.currentPlayerIndex = data.currentPlayerIndex; // 更新当前玩家索引
             this.$refs.map.currentPlayerIndex = this.currentPlayerIndex;
             this.showBuyPropertyModal = false;
             this.showUpgradePropertyModal = false;
             this.showPayRentModal = false;
-            if(response.data.isGameOver){
+            if(data.isGameOver){
                 this.showSuccessModal = true;
             }
-            if(response.data.isWaiting){
+            if(data.isWaiting){
                 this.onPlayerMoveComplete();
                 return;
             }

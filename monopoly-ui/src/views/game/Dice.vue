@@ -12,7 +12,7 @@
     </div>
 </template>
 <script>
-import axios from 'axios';
+import { dice } from '@/api/gameApi.js';
 
 export default {
   name: 'DiceComponent ',
@@ -35,8 +35,7 @@ export default {
       }
       console.log("limit:",limit);
       if(limit===0){
-        await axios.get('/api/game/current');
-        this.dice = (await axios.get('/api/game/dice')).data.dice;
+        this.dice = (await dice());
         setTimeout(
           ()=>{
             this.isRolling = false;

@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios from '@/axios';
 
 
 export const getMaps = async ()=>{
     try {
-        const response = await axios.get(`/api/map/all`);
+        const response = await axios.get(`/map/all`);
         console.log("response.data.maps:",response.data.maps)
         return response.data.maps;
     } catch (error) {

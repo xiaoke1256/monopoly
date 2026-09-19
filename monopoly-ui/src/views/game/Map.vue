@@ -102,9 +102,9 @@
         </div>   
 </template>
 <script>
-import axios from 'axios';
 import { animate } from 'animejs';
 import {imageMap} from '../../util/imagesMap.js';
+import { getCurrentGame } from '@/api/gameApi.js';
 
 export default {
     name: 'MapComponent',
@@ -127,9 +127,8 @@ export default {
             this.loading = true;
             this.error = null;
             try {
-                const response = await axios.get('/api/game/current');
-                console.log('地图数据已读取:', response);
-                const gameData = response?.data?.game;
+                const gameData = (await getCurrentGame())?.game;
+                console.log('地图数据已读取:', gameData);
                 this.currentPlayerIndex = gameData.currentPlayerIndex;
                 this.cells = gameData.cells;
                 this.players = gameData.players;

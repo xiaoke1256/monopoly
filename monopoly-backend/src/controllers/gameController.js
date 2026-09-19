@@ -2,10 +2,11 @@ import Game from '../models/Game.js';
 import Map from '../models/Map.js';
 import Question from '../models/Question.js';
 import Chance from '../models/Chance.js';
+import { getCurrentSession } from "../utils/security.js";
 
 const getCurrentMap = async (req, res) => {
     try {
-        const game = await queryCurrentGame();
+        const game = await queryCurrentGame(req);
         if (!game) {
             return res.status(404).json({ message: 'Map not found, please initialize first' });
         }
@@ -26,7 +27,7 @@ const movePlayer = async (req, res ) => {
         }
         console.log(`Moving player at index ${playerIndex}`);
         const { steps } = req.body;
-        const game = await queryCurrentGame();
+        const game = await queryCurrentGame(req);
         const player = game.players[playerIndex];
         if (!player) {
             throw new Error('Player not found');
@@ -47,26 +48,23 @@ const movePlayer = async (req, res ) => {
     }
 }
 
-const queryCurrentGame = async ()=> {
-    let game = await Game.findOne();
+const queryCurrentGame = async (req)=> {
+    const session = await getCurrentSession(req)
+
+    if(!session.gameId){
+        return res.status(400).json({ message:'未选择游戏.' });
+    }
+
+    const game = await Game.findById(session.gameId);
     if (!game) {
-        game = new Game();
-        const map = await Map.findOne();
-        game.mapId = map._id;
-        game.roomNo = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-        game.cells = map.cells;
-        game.cells.array.forEach(cell => {
-            cell.owner = null;
-            cell.level = 1;
-        });
-        await game.save();
+        return res.status(404).json({ message:'cannot find the game.' });
     }
     return game;
 }
 
 const getCurrentGame = async (req, res) => {
     try {
-        const game = await queryCurrentGame();
+        const game = await queryCurrentGame(req);
         return res.json({ game });
     } catch (error) {
         console.error('Error fetching current game:', error);
@@ -75,12 +73,12 @@ const getCurrentGame = async (req, res) => {
 };
 
 const getPlayers = async (req, res) => {
-    const game = await queryCurrentGame();
+    const game = await queryCurrentGame(req);
     return res.json({players:game.players});
 }
 
 const getCurrentDice = async(req, res)=> {
-    const game = await queryCurrentGame();
+    const game = await queryCurrentGame(req);
     if(game){
         return res.json({ dice:game.currentDice });
     }
@@ -89,7 +87,7 @@ const getCurrentDice = async(req, res)=> {
 
 const dice = async (req, res)=>{
     const diceResult=Math.ceil(Math.random()*6);
-    const game = await queryCurrentGame();
+    const game = await queryCurrentGame(req);
     if(game){
         game.currentDice = diceResult;
         game.playerStatus = 'after-dice';
@@ -273,7 +271,7 @@ const getMoney = async (req, res) => {
     req.params.playerIndex = parseInt(req.params.playerIndex);
     const {playerIndex} = req.params;
     try {
-        const game = await queryCurrentGame();  
+        const game = await queryCurrentGame(req);  
         const money = game.players[playerIndex].money || {};
         return res.json({ money });
     } catch (error) {
@@ -284,7 +282,7 @@ const getMoney = async (req, res) => {
 
 const onArrived = async (req, res) => {
     try {
-        const game = await queryCurrentGame(); 
+        const game = await queryCurrentGame(req); 
         const currentPlayerIndex = game.currentPlayerIndex ;
         console.log(`Player at index ${currentPlayerIndex} `);  
         const currentPlayer = game.players[currentPlayerIndex];
@@ -319,7 +317,7 @@ const onArrived = async (req, res) => {
 
 const getCurrentQuestion = async (req, res) => {
     try {
-        const game = await queryCurrentGame();
+        const game = await queryCurrentGame(req);
         if( game.events && game.events.length>0 ){
             const event = game.events[0];
             if(event.actionType !== 'question'){
@@ -365,7 +363,7 @@ const canBankrupt = (game)=>{
 
 const getCurrentChance = async (req, res) => {
     try {
-        const game = await queryCurrentGame();
+        const game = await queryCurrentGame(req);
         if( game.events && game.events.length>0 ){
             const event = game.events[0];
             if(event.actionType !== 'getChance'){
@@ -384,7 +382,7 @@ const getCurrentChance = async (req, res) => {
 }
 
 const consumeChance = async (req, res) => {
-    const game = await queryCurrentGame();  
+    const game = await queryCurrentGame(req);  
     const {yourSelectedMoney,otherSelectedMoney,payerIndex} = req.body;
     const currentPlayer = game.players[game.currentPlayerIndex];
     
@@ -422,7 +420,7 @@ const consumeChance = async (req, res) => {
 
 const answerQuestion = async (req, res) => {
     try {
-        const game = await queryCurrentGame();
+        const game = await queryCurrentGame(req);
         if( game.events && game.events.length>0 ){
             const event = game.events.shift();
             if(event.actionType !== 'question'){
@@ -465,7 +463,7 @@ const nextPlayerIndex = (game)=>{
 }
 
 const endTurn = async (req, res) => {
-    const game = await queryCurrentGame(); 
+    const game = await queryCurrentGame(req); 
     if (game.playerStatus == 'before-dice') {
         return res.status(400).json({ message: '状态错误，仅completed状态才可以调用endTurn.',playerStatus:game.playerStatus });
     }
@@ -491,7 +489,7 @@ const endTurn = async (req, res) => {
 }
 
 const payForPropertyAndEndTurn = async (req, res) => {
-    const game = await queryCurrentGame(); 
+    const game = await queryCurrentGame(req); 
     //TODO 检查 game.playerStatus
     const currentPlayerIndex = game.currentPlayerIndex ;
     console.log(`Player at index ${currentPlayerIndex} `);  
@@ -535,7 +533,7 @@ const payForPropertyAndEndTurn = async (req, res) => {
 }
 
 const cancelBuyPropertyAndEndTurn = async (req, res) => {
-    const game = await queryCurrentGame(); 
+    const game = await queryCurrentGame(req); 
     //TODO 检查 game.playerStatus
     const currentPlayerIndex = game.currentPlayerIndex ;
     console.log(`Player at index ${currentPlayerIndex} `);  
@@ -564,7 +562,7 @@ const cancelBuyPropertyAndEndTurn = async (req, res) => {
 }
 
 const cancelUpgradePropertyAndEndTurn = async (req, res) => {
-    const game = await queryCurrentGame(); 
+    const game = await queryCurrentGame(req); 
     //TODO 检查 game.playerStatus
     const currentPlayerIndex = game.currentPlayerIndex ;
     console.log(`Player at index ${currentPlayerIndex} `);  
@@ -593,7 +591,7 @@ const cancelUpgradePropertyAndEndTurn = async (req, res) => {
 }
 
 const payForUpgradePropertyAndEndTurn = async (req, res) => {
-    const game = await queryCurrentGame(); 
+    const game = await queryCurrentGame(req); 
     const currentPlayerIndex = game.currentPlayerIndex ;
     console.log(`Player at index ${currentPlayerIndex} `);  
     const currentPlayer = game.players[currentPlayerIndex];
@@ -646,7 +644,7 @@ const payForUpgradePropertyAndEndTurn = async (req, res) => {
 }
 
 const getPayRentEvent = async (req, res)=>{
-    const game = await queryCurrentGame(); 
+    const game = await queryCurrentGame(req); 
     const currentPlayerIndex = game.currentPlayerIndex ;
     console.log(`Player at index ${currentPlayerIndex} paying rent`);  
     const currentPlayer = game.players[currentPlayerIndex];
@@ -660,7 +658,7 @@ const getPayRentEvent = async (req, res)=>{
 }
 
 const payRentAndEndTurn = async (req, res) => {
-    const game = await queryCurrentGame(); 
+    const game = await queryCurrentGame(req); 
     const currentPlayerIndex = game.currentPlayerIndex ;
     console.log(`Player at index ${currentPlayerIndex} paying rent`);  
     const currentPlayer = game.players[currentPlayerIndex];
@@ -705,7 +703,7 @@ const payRentAndEndTurn = async (req, res) => {
 }
 
 const payForSecurityCompany = async (req, res) => {
-    const game = await queryCurrentGame(); 
+    const game = await queryCurrentGame(req); 
     const currentPlayerIndex = game.currentPlayerIndex ;
     console.log(`Player at index ${currentPlayerIndex} pay for security company`);  
     const currentPlayer = game.players[currentPlayerIndex];
@@ -741,7 +739,7 @@ const payForSecurityCompany = async (req, res) => {
 }
 
 const cancelSecurityCompany = async (req, res) => {
-    const game = await queryCurrentGame(); 
+    const game = await queryCurrentGame(req); 
     const currentPlayerIndex = game.currentPlayerIndex ;
     console.log(`Player at index ${currentPlayerIndex} pay for security company`);  
     const currentPlayer = game.players[currentPlayerIndex];
@@ -820,7 +818,7 @@ const totalAmt = (money) => {
  * 兑换
  */
 const exchange = async (req, res)=>{
-    const game = await queryCurrentGame(); 
+    const game = await queryCurrentGame(req); 
     const currentPlayerIndex = game.currentPlayerIndex ;
     console.log(`Player at index ${currentPlayerIndex} paying rent`);  
     const currentPlayer = game.players[currentPlayerIndex];
@@ -837,7 +835,7 @@ const exchange = async (req, res)=>{
 }
 
 const getPlayerStatus = async (req, res) => {
-    const game = await queryCurrentGame();
+    const game = await queryCurrentGame(req);
     const currentPlayerIndex = game.currentPlayerIndex ;
     const currentPlayer = game.players[currentPlayerIndex];
     const isWaiting = currentPlayer.waitingRound>0;
@@ -850,7 +848,7 @@ const getCurrentMessage = async (req, res) => {
     const {playerIndex} = req.params;
     const {messageType} =  req.query;
     try {
-        const game = await queryCurrentGame();  
+        const game = await queryCurrentGame(req);  
         const currentPlayer = game.players[playerIndex];
         if(!currentPlayer){
             return res.status(404).json({ message: 'Player not found' });
@@ -876,7 +874,7 @@ const payForMessage = async (req, res) => {
     req.params.playerIndex = parseInt(req.params.playerIndex);
     const {playerIndex} = req.params;
     try {
-        const game = await queryCurrentGame();  
+        const game = await queryCurrentGame(req);  
         const currentPlayer = game.players[playerIndex];
         if(!currentPlayer){
             return res.status(404).json({ message: 'Player not found' });
@@ -947,7 +945,7 @@ const consumeMessage = async (req, res) => {
     const {playerIndex} = req.params;
     const {messageType} = req.body;
     try {
-        const game = await queryCurrentGame();  
+        const game = await queryCurrentGame(req);  
         const currentPlayer = game.players[playerIndex];
         const ret = {};
         if(!currentPlayer){
@@ -1013,7 +1011,7 @@ const consumeMessage = async (req, res) => {
 const getBankruptInfo = async (req, res)=>{
     req.params.playerIndex = parseInt(req.params.playerIndex);
     const {playerIndex} = req.params;
-    const game = await queryCurrentGame();  
+    const game = await queryCurrentGame(req);  
     const currentPlayer = game.players[playerIndex];
     const bankruptInfo = canBankrupt(game).filter((b)=>b.playerIndex===playerIndex)[0];
     if(bankruptInfo){
@@ -1027,7 +1025,7 @@ const getBankruptInfo = async (req, res)=>{
 /** 宣布破产 */
 const bankrupt = async (req, res)=>{
     const {playerIndex:bankruptPlayerIndex} = req.body;
-    const game = await queryCurrentGame();  
+    const game = await queryCurrentGame(req);  
     const bankruptPlayerIndexs = canBankrupt(game).map(p=>p.playerIndex);
     if(!bankruptPlayerIndexs.includes(bankruptPlayerIndex)){
         return res.status(400).json({message:'该玩家目前不能破产'});
@@ -1070,7 +1068,7 @@ const bankrupt = async (req, res)=>{
 }
 
 const getFinalPlayer = async (req, res)=>{
-    const game = await queryCurrentGame();  
+    const game = await queryCurrentGame(req);  
     const players = game.players.filter((player)=>!player.isBankrupt)
     if(players.length!=1){
         return res.status(400).json({message:`目前不止一个玩家`}); 

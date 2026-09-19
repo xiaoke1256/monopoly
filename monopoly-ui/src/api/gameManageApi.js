@@ -1,13 +1,8 @@
-import axios from 'axios';
+import axios from '@/axios';
 
 export const getValidGames = async ()=>{
     try {
-        const response = await axios.get(`/api/gameManage/validGames`,{
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json'
-            }
-        });
+        const response = await axios.get(`/gameManage/validGames`);
         return response.data.data.games;
     } catch (error) {
         console.error('Error fetching map:', error);
@@ -17,14 +12,8 @@ export const getValidGames = async ()=>{
 
 export const startExistGame = async ({gameId})=>{
     try {
-        const response = await axios.post(`/api/gameManage/startExistGame`,{
+        const response = await axios.post(`/gameManage/startExistGame`,{
             gameId
-        },
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json'
-            }
         });
         return response.data;
     } catch (error) {
@@ -35,13 +24,7 @@ export const startExistGame = async ({gameId})=>{
 
 export const createGame = async (form)=>{
     try {
-        const response = await axios.post(`/api/gameManage/createGame`,form,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json'
-            }
-        });
+        const response = await axios.post(`/gameManage/createGame`,form);
         return response.data;
     } catch (error) {
         console.error('Error start game:', error);

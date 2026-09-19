@@ -32,7 +32,7 @@ import { dice,
 
 const gameRouter = new Router();   
 
-gameRouter.get('/dice', dice);
+gameRouter.post('/dice', dice);
 gameRouter.get('/current', getCurrentGame);
 gameRouter.get('/player-status', getPlayerStatus);
 gameRouter.get('/dice-value', getCurrentDice);

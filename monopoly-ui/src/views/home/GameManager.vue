@@ -27,7 +27,7 @@
                 <Option v-for="map in maps" :key="map._id" :value="map._id" >{{ map.name }}</Option>
               </Select>
             </FormItem>
-            <FormItem label="游戏名称" prop="mapId">
+            <FormItem label="游戏名称" prop="name">
               <Input v-model="createForm.name" />
             </FormItem>
             <FormItem label="玩家" prop="players">

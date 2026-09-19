@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axios from '@/axios';
 
 export const register = async ({ username, password, nickname }) => {
   try {
-    const response = await axios.post('/api/user/register', {
+    const response = await axios.post('/user/register', {
       username,
       password,
       nickname,
@@ -20,7 +20,7 @@ export const register = async ({ username, password, nickname }) => {
 
 export const login = async ({ username, password }) => {
   try {
-    const response = await axios.post('/api/user/login', {
+    const response = await axios.post('/user/login', {
       username,
       password,
     });

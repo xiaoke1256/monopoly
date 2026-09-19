@@ -1,11 +1,10 @@
 
 
-import axios from 'axios';
-
+import axios from '@/axios';
 
 export const getCurrentMap = async ()=>{
     try {
-        const response = await axios.get(`/api/game/map`);
+        const response = await axios.get(`/game/map`);
         return response.data.cells;
     } catch (error) {
         console.error('Error fetching map:', error);
@@ -13,9 +12,82 @@ export const getCurrentMap = async ()=>{
     }
 } 
 
+export const getCurrentGame = async ()=>{
+    try {
+        const response = await axios.get(`/game/current`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching map:', error);
+        throw error;
+    }
+} 
+
+export const dice = async ()=>{
+    try {
+        const response = await axios.post(`/game/dice`);
+        return response?.data?.dice;
+    } catch (error) {
+        console.error('Error fetching map:', error);
+        throw error;
+    }
+} 
+
+export const getDiceValue = async ()=>{
+    try {
+        const response = await axios.get(`/game/dice-value`);
+        return response?.data
+    } catch (error) {
+        console.error('Error fetching dice-value:', error);
+        throw error;
+    }
+
+}
+
+export const getPlayerStatus = async ()=>{
+    try {
+        const response = await axios.get('/game/player-status');
+        return response?.data;
+    } catch (error) {
+        console.error('Error fetching map:', error);
+        throw error;
+    }
+} 
+
+export const movePlayer = async ({playerIndex,steps})=>{
+    try {
+        const response = await axios.post(`/game/player/${playerIndex}/move`,{
+            steps
+        });
+        return response?.data;
+    } catch (error) {
+        console.error('Error fetching map:', error);
+        throw error;
+    }
+}
+
+export const onArrived = async (playerIndex)=>{
+    try {
+        const response = await axios.get(`/game/player/${playerIndex}/arrived`);
+        return response?.data;
+    } catch (error) {
+        console.error('Error fetching map:', error);
+        throw error;
+    }
+}
+
+export const postEndTurn = async (playerIndex)=>{
+    try {
+        const response = await axios.post(`/game/player/${playerIndex}/endTurn`)
+        return response?.data;
+    } catch (error) {
+        console.error('Error fetching map:', error);
+        throw error;
+    }
+}
+
 export const getPlayerMoney = async (playerIndex) => {
     try {
-        const response = await axios.get(`/api/game/player/${playerIndex}/money`);
+        const response = await axios.get(`/game/player/${playerIndex}/money`);
         return response.data.money;
     } catch (error) {
         console.error('Error fetching player money:', error);
@@ -25,7 +97,7 @@ export const getPlayerMoney = async (playerIndex) => {
 
 export const getPlayers = async () => {
     try {
-        const response = await axios.get(`/api/game/players`);
+        const response = await axios.get(`/game/players`);
         return response.data.players;
     } catch (error) {
         console.error('Error fetching players:', error);
@@ -35,7 +107,7 @@ export const getPlayers = async () => {
 
 export const getPlayerMessage = async (playerIndex,messageType) => {
     try {
-        const response = await axios.get(`/api/game/player/${playerIndex}/message?messageType=${messageType}`);
+        const response = await axios.get(`/game/player/${playerIndex}/message?messageType=${messageType}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching player message:', error);
@@ -45,7 +117,7 @@ export const getPlayerMessage = async (playerIndex,messageType) => {
 
 export const getPlayerQuestion = async (playerIndex) => {
     try {
-        const response = await axios.get(`/api/game/player/${playerIndex}/question`);
+        const response = await axios.get(`/game/player/${playerIndex}/question`);
         return response.data;
     } catch (error) {
         console.error('Error fetching player question:', error);
@@ -55,7 +127,7 @@ export const getPlayerQuestion = async (playerIndex) => {
 
 export const getPlayerChance = async (playerIndex) => {
     try {
-        const response = await axios.get(`/api/game/player/${playerIndex}/chance`);
+        const response = await axios.get(`/game/player/${playerIndex}/chance`);
         return response.data;
     } catch (error) {
         console.error('Error fetching player chance:', error);
@@ -65,7 +137,7 @@ export const getPlayerChance = async (playerIndex) => {
 
 export const answerQuestion = async ({playerIndex,selectedOption,yourSelectedMoney,otherSelectedMoney}) => {
     try {
-        const response = await axios.post(`/api/game/player/${playerIndex}/answerQuestion`, {
+        const response = await axios.post(`/game/player/${playerIndex}/answerQuestion`, {
             selectedOption,
             yourSelectedMoney,
             otherSelectedMoney
@@ -80,7 +152,7 @@ export const answerQuestion = async ({playerIndex,selectedOption,yourSelectedMon
     
 export const consumeChance = async ({playerIndex,yourSelectedMoney,otherSelectedMoney}) => {
     try {
-        const response = await axios.post(`/api/game/player/${playerIndex}/consumeChance`, {
+        const response = await axios.post(`/game/player/${playerIndex}/consumeChance`, {
             yourSelectedMoney,
             otherSelectedMoney,
             payerIndex:playerIndex
@@ -95,7 +167,7 @@ export const consumeChance = async ({playerIndex,yourSelectedMoney,otherSelected
 
 export const payRent = async ({playerIndex, rentAmount,yourSelectedMoney, otherSelectedMoney}) => {
     try {
-        const response = await axios.post(`/api/game/player/${playerIndex}/payRent`, {
+        const response = await axios.post(`/game/player/${playerIndex}/payRent`, {
             rentAmount,
             yourSelectedMoney, 
             otherSelectedMoney
@@ -109,7 +181,7 @@ export const payRent = async ({playerIndex, rentAmount,yourSelectedMoney, otherS
 
 export const payForMessage = async ({playerIndex,yourSelectedMoney,otherSelectedMoney,messageType}) => {
     try {
-        const response = await axios.post(`/api/game/player/${playerIndex}/payForMessage`, {
+        const response = await axios.post(`/game/player/${playerIndex}/payForMessage`, {
             yourSelectedMoney,
             otherSelectedMoney,
             messageType
@@ -123,7 +195,7 @@ export const payForMessage = async ({playerIndex,yourSelectedMoney,otherSelected
 
 export const consumeMessage = async ({playerIndex,messageType}) => {
     try {
-        const response = await axios.post(`/api/game/player/${playerIndex}/consumeMessage`, {
+        const response = await axios.post(`/game/player/${playerIndex}/consumeMessage`, {
             messageType
         });
         return response.data;
@@ -135,7 +207,7 @@ export const consumeMessage = async ({playerIndex,messageType}) => {
 
 export const exchange = async ({playerIndex,yourSelectedMoney,otherSelectedMoney}) => {
     try {
-        const response = await axios.post(`/api/game/player/${playerIndex}/exchange`, {
+        const response = await axios.post(`/game/player/${playerIndex}/exchange`, {
             yourSelectedMoney,
             otherSelectedMoney
         });
@@ -148,7 +220,7 @@ export const exchange = async ({playerIndex,yourSelectedMoney,otherSelectedMoney
 
 export const cancelForProperty = async ({playerIndex}) => {
     try {
-        const response = await axios.post(`/api/game/player/${playerIndex}/cancelForProperty`)
+        const response = await axios.post(`/game/player/${playerIndex}/cancelForProperty`)
         return response.data;
     } catch (error) {
         console.error('Error paying for message:', error);
@@ -158,7 +230,7 @@ export const cancelForProperty = async ({playerIndex}) => {
 
 export const payForProperty = async ({playerIndex,cellId,yourSelectedMoney,otherSelectedMoney}) => {
     try {
-        const response = await axios.post(`/api/game/player/${playerIndex}/payForProperty`, {
+        const response = await axios.post(`/game/player/${playerIndex}/payForProperty`, {
             cellId,
             yourSelectedMoney,
             otherSelectedMoney
@@ -172,7 +244,7 @@ export const payForProperty = async ({playerIndex,cellId,yourSelectedMoney,other
 
 export const cancelUpgradeProperty = async ({playerIndex}) => {
     try {
-        const response = await axios.post(`/api/game/player/${playerIndex}/cancelUpgradeProperty`)
+        const response = await axios.post(`/game/player/${playerIndex}/cancelUpgradeProperty`)
         return response.data;
     } catch (error) {
         console.error('Error paying for message:', error);
@@ -182,7 +254,7 @@ export const cancelUpgradeProperty = async ({playerIndex}) => {
 
 export const payForUpgradeProperty = async ({playerIndex,cellId,yourSelectedMoney,otherSelectedMoney}) => {
     try {
-        const response = await axios.post(`/api/game/player/${playerIndex}/payForUpgradeProperty`, {
+        const response = await axios.post(`/game/player/${playerIndex}/payForUpgradeProperty`, {
             cellId,
             yourSelectedMoney,
             otherSelectedMoney
@@ -196,7 +268,7 @@ export const payForUpgradeProperty = async ({playerIndex,cellId,yourSelectedMone
 
 export const payForSecurityCompany = async({playerIndex,yourSelectedMoney,otherSelectedMoney,forwardStep})=>{
     try {
-        const response = await axios.post(`/api/game/player/${playerIndex}/payForSecurityCompany`, {
+        const response = await axios.post(`/game/player/${playerIndex}/payForSecurityCompany`, {
             yourSelectedMoney,
             otherSelectedMoney,
             forwardStep
@@ -210,7 +282,7 @@ export const payForSecurityCompany = async({playerIndex,yourSelectedMoney,otherS
 
 export const cancelSecurityCompany = async ({playerIndex}) => {
     try {
-        const response = await axios.post(`/api/game/player/${playerIndex}/cancelSecurityCompany`)
+        const response = await axios.post(`/game/player/${playerIndex}/cancelSecurityCompany`)
         return response.data;
     } catch (error) {
         console.error('Error paying for message:', error);
@@ -220,7 +292,7 @@ export const cancelSecurityCompany = async ({playerIndex}) => {
 
 export const getPayRentEvent = async ({playerIndex}) => {
     try {
-        const response = await axios.get(`/api/game/player/${playerIndex}/payRentEvent`);
+        const response = await axios.get(`/game/player/${playerIndex}/payRentEvent`);
         return response.data;
     } catch (error) {
         console.error('Error geting for bankrupt info :', error);
@@ -230,7 +302,7 @@ export const getPayRentEvent = async ({playerIndex}) => {
 
 export const getBankruptInfo = async ({playerIndex}) => {
     try {
-        const response = await axios.get(`/api/game/player/${playerIndex}/bankrupt`);
+        const response = await axios.get(`/game/player/${playerIndex}/bankrupt`);
         return response.data;
     } catch (error) {
         console.error('Error geting for bankrupt info :', error);
@@ -240,7 +312,7 @@ export const getBankruptInfo = async ({playerIndex}) => {
 
 export const bankrupt = async ({playerIndex}) => {
     try {
-        const response = await axios.post(`/api/game/player/${playerIndex}/bankrupt`, {
+        const response = await axios.post(`/game/player/${playerIndex}/bankrupt`, {
             playerIndex
         })
         return response.data;
@@ -251,7 +323,7 @@ export const bankrupt = async ({playerIndex}) => {
 }
 export const getFinalPlayer = async ()=>{
     try {
-        const response = await axios.get('/api/game/player/final');
+        const response = await axios.get('/game/player/final');
         return response.data;
     } catch (error) {
         console.error('Error bankrupt for message:', error);
