@@ -48,7 +48,7 @@
               </div>
               <div style="display:flex;flex-direction:row;justify-content:space-between;gap: 4px;">
                 <Button style="flex: 7;" type="dashed" long icon="md-add" @click="addPlayer" >新增玩家</Button>
-                <Poptip style="flex: 1;" trigger="hover" content="分享码">
+                <Poptip style="flex: 1;" trigger="hover" width="100" content="邀请码">
                   <Button icon="md-barcode" @click="showRoomNo" ></Button>
                 </Poptip>
               </div>
