@@ -34,6 +34,11 @@ const routes = [
     name: "GameManager",
     component: () => import("../views/home/GameManager.vue"),
   },
+  {
+    path: "/joinGame",
+    name: "JoinGame",
+    component: () => import("../views/home/JoinGame.vue"),
+  }
 ];
 
 const router = createRouter({
