@@ -31,5 +31,6 @@ export async function getCurrentSession(req){
   const { sessionId, id:userId} = user;
   console.log("sessionId, userId:",sessionId, userId);
   const session = await Session.findOne({ sessionId, userId });
+  //TODO 每次访问一次就把过期时间延后一次
   return session;
 }

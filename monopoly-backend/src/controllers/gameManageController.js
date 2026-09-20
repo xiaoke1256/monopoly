@@ -1,6 +1,7 @@
 import { getCurrentUser } from "../utils/security.js";
 import Game from '../models/Game.js';
 import Session from '../models/Session.js';
+import TempRoomNo from '../models/TempRoomNo.js';
 import Map from '../models/Map.js';
 import mongoose from 'mongoose';
 
@@ -53,8 +54,17 @@ export const startExistGame = async (req, res) => {
     return res.json({ success: true, message: '保存成功' });
 }
 
-const generateRoomNo = ()=>{
+const randomRoomNo = ()=>{
   return Math.floor(Math.random()*Math.pow(16,4)).toString(16).toUpperCase()
+}
+
+export const generateRoomNo = async (req, res)=>{
+  const user = getCurrentUser(req);
+  const { sessionId, id:userId} = user;
+  const roomNo = randomRoomNo();
+  const tempRoomNo = await TempRoomNo.create({roomNo,createByUserId:userId,createBySessionId:sessionId});
+  console.log("tempRoomNo:",tempRoomNo);
+  return res.json({ success: true, message: '生成了新的房间号。',roomNo });
 }
 
 export const createGame = async (req, res) => {
@@ -77,13 +87,16 @@ export const createGame = async (req, res) => {
       return res.status(400).json({ success: false, message: '一场游戏必须要有一个玩家' });
     }
 
-    const roomNo = roomNoTemp?roomNoTemp:generateRoomNo()
+    const roomNo = roomNoTemp?roomNoTemp:randomRoomNo()
     console.log("roomNo:",roomNo)
 
     const players = playersTemp.map((player)=>{
-      const {roleId,userId:userIdStr} = player;
-      const userId = new mongoose.Types.ObjectId(userIdStr);
+      const {roleId,userId} = player;
+      //const userId = new mongoose.Types.ObjectId(userIdStr);
       //console.log("map:",map);
+      if (!userId) {
+        return res.status(400).json({ success: false, message: '必须为每个角色指定一个用户' });
+      }
       const role = map.roles.filter((role)=>role.roleId===roleId)[0];
       if(!role){
         return res.status(400).json({ success: false, message: '所选角色不存在' });

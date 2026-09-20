@@ -31,25 +31,48 @@
               <Input v-model="createForm.name" />
             </FormItem>
             <FormItem label="玩家" prop="players">
-              <div v-for="(player,index) in createForm.players" :key="index" style="width: 100%;display:inline-flex;flex-direction:row;justify-content:space-between;gap: 4px;margin:1px 0" >
-                <Select style="width: 40%;flex: 5;" v-model="createForm.players[index].roleId" placeholder="请选择玩家角色"  >
-                  <Option v-for="role in roles" :key="role.roleId" :value="role.roleId" >{{ role.name }}</Option>
-                </Select>
-                <Select style="width: 35%;flex: 3;" v-model="createForm.players[index].type"  >
+              <div v-for="(player,index) in createForm.players" :key="index" class="player-row" >
+                <Poptip width="150" class="poptip-flex" placement="right" trigger="hover">
+                  <Select v-model="createForm.players[index].roleId" placeholder="请选择玩家角色"  >
+                    <Option v-for="role in roles" :key="role.roleId" :value="role.roleId" >{{ role.name }}</Option>
+                  </Select>
+                  <template #content>
+                    <img v-if="getRoleImg(index)" style="width: 100%;aspect-ratio: 1 / 2 ; object-fit: contain " :src="getRoleImg(index)" />
+                  </template>
+                </Poptip>
+                <Select class="player-type-select" v-model="createForm.players[index].type"  >
                   <Option v-for="playerType in playerTypes" :key="playerType.code" :value="playerType.code" :disabled="playerType.code==='ai'" >{{ playerType.name }}</Option>
                 </Select>
-                <Button v-if="index>0" style="flex: 1;" icon="md-remove" @click="deletePlayer" ></Button>
-                <div v-if="index==0" style="flex: 1; margin:1px" ></div>
+                <Button v-if="index>0" class="player-action-btn" icon="md-remove" @click="deletePlayer" ></Button>
+                <div v-if="index==0" class="player-action-placeholder" ></div>
               </div>
               <div style="display:flex;flex-direction:row;justify-content:space-between;gap: 4px;">
                 <Button style="flex: 7;" type="dashed" long icon="md-add" @click="addPlayer" >新增玩家</Button>
-                <Button style="flex: 1;" long icon="md-barcode" @click="this.$Message.info('暂未实现');" ></Button>
+                <Poptip style="flex: 1;" trigger="hover" content="分享码">
+                  <Button icon="md-barcode" @click="showRoomNo" ></Button>
+                </Poptip>
               </div>
             </FormItem>
           </Form>
           <div class="actions">
             <Button type="primary" size="large" long :loading="loading" @click="startNewGame">开始游戏</Button>
           </div>
+          <Modal v-model="isShowRoomNo" class-name="vertical-center-modal" width="300">
+            <div class="qrcode-container">
+              <div>
+                扫描以下二维码，可以加入游戏。
+              </div>
+              <div>
+                <QrcodeVue :value="createForm.roomNo" />
+              </div>
+              <div>邀请码：{{ createForm.roomNo}}</div>
+            </div>
+            <template #footer >
+              <div style="text-align: center;" >
+                <Button type="default" size="large" @click="isShowRoomNo=false">关闭</Button>
+              </div>
+            </template>
+          </Modal>
         </TabPane>
       </Tabs>
       
@@ -58,9 +81,11 @@
 </template>
 
 <script>
-import { getValidGames, startExistGame, createGame } from '../../api/gameManageApi';
+import { getValidGames, startExistGame, createGame, generateRoomNo } from '../../api/gameManageApi';
 import { getMaps } from '../../api/mapApi';
 import { formatDate } from '../../util/dateUtils';
+import { imageMap } from '../../util/imagesMap.js';
+import QrcodeVue from 'qrcode.vue'
 
 function hasDuplicates(arr) {
   return new Set(arr).size !== arr.length;
@@ -68,6 +93,9 @@ function hasDuplicates(arr) {
 
 export default {
   name: 'GameSelector',
+  components: {
+    QrcodeVue
+  },
   data() {
     return {
       games: [],
@@ -83,7 +111,8 @@ export default {
         players:[
           {roleId:0,type:'self'}
         ]
-      }
+      },
+      isShowRoomNo:false
     };
   },
   async mounted() {
@@ -100,7 +129,7 @@ export default {
       }
       this.loading = true;
       try {
-        const result = await startExistGame({ gameId: this.selected[0] });
+        const result = await startExistGame({ gameId: this.selected });
         if (result.success) {
           this.$Message.success('正在进入游戏...');
           this.$router.push('/game');
@@ -126,9 +155,9 @@ export default {
       const players = this.createForm.players.map((p)=>{
         const {roleId,type} = p;
         let userId = p.userId;
-        const userInfo = localStorage.getItem('userInfo');
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
         if (type==='self') {
-          userId = userInfo._id;
+          userId = userInfo.id;
         }
         return {roleId,userId}
       });
@@ -149,6 +178,15 @@ export default {
     },
     deletePlayer(index){
       this.createForm.players.splice(index, 1);
+    },
+    async showRoomNo(){
+      if(!this.createForm.roomNo){
+        this.createForm.roomNo = await generateRoomNo()
+      }
+      this.isShowRoomNo = true;
+    },
+    getRoleImg(index){
+      return imageMap[this.roles[this.createForm.players[index]?.roleId]?.image];
     }
   },
   watch:{
@@ -157,7 +195,7 @@ export default {
       this.roles = map.roles;
       this.createForm.name = map.name;
     }
-  }
+  },
 };
 </script>
 
@@ -229,7 +267,57 @@ export default {
   }
 }
 
-.actions {
-  margin-top: 8px;
+.player-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  margin: 1px 0;
+
+  .poptip-flex {
+    flex: 5 1 0%;
+    display: flex;
+    min-width: 0;
+
+    :deep(.ivu-poptip-rel) {
+      width: 100%;
+      min-width: 0;
+      display: block;
+    }
+
+    :deep(.ivu-select) {
+      width: 100%;
+    }
+  }
+
+  .player-type-select {
+    flex: 3 1 0%;
+    min-width: 0;
+
+    :deep(.ivu-select) {
+      width: 100%;
+    }
+  }
+
+  .player-action-btn,
+  .player-action-placeholder {
+    flex: 1 1 0%;
+    min-width: 0;
+  }
+
+  .player-action-placeholder {
+    margin: 1px;
+  }
 }
+
+
+.qrcode-container {
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
 </style>

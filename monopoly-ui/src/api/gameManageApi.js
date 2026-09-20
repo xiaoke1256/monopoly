@@ -31,3 +31,13 @@ export const createGame = async (form)=>{
         throw error;
     }
 }
+
+export const generateRoomNo = async ()=>{
+    try {
+        const response = await axios.post('/gameManage/generateRoomNo');
+        return response?.data?.roomNo;
+    } catch (error) {
+        console.error('Error start game:', error);
+        throw error;
+    }
+}
