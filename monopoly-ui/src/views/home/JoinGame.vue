@@ -72,7 +72,7 @@ export default {
       //启动 ws 等待获取游戏信息
       const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
       const sessionId = localStorage.getItem('sessionId');
-      let socket = new WebSocket(`${protocol}//${location.host}/ws/gm/invitee/gameInfo?sessionId=${sessionId}&roomId=${this.roomNo}`); 
+      let socket = new WebSocket(`${protocol}//${location.host}/ws/gm/invitee/gameInfo?sessionId=${sessionId}&roomNo=${this.roomNo}`); 
       socket.onopen=()=>{
         console.log('WebSocket connected!');
       };

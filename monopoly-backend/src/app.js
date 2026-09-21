@@ -5,6 +5,14 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import { initWebSocket } from "./socket.js";
 
+// 防止 WebSocket 解析异常导致进程崩溃
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err.message);
+});
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled Rejection:', reason);
+});
+
 connectDB();
 
 const app = express();
