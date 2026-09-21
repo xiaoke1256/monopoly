@@ -68,48 +68,59 @@ export const generateRoomNo = async (req, res)=>{
 }
 
 export const createGame = async (req, res) => {
-    const user = getCurrentUser(req);
-    const { sessionId, id:userId} = user;
-    const session = await Session.findOne({ sessionId, userId });
-    if (!session) {
-      return res.status(401).json({ success: false, message: '会话已失效，请重新登录' });
+  const user = getCurrentUser(req);
+  const { sessionId, id:userId} = user;
+  const session = await Session.findOne({ sessionId, userId });
+  if (!session) {
+    return res.status(401).json({ success: false, message: '会话已失效，请重新登录' });
+  }
+
+  //roomNo 是由页面传入的一个随机数
+  const { name,
+    mapId,
+    roomNo:roomNoTemp,
+    players:playersTemp
+    } = req.body;
+  const map = await Map.findById(mapId);
+
+  if(!playersTemp||playersTemp.lenth==0){
+    return res.status(400).json({ success: false, message: '一场游戏必须要有一个玩家' });
+  }
+
+  const roomNo = roomNoTemp?roomNoTemp:randomRoomNo()
+  console.log("roomNo:",roomNo)
+
+  const players = playersTemp.map((player)=>{
+    const {roleId,userId} = player;
+    //const userId = new mongoose.Types.ObjectId(userIdStr);
+    //console.log("map:",map);
+    if (!userId) {
+      return res.status(400).json({ success: false, message: '必须为每个角色指定一个用户' });
     }
-
-    //roomNo 是由页面传入的一个随机数
-    const { name,
-      mapId,
-      roomNo:roomNoTemp,
-      players:playersTemp
-     } = req.body;
-    const map = await Map.findById(mapId);
-
-    if(!playersTemp||playersTemp.lenth==0){
-      return res.status(400).json({ success: false, message: '一场游戏必须要有一个玩家' });
+    const role = map.roles.filter((role)=>role.roleId===roleId)[0];
+    if(!role){
+      return res.status(400).json({ success: false, message: '所选角色不存在' });
     }
+    return {...role,userId,money:map.defaultMoney}
+  });
 
-    const roomNo = roomNoTemp?roomNoTemp:randomRoomNo()
-    console.log("roomNo:",roomNo)
+  const cells = map.cells.map(cell=>{return {...cell,level:1}});
+  //console.log("cells:",cells);
 
-    const players = playersTemp.map((player)=>{
-      const {roleId,userId} = player;
-      //const userId = new mongoose.Types.ObjectId(userIdStr);
-      //console.log("map:",map);
-      if (!userId) {
-        return res.status(400).json({ success: false, message: '必须为每个角色指定一个用户' });
-      }
-      const role = map.roles.filter((role)=>role.roleId===roleId)[0];
-      if(!role){
-        return res.status(400).json({ success: false, message: '所选角色不存在' });
-      }
-      return {...role,userId,money:map.defaultMoney}
-    });
+  const game = await Game.create({...map,cells,name,mapId,roomNo,players });
+  
+  session.gameId = game._id;
+  await session.save();
+  return res.json({ success: true, message: '保存成功' });
+}
 
-    const cells = map.cells.map(cell=>{return {...cell,level:1}});
-    //console.log("cells:",cells);
-
-    const game = await Game.create({...map,cells,name,mapId,roomNo,players });
-    
-    session.gameId = game._id;
-    await session.save();
-    return res.json({ success: true, message: '保存成功' });
+export const getGameInfoByTempRoomNo = async (req, res) => {
+  const user = getCurrentUser(req)
+  const {roomNo} =  req.query;
+  //检查该roomNo是否存在
+  const tempRoomNo = await TempRoomNo.findOne({roomNo});
+  if(!tempRoomNo){
+    return res.status(400).json({ success: false, message: '无效邀请码' });
+  }
+  //TODO 发送ws获取游戏信息
 }

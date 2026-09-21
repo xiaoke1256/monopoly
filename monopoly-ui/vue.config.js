@@ -6,6 +6,11 @@ module.exports = defineConfig({
       '/api': {
         target: 'http://localhost:3000/monopoly',
         changeOrigin: true
+      },
+      '/ws': {
+        target: 'ws://localhost:3000',
+        ws: true,
+        changeOrigin: true
       }
     }
   }

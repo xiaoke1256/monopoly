@@ -112,13 +112,31 @@ export default {
           {roleId:0,type:'self'}
         ]
       },
-      isShowRoomNo:false
+      isShowRoomNo:false,
+      webSocket: undefined,
     };
   },
   async mounted() {
     this.games = await getValidGames();
     this.maps = await getMaps();
     console.log("this.maps:",this.maps);
+    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/gm/invite`); 
+    this.webSocket.onopen=()=>{
+      console.log('WebSocket connected!');
+    };
+    this.webSocket.onmessage = (event) => {
+      console.log('Received message:', event.data);
+      //1.应该收到连接成功或链接失败的消息
+      //2.接受到请求gameInfo的消息。则须将界面上的游戏信息发送过去。
+      //3.接受到成为游戏玩家的消息，则将游戏玩家信息显示到界面。
+    };
+    this.webSocket.onclose = () => {
+      console.log('WebSocket closed!');
+    };
+    this.webSocket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
   },
   methods: {
     formatDate,
@@ -188,6 +206,11 @@ export default {
     getRoleImg(index){
       return imageMap[this.roles[this.createForm.players[index]?.roleId]?.image];
     }
+  },
+  unmounted(){
+    //关闭ws
+    this.webSocket.close();
+    this.webSocket = undefined;
   },
   watch:{
     "createForm.mapId":function(newVal){

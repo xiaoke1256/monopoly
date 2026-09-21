@@ -52,12 +52,13 @@ const queryCurrentGame = async (req)=> {
     const session = await getCurrentSession(req)
 
     if(!session.gameId){
-        return res.status(400).json({ message:'未选择游戏.' });
+        throw new Error("还未选择游戏");
+        //return res.status(400).json({ message:'未选择游戏.' });
     }
 
     const game = await Game.findById(session.gameId);
     if (!game) {
-        return res.status(404).json({ message:'cannot find the game.' });
+        throw new Error("cannot find the game.");
     }
     return game;
 }
