@@ -91,6 +91,18 @@ function hasDuplicates(arr) {
   return new Set(arr).size !== arr.length;
 }
 
+function isValidJSON(str) {
+    if (typeof str !== 'string') {
+        return false;
+    }
+    try {
+        JSON.parse(str);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 export default {
   name: 'GameSelector',
   components: {
@@ -102,6 +114,7 @@ export default {
       selected: [],
       loading: false,
       maps:[],
+      map:{},
       roles:[],
       playerTypes:[{code:'self',name:'本玩家'},{code:'other',name:'邀请其他玩家'},{code:'ai',name:'ai玩家'}],
       createForm:{
@@ -191,8 +204,29 @@ export default {
         };
         this.webSocket.onmessage = (event) => {
           console.log('Received message:', event.data);
+          if(!isValidJSON(event.data)){
+            return;
+          }
           //1.应该收到连接成功或链接失败的消息
           //2.接受到请求gameInfo的消息。则须将界面上的游戏信息发送过去。
+          const {action,sessionId} = JSON.parse(event.data);
+          console.log("action:",action);
+          console.log("action === 'request-for-gameInfo':",(action === 'request-for-gameInfo') );
+          if(action === 'request-for-gameInfo'){
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            console.log("userInfo:",userInfo)
+            const requestMsg = {
+              sessionId,
+              data:{
+                userName:userInfo?.nickname,
+                gameName:this.createForm?.name,
+                mapId:this.createForm?.mapId,
+                mapName:this.map?.name,
+              }
+            }
+            this.webSocket.send(JSON.stringify(requestMsg) );
+            console.log('已发送消息：',requestMsg);
+          }
           //3.接受到成为游戏玩家的消息，则将游戏玩家信息显示到界面。
         };
         this.webSocket.onclose = () => {
@@ -219,7 +253,8 @@ export default {
   },
   watch:{
     "createForm.mapId":function(newVal){
-      const map = this.maps.find((map)=>map._id === newVal)
+      const map = this.maps.find((map)=>map._id === newVal);
+      this.map = map;
       this.roles = map.roles;
       this.createForm.name = map.name;
     }

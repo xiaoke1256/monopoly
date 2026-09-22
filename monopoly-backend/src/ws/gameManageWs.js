@@ -36,6 +36,16 @@ export const requestGameInfoFromInvitee = (ws, req) => {
     });
 }
 
+const inviteWsCallBacks = {};
+
+export function sendToInviter(roomNo,sessionId,msg,callBack){
+    console.log("roomNo:",roomNo,"sessionId:",sessionId,"msg:",msg)
+    const ws = acceptPlyerApplyWs[roomNo];
+    //console.log("ws:",ws)
+    inviteWsCallBacks[sessionId] = callBack;
+    ws.send(msg)
+}
+
 /** 邀请者接受玩家申请 */
 export const acceptPlyerApply = (ws, req) => {
     const { roomNo } = req.query;
@@ -52,20 +62,33 @@ export const acceptPlyerApply = (ws, req) => {
         console.log('收到邀请者消息:', msg);
         try {
             const response = JSON.parse(msg);
-            if (response.action === 'gameInfo') {
-                const gameInfo = response.data.gameInfo;
-                const sessionId = response.data.sessionId;
-                if (gameInfoFromInviteeWs[sessionId]) {
-                    gameInfoFromInviteeWs[sessionId].send(JSON.stringify({
-                        action: 'gameInfo',
-                        data: { gameInfo }
-                    }));
-                } else {
-                    console.error('找不到对应的受邀者 sessionId:', sessionId);
-                }
-            } else {
-                console.error('收到未知 action:', response.action);
+            const sessionId = response.sessionId;
+            const result = inviteWsCallBacks[sessionId](response)
+            if ( result && result instanceof Promise ){
+                result.then((data)=>{
+                    console.info("data:",data);
+                    delete inviteWsCallBacks[sessionId]
+                }).catch((error)=>{ 
+                    console.error(error);
+                    delete inviteWsCallBacks[sessionId]
+                });
+            }else{
+                delete inviteWsCallBacks[sessionId]
             }
+            // if (response.action === 'gameInfo') {
+            //     const gameInfo = response.data.gameInfo;
+            //     const sessionId = response.data.sessionId;
+            //     if (gameInfoFromInviteeWs[sessionId]) {
+            //         gameInfoFromInviteeWs[sessionId].send(JSON.stringify({
+            //             action: 'gameInfo',
+            //             data: { gameInfo }
+            //         }));
+            //     } else {
+            //         console.error('找不到对应的受邀者 sessionId:', sessionId);
+            //     }
+            // } else {
+            //     console.error('收到未知 action:', response.action);
+            // }
         } catch (e) {
             console.error('消息解析失败:', msg, e);
         }

@@ -15,7 +15,7 @@
         <div v-if="!!userName" class="row">
           <div style="flex:1">邀请玩家：</div><div style="flex:3" >{{ userName }}</div>
         </div>
-        <div class="row">
+        <div v-if="!!mapId" class="row">
           <Select v-model="roleId" placeholder="请选择玩家角色"  >
             <Option v-for="role in roles" :key="role.roleId" :value="role.roleId" >{{ role.name }}</Option>
           </Select>
@@ -29,6 +29,7 @@
 </template>
 <script>
 import { getMapById } from '../../api/mapApi';
+import {getGameInfoByTempRoomNo } from '../../api/gameManageApi'
 import { useRoute } from 'vue-router'
 
 export default {
@@ -63,38 +64,24 @@ export default {
     }
   },
   methods:{
-    sendRoomNo(){
+    async sendRoomNo(){
       if(!this.roomNo){
         this.$Message.error('请先填写邀请码');
         return;
       }
       console.log(this.roomNo);
       //启动 ws 等待获取游戏信息
-      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const sessionId = localStorage.getItem('sessionId');
-      let socket = new WebSocket(`${protocol}//${location.host}/ws/gm/invitee/gameInfo?sessionId=${sessionId}&roomNo=${this.roomNo}`); 
-      socket.onopen=()=>{
-        console.log('WebSocket connected!');
-      };
-      socket.onmessage = (event) => {
-        console.log('Received message:', event.data);
-        //1.应该收到连接成功或链接失败的消息
-        //2.然后接受到gameInfo的消息。如果成功接受到则关闭ws
-      };
-      socket.onclose = () => {
-        console.log('WebSocket closed!');
-      };
-      socket.onerror = (error) => {
-        console.error('WebSocket error:', error);
-      };
-
-      //socket.send(this.roomNo);
-
-      //
+      const data = await getGameInfoByTempRoomNo(this.roomNo);
+      console.log("data:",data);
+      const {gameName,mapId,mapName,userName} = data?.data
+      this.gameName = gameName;
+      this.mapId = mapId;
+      this.mapName = mapName;
+      this.userName = userName;
     }
   },
   watch:{
-    async specifyMapId(newValue){
+    async mapId(newValue){
       console.log("newValue:",newValue)
       const map = await getMapById(newValue);
       this.roles = map.roles;

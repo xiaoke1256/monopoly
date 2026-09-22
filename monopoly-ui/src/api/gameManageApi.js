@@ -41,3 +41,13 @@ export const generateRoomNo = async ()=>{
         throw error;
     }
 }
+
+export const getGameInfoByTempRoomNo = async (roomNo)=>{
+    try {
+        const response = await axios.get(`/gameManage/gameInfoByTempRoomNo?roomNo=${roomNo}`);
+        return response?.data;
+    } catch (error) {
+        console.error('Error start game:', error);
+        throw error;
+    }
+}

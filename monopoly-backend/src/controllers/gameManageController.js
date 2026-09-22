@@ -3,7 +3,7 @@ import Game from '../models/Game.js';
 import Session from '../models/Session.js';
 import TempRoomNo from '../models/TempRoomNo.js';
 import Map from '../models/Map.js';
-import mongoose from 'mongoose';
+import { sendToInviter } from "../ws/gameManageWs.js";
 
 async function getGamesByUserId(userId) {
   const games = Game.find({players:{$elemMatch:{userId}}},{ name: 1, _id: 1,roomNo:1,createdAt:1,updatedAt:1 }).sort({ updatedAt: -1 });
@@ -117,10 +117,25 @@ export const createGame = async (req, res) => {
 export const getGameInfoByTempRoomNo = async (req, res) => {
   const user = getCurrentUser(req)
   const {roomNo} =  req.query;
+  const sessionId = user.sessionId;
+  console.log("roomNo:",roomNo,"sessionId:",sessionId);
   //检查该roomNo是否存在
   const tempRoomNo = await TempRoomNo.findOne({roomNo});
   if(!tempRoomNo){
     return res.status(400).json({ success: false, message: '无效邀请码' });
   }
-  //TODO 发送ws获取游戏信息
+  // 发送ws获取游戏信息
+  return await new Promise((resolve, reject) => {
+    sendToInviter(roomNo,sessionId,JSON.stringify({
+        action: 'request-for-gameInfo',
+        sessionId: sessionId
+      }),
+      (response)=>{
+        resolve(res.json({ success: true, message: '获取成功',data: response.data})) ;
+      }
+    );
+  });
+  
+
+
 }
