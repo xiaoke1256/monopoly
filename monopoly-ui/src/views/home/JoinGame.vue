@@ -1,6 +1,6 @@
 <template>
-   <div class="gameManager-container">
-    <div class="gameManager-card">
+   <div class="game-manager-container">
+    <div class="game-manager-card">
       <h1 class="title">🎲 加入游戏</h1>
       <div class="join-game-form" >
         <div class="row">
@@ -99,49 +99,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.gameManager-container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.gameManager-card {
-  width: 400px;
-  padding: 40px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-}
-
-.title {
-  text-align: center;
-  margin-bottom: 32px;
-  color: #333;
-  font-size: 24px;
-}
-
-.form {
-  margin-top: 20px;
-}
-
-.footer {
-  text-align: center;
-  margin-top: 24px;
-  color: #999;
-  font-size: 14px;
-
-  .link {
-    color: #667eea;
-    text-decoration: none;
-    font-weight: 500;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
+@import "@/assets/styles/game-manage.scss";
 
 .join-game-form {
   display: flex;

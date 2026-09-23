@@ -1,6 +1,6 @@
 <template>
-  <div class="gameManager-container">
-    <div class="gameManager-card">
+  <div class="game-manager-container">
+    <div class="game-manager-card">
       <Result type="success" title="提交成功">
         <template #extra>
           {{ message }}
@@ -81,20 +81,6 @@ export default {
 }
 </script>
 <style>
-.gameManager-container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.gameManager-card {
-  width: 400px;
-  padding: 40px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-}
+@import "@/assets/styles/game-manage.scss";
 
 </style>
