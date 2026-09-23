@@ -22,14 +22,14 @@
         </div>
       </div>
       <div class="actions">
-        <Button type="primary" size="large" long >加入</Button>
+        <Button type="primary" size="large" long @click="postPayer" >加入</Button>
       </div>
     </div>
   </div>
 </template>
 <script>
 import { getMapById } from '../../api/mapApi';
-import {getGameInfoByTempRoomNo } from '../../api/gameManageApi'
+import {getGameInfoByTempRoomNo,postPayerToInviter } from '../../api/gameManageApi'
 import { useRoute } from 'vue-router'
 
 export default {
@@ -78,6 +78,13 @@ export default {
       this.mapId = mapId;
       this.mapName = mapName;
       this.userName = userName;
+    },
+    async postPayer(){
+      const data = await postPayerToInviter({roomNo:this.roomNo,roleId:this.roleId,mapId:this.mapId});
+      console.log('respons of postPayer:',data);
+      if(data.success){
+        console.log('成功跳转到等待游戏开始页面');
+      }
     }
   },
   watch:{

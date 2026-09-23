@@ -40,9 +40,10 @@
                     <img v-if="getRoleImg(index)" style="width: 100%;aspect-ratio: 1 / 2 ; object-fit: contain " :src="getRoleImg(index)" />
                   </template>
                 </Poptip>
-                <Select class="player-type-select" v-model="createForm.players[index].type"  >
-                  <Option v-for="playerType in playerTypes" :key="playerType.code" :value="playerType.code" :disabled="playerType.code==='ai'" >{{ playerType.name }}</Option>
+                <Select v-if="createForm.players[index].type!=='other'" class="player-type-select" v-model="createForm.players[index].type"  >
+                  <Option v-for="playerType in playerTypes" :key="playerType.code" :value="playerType.code" :disabled="playerType.code==='ai' || playerType.code==='other'" >{{ playerType.name }}</Option>
                 </Select>
+                <div class="player-nickname-div" v-if="createForm.players[index].type==='other'" >{{ createForm.players[index].nickname }}</div>
                 <Button v-if="index>0" class="player-action-btn" icon="md-remove" @click="deletePlayer" ></Button>
                 <div v-if="index==0" class="player-action-placeholder" ></div>
               </div>
@@ -209,7 +210,8 @@ export default {
           }
           //1.应该收到连接成功或链接失败的消息
           //2.接受到请求gameInfo的消息。则须将界面上的游戏信息发送过去。
-          const {action,sessionId} = JSON.parse(event.data);
+          const data = JSON.parse(event.data);
+          const {action,sessionId} = data;
           console.log("action:",action);
           console.log("action === 'request-for-gameInfo':",(action === 'request-for-gameInfo') );
           if(action === 'request-for-gameInfo'){
@@ -228,6 +230,29 @@ export default {
             console.log('已发送消息：',requestMsg);
           }
           //3.接受到成为游戏玩家的消息，则将游戏玩家信息显示到界面。
+          else if(action === 'add-player'){
+            const roomNo = data.roomNo;
+            const mapId = data.mapId;
+            const player = data.player;
+            if(roomNo !== this.createForm.roomNo){
+              console.error("无效roomNo，无须处理：",roomNo);
+              return;
+            }
+            if(mapId !== this.createForm.mapId){
+              console.error("mapId 已修改。",mapId);
+              this.$Message.info('地图发生变动，需重新扫描二维码。');
+              return;
+            }
+            this.createForm.players.push({roleId:player.roleId,type:'other',userId:player.userId,nickname:player.nickname});
+            const requestMsg = {
+              sessionId,
+              data:{
+                success:true
+              }
+            }
+            this.webSocket.send(JSON.stringify(requestMsg) );
+            console.log('已发送确认消息:',requestMsg);
+          }
         };
         this.webSocket.onclose = () => {
           console.log('WebSocket closed!');
@@ -360,6 +385,12 @@ export default {
     :deep(.ivu-select) {
       width: 100%;
     }
+  }
+
+  .player-nickname-div {
+    flex: 3 1 0%;
+    min-width: 0;
+    margin: 1px;
   }
 
   .player-action-btn,

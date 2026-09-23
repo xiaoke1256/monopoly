@@ -3,7 +3,8 @@ import { getValidGames,
     startExistGame,
     createGame,
     generateRoomNo,
-    getGameInfoByTempRoomNo } from '../controllers/gameManageController.js';
+    getGameInfoByTempRoomNo,
+    postPayerToInviter } from '../controllers/gameManageController.js';
 
 const gameManageRouter = new Router();   
 
@@ -12,6 +13,7 @@ gameManageRouter.post('/startExistGame',startExistGame);
 gameManageRouter.post('/createGame',createGame);
 gameManageRouter.post('/generateRoomNo',generateRoomNo);
 gameManageRouter.get('/gameInfoByTempRoomNo',getGameInfoByTempRoomNo);
+gameManageRouter.post('/invite/payer',postPayerToInviter);
 
 
 export default gameManageRouter;

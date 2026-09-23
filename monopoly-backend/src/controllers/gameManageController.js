@@ -135,7 +135,34 @@ export const getGameInfoByTempRoomNo = async (req, res) => {
       }
     );
   });
-  
+}
 
+export const postPayerToInviter = async (req, res) => {
+  const user = getCurrentUser(req)
+  const {roomNo,roleId,mapId} =  req.body;
+  const sessionId = user.sessionId;
+  const userId = user.id
+  const nickname = user.nickname
+  console.log("roomNo:",roomNo,"sessionId:",sessionId);
+  //检查该roomNo是否存在
+  const tempRoomNo = await TempRoomNo.findOne({roomNo});
+  if(!tempRoomNo){
+    return res.status(400).json({ success: false, message: '无效邀请码' });
+  }
+
+  //发送给邀请者的前端
+  return await new Promise((resolve, reject) => {
+    sendToInviter(roomNo,sessionId,JSON.stringify({
+        action: 'add-player',
+        sessionId: sessionId,
+        roomNo,
+        mapId,
+        player: {roleId,userId,nickname}
+      }),
+      (response)=>{
+        resolve(res.json({ success: true, message: '添加成功',data: response.data})) ;
+      }
+    );
+  });
 
 }

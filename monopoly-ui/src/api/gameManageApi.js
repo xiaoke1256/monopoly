@@ -37,7 +37,7 @@ export const generateRoomNo = async ()=>{
         const response = await axios.post('/gameManage/generateRoomNo');
         return response?.data?.roomNo;
     } catch (error) {
-        console.error('Error start game:', error);
+        console.error('Error generate roomNo:', error);
         throw error;
     }
 }
@@ -47,7 +47,19 @@ export const getGameInfoByTempRoomNo = async (roomNo)=>{
         const response = await axios.get(`/gameManage/gameInfoByTempRoomNo?roomNo=${roomNo}`);
         return response?.data;
     } catch (error) {
-        console.error('Error start game:', error);
+        console.error('Error get game info:', error);
+        throw error;
+    }
+}
+
+export const postPayerToInviter = async ({roomNo,roleId,mapId})=>{
+    try {
+        const response = await axios.post(`/gameManage/invite/payer`,{
+            roomNo,roleId,mapId
+        });
+        return response?.data;
+    } catch (error) {
+        console.error('Error post player:', error);
         throw error;
     }
 }
