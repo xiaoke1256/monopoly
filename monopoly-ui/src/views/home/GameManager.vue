@@ -44,7 +44,7 @@
                   <Option v-for="playerType in playerTypes" :key="playerType.code" :value="playerType.code" :disabled="playerType.code==='ai' || playerType.code==='other'" >{{ playerType.name }}</Option>
                 </Select>
                 <div class="player-nickname-div" v-if="createForm.players[index].type==='other'" >{{ createForm.players[index].nickname }}</div>
-                <Button v-if="index>0" class="player-action-btn" icon="md-remove" @click="deletePlayer" ></Button>
+                <Button v-if="index>0" class="player-action-btn" icon="md-remove" @click="deletePlayer(index)" ></Button>
                 <div v-if="index==0" class="player-action-placeholder" ></div>
               </div>
               <div style="display:flex;flex-direction:row;justify-content:space-between;gap: 4px;">
@@ -64,7 +64,7 @@
                 扫描以下二维码，可以加入游戏。
               </div>
               <div>
-                <QrcodeVue :value="createForm.roomNo" />
+                <QrcodeVue v-if="createForm.roomNo" :value="createForm.roomNo" />
               </div>
               <div>邀请码：{{ createForm.roomNo}}</div>
             </div>
@@ -168,13 +168,13 @@ export default {
       }
       
       const players = this.createForm.players.map((p)=>{
-        const {roleId,type} = p;
+        const {roleId,type,sessionId} = p;
         let userId = p.userId;
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
         if (type==='self') {
           userId = userInfo.id;
         }
-        return {roleId,userId}
+        return {roleId,userId,sessionId}
       });
 
       try {
@@ -243,7 +243,7 @@ export default {
               this.$Message.info('地图发生变动，需重新扫描二维码。');
               return;
             }
-            this.createForm.players.push({roleId:player.roleId,type:'other',userId:player.userId,nickname:player.nickname});
+            this.createForm.players.push({roleId:player.roleId,type:'other',userId:player.userId,nickname:player.nickname,sessionId});
             const requestMsg = {
               sessionId,
               data:{

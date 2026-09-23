@@ -84,6 +84,7 @@ export default {
       console.log('respons of postPayer:',data);
       if(data.success){
         console.log('成功跳转到等待游戏开始页面');
+        this.$router.push(`/joinSuccess?roomNo=${this.roomNo}&nickname=${this.userName}`);
       }
     }
   },

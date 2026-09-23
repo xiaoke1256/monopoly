@@ -3,7 +3,7 @@ import Game from '../models/Game.js';
 import Session from '../models/Session.js';
 import TempRoomNo from '../models/TempRoomNo.js';
 import Map from '../models/Map.js';
-import { sendToInviter } from "../ws/gameManageWs.js";
+import { sendToInviter,sendToInvitee } from "../ws/gameManageWs.js";
 
 async function getGamesByUserId(userId) {
   const games = Game.find({players:{$elemMatch:{userId}}},{ name: 1, _id: 1,roomNo:1,createdAt:1,updatedAt:1 }).sort({ updatedAt: -1 });
@@ -91,17 +91,17 @@ export const createGame = async (req, res) => {
   console.log("roomNo:",roomNo)
 
   const players = playersTemp.map((player)=>{
-    const {roleId,userId} = player;
+    const {roleId,userId:playerUserId} = player;
     //const userId = new mongoose.Types.ObjectId(userIdStr);
     //console.log("map:",map);
-    if (!userId) {
+    if (!playerUserId) {
       return res.status(400).json({ success: false, message: '必须为每个角色指定一个用户' });
     }
     const role = map.roles.filter((role)=>role.roleId===roleId)[0];
     if(!role){
       return res.status(400).json({ success: false, message: '所选角色不存在' });
     }
-    return {...role,userId,money:map.defaultMoney}
+    return {...role,userId:playerUserId,money:map.defaultMoney}
   });
 
   const cells = map.cells.map(cell=>{return {...cell,level:1}});
@@ -111,7 +111,28 @@ export const createGame = async (req, res) => {
   
   session.gameId = game._id;
   await session.save();
-  return res.json({ success: true, message: '保存成功' });
+  playersTemp.forEach(async (player) => {
+    const {sessionId,userId:playerUserId} = player;
+    if(playerUserId == userId){
+      return;
+    }
+    console.log("playerUserId:",playerUserId,"sessionId:",sessionId);
+    const session = await Session.findOne({ sessionId, userId:playerUserId });
+    session.gameId = game._id;
+    await session.save();
+  });
+
+  sendToInvitee(roomNo,JSON.stringify({
+      action: 'save-game-success',
+      success:true,
+      sessionId: sessionId
+    }),
+    (response)=>{
+      console.log('游戏创建成功,data:',response.data);
+    }
+  );
+
+  return res.json({ success: true, message: '游戏创建成功' });
 }
 
 export const getGameInfoByTempRoomNo = async (req, res) => {

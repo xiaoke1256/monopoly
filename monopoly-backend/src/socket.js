@@ -1,7 +1,7 @@
 
 import {
-    acceptPlyerApply
-
+    acceptPlyerApply,
+    acceptInviterNotice
 } from './ws/gameManageWs.js'
 
 export function initWebSocket(app){
@@ -9,6 +9,7 @@ export function initWebSocket(app){
         console.log('Websocket has Connected!');
     });
     app.ws('/ws/gm/invite',acceptPlyerApply);
+    app.ws('/ws/gm/invitee',acceptInviterNotice);
     
 
 }

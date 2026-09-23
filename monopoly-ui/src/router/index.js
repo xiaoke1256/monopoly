@@ -38,6 +38,11 @@ const routes = [
     path: "/joinGame",
     name: "JoinGame",
     component: () => import("../views/home/JoinGame.vue"),
+  },
+  {
+    path: "/joinSuccess",
+    name: "JoinSuccess",
+    component: () => import("../views/home/JoinSuccess.vue"),
   }
 ];
 

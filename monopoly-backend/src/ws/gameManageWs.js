@@ -49,3 +49,72 @@ export const acceptPlyerApply = (ws, req) => {
         delete acceptPlyerApplyWs[roomNo];
     });
 }
+
+const acceptInviterNoticeWs = {};
+
+const inviterWsCallBacks = {};
+
+export function sendToInvitee(roomNo,msg,callBack){
+    console.log("in sendToInvitee, roomNo:",roomNo,"msg:",msg)
+    inviterWsCallBacks[roomNo] = callBack;
+    console.log("acceptInviterNoticeWs[roomNo]:",acceptInviterNoticeWs[roomNo]);
+    if (acceptInviterNoticeWs[roomNo]) {
+        for (const ws of acceptInviterNoticeWs[roomNo]){
+            ws.send(msg)
+        }
+    }
+}
+
+/* 用于受邀者接收邀请人通知的ws */
+export const acceptInviterNotice = (ws, req) => {
+    const { roomNo,sessionId } = req.query;
+    if (!roomNo || !sessionId ) {
+        console.error('缺少必要参数 roomNo:',roomNo,'sessionId:',sessionId);
+        ws.close(1008, '缺少必要参数 roomNo:',roomNo,'sessionId:',sessionId);
+        return;
+    }
+
+    if(!acceptInviterNoticeWs[roomNo]){
+        acceptInviterNoticeWs[roomNo] = [ws];
+    }else{
+        acceptInviterNoticeWs[roomNo].push(ws);
+    }
+    ws.send(`连接成功 roomNo:${roomNo},sessionId:${sessionId}`);
+
+    ws.on('message', (msg) => {
+        console.log('收到邀请者消息:', msg);
+        try {
+            const response = JSON.parse(msg);
+            const result = inviterWsCallBacks[roomNo](response)
+            if ( result && result instanceof Promise ){
+                result.then((data)=>{
+                    console.info("data:",data);
+                    delete inviterWsCallBacks[roomNo]
+                }).catch((error)=>{ 
+                    console.error(error);
+                    delete inviterWsCallBacks[roomNo]
+                });
+            }else{
+                delete inviterWsCallBacks[roomNo]
+            }
+        } catch (e) {
+            console.error('消息解析失败:', msg, e);
+        }
+    });
+
+    ws.on('close', () => {
+        console.log('受邀者连接关闭 roomNo,sessionId:', roomNo,sessionId);
+        if (!acceptInviterNoticeWs[roomNo]){
+            console.error('该ws没有保存');
+            return;
+        }
+        let index = acceptInviterNoticeWs[roomNo].indexOf(ws);
+        if (index !== -1) {
+            acceptInviterNoticeWs[roomNo].splice(index, 1);
+        }else{
+            console.error('该ws没有保存');
+        }
+    });
+
+
+}
