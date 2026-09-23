@@ -11,18 +11,7 @@
 </template>
 <script >
 import { useRoute } from 'vue-router'
-
-function isValidJSON(str) {
-  if (typeof str !== 'string') {
-    return false;
-  }
-  try {
-    JSON.parse(str);
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
+import { isValidJSON } from '../../util/jsonUtils'
 
 export default {
   name: 'JoinSuccess',

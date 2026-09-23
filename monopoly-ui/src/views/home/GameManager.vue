@@ -86,23 +86,9 @@ import { getValidGames, startExistGame, createGame, generateRoomNo } from '../..
 import { getMaps } from '../../api/mapApi';
 import { formatDate } from '../../util/dateUtils';
 import { imageMap } from '../../util/imagesMap.js';
+import { hasDuplicates } from '../../util/arrayUtils'
+import { isValidJSON } from '../../util/jsonUtils'
 import QrcodeVue from 'qrcode.vue'
-
-function hasDuplicates(arr) {
-  return new Set(arr).size !== arr.length;
-}
-
-function isValidJSON(str) {
-    if (typeof str !== 'string') {
-        return false;
-    }
-    try {
-        JSON.parse(str);
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
 
 export default {
   name: 'GameSelector',
