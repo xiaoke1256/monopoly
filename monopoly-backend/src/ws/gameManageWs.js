@@ -27,6 +27,10 @@ export const acceptPlyerApply = (ws, req) => {
         try {
             const response = JSON.parse(msg);
             const sessionId = response.sessionId;
+            if (!inviteWsCallBacks[sessionId]){
+                console.error("no call back function :",sessionId);
+                return;
+            }
             const result = inviteWsCallBacks[sessionId](response)
             if ( result && result instanceof Promise ){
                 result.then((data)=>{
@@ -85,6 +89,10 @@ export const acceptInviterNotice = (ws, req) => {
         console.log('收到邀请者消息:', msg);
         try {
             const response = JSON.parse(msg);
+            if(!inviterWsCallBacks[roomNo]){
+                console.error("no call back function :",roomNo);
+                return;
+            }
             const result = inviterWsCallBacks[roomNo](response)
             if ( result && result instanceof Promise ){
                 result.then((data)=>{
