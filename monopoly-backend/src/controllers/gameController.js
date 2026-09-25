@@ -839,9 +839,10 @@ const getPlayerStatus = async (req, res) => {
     const game = await queryCurrentGame(req);
     const currentPlayerIndex = game.currentPlayerIndex ;
     const currentPlayer = game.players[currentPlayerIndex];
+    const currentPlayerUserId = currentPlayer.userId;
     const isWaiting = currentPlayer.waitingRound>0;
     const isGameOver = game.players.filter((player)=>!player.isBankrupt).length<=1
-    return res.json({ playerStatus: game.playerStatus,currentPlayerPosition: currentPlayer.position, isWaiting,isGameOver });
+    return res.json({ playerStatus: game.playerStatus,currentPlayerPosition: currentPlayer.position, currentPlayerUserId, isWaiting,isGameOver });
 };
 
 const getCurrentMessage = async (req, res) => {
