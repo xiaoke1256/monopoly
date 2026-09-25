@@ -26,15 +26,18 @@ export default {
   },
   methods:{
     async doDice(limit){
+      //TODO 检查当前玩家是否权限操作
       if(!limit && limit!==0){
         if(this.isRolling){
           return;
         }
         this.isRolling = true;
         limit=7;
+        //向后台发送开始掷骰子的消息
       }
       console.log("limit:",limit);
       if(limit===0){
+        //TODO 如果无权限操作则等待 WebSocket触发。
         this.dice = (await dice());
         setTimeout(
           ()=>{
@@ -62,6 +65,7 @@ export default {
   },
   mounted() {
     this.dice=Math.ceil(Math.random()*6);
+    //TODO 检查当前玩家是否权限操作,如果没有权限操作则创建webSocket
   }
 }
 </script>

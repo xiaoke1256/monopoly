@@ -5,7 +5,7 @@
     <Button v-if="!showDiceModal" style="position:absolute;bottom:0;right:0" type="primary" @click="showDiceModal=true" size="large">Continue</Button>
     <GModal
         :show="showDiceModal"
-        :maskClosable="true"
+        :maskClosable="isYourTurn"
         :playerIndex="currentPlayerIndex"
         @update:show="showDiceModal = $event"
         title="掷骰子">
@@ -102,6 +102,7 @@ export default {
       showQuestionModal:false,
       showChanceModal:false,
       showSuccessModal:false,
+      currentPlayerUserId:'',
       messageType:'',
       currentCell:{},
       rentOwner:{},
@@ -123,6 +124,7 @@ export default {
             console.log("data:",data)
             const playerStatus = data.playerStatus;
             const currentPlayerPosition = data.currentPlayerPosition;
+            const currentPlayerUserId = data.currentPlayerUserId;
             if(playerStatus==='before-dice') {
                 const isGameOver = data.isGameOver
                 if(isGameOver){
@@ -134,6 +136,7 @@ export default {
                     this.onPlayerMoveComplete();
                     return
                 }
+                this.currentPlayerUserId = currentPlayerUserId;
                 this.showDiceModal=true;
                 console.log('玩家需要掷骰子',this.showDiceModal);
             } else if (playerStatus==='after-dice'){
@@ -346,6 +349,10 @@ export default {
     }
   },
   computed: {
+    isYourTurn(){
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        return this.currentPlayerUserId=== userInfo.id;
+    }
   }
 }
 </script>

@@ -2,7 +2,7 @@
     <Modal
         v-model="isVisible"
         footer-hide
-        :closable="false"
+        :closable="closable"
         :mask-closable="maskClosable"
         width="520">
         <template #header>
@@ -30,6 +30,10 @@ export default {
         playerIndex: {
             type: Number,
             required: true
+        },
+        closable: {
+            type: Boolean,
+            default: false
         },
         maskClosable: {
             type: Boolean,

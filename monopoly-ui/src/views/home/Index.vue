@@ -30,6 +30,7 @@ export default {
     },
   },
   created() {
+    //TODO 向后台校验一下token是否存在，不存在则直接从localStorage删除掉
     const info = localStorage.getItem('userInfo');
     if (info) {
       try {
