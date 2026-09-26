@@ -121,6 +121,10 @@ export const acceptInviterNotice = (ws, req) => {
             acceptInviterNoticeWs[roomNo].splice(index, 1);
         }else{
             console.error('该ws没有保存');
+            return;
+        }
+        if (acceptInviterNoticeWs[roomNo].length===0){
+            delete acceptInviterNoticeWs[roomNo]
         }
     });
 

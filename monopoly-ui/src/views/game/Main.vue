@@ -73,6 +73,7 @@ import Message from './Message.vue';
 import Chance from './Chance.vue';
 import Sucess from './Sucess.vue';
 import { getPlayerStatus,getDiceValue,movePlayer,onArrived,postEndTurn } from '@/api/gameApi.js';
+import { isValidJSON } from '../../util/jsonUtils'
 
 export default {
   name: 'MainIndex',
@@ -108,12 +109,48 @@ export default {
       rentOwner:{},
       rentAmount:0,
       currentPlayerIndex: 0,
-      loading: false,
-      error: null
+      webSocket: undefined,
     };
   },
   mounted() {
     this.checkStatus();
+    //初始化webSocket
+    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const sessionId = localStorage.getItem('sessionId');
+    this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/main`); 
+    console.log("webSocket created !");
+    this.webSocket.onopen=()=>{
+      console.log('WebSocket connected!');
+    };
+    this.webSocket.onmessage = (event) => {
+      console.log('Received message:', event.data);
+      if(!isValidJSON(event.data)){
+        return;
+      }
+      const data = JSON.parse(event.data);
+      //如果是自己发送给自己则不处理
+      if(data.sessionId === sessionId){
+        return;
+      }
+      if (data.action==='showModal' && data.modalName==='dice' ){
+        this.showDiceModal = data.modal
+      }
+      
+    };
+    this.webSocket.onclose = () => {
+      console.log('WebSocket closed!');
+    };
+    this.webSocket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+  },
+  unmounted(){
+    try{
+      this.webSocket.close();
+    }catch(e){
+      console.error(e);
+    }
+    this.webSocket = undefined;
   },
   methods: {
     onGameLoaded(playerIndex) {
@@ -352,6 +389,22 @@ export default {
     isYourTurn(){
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
         return this.currentPlayerUserId=== userInfo.id;
+    }
+  },
+  watch: {
+    showDiceModal(newValue){
+        console.log("newValue:",newValue)
+        //发送websocket给其他玩家。
+        try{
+            this.webSocket.send(
+            {
+                action:'showModal',
+                modalName:'dice',
+                modal:newValue
+            });
+        }catch(e){
+            console.error(e);
+        }
     }
   }
 }
