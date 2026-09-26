@@ -66,6 +66,14 @@ export default {
     this.webSocket.onerror = (error) => {
       console.error('WebSocket error:', error);
     };
+  },
+  unmounted(){
+    try{
+      this.webSocket.close();
+    }catch(e){
+      console.error(e);
+    }
+    this.webSocket = undefined;
   }
 }
 </script>

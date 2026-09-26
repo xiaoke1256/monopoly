@@ -7,7 +7,12 @@ module.exports = defineConfig({
         target: 'http://localhost:3000/monopoly',
         changeOrigin: true
       },
-      '/ws': {
+      '/ws/game': {
+        target: 'http://localhost:3000',
+        ws: true,
+        changeOrigin: true
+      },
+      '/ws/gm': {
         target: 'http://localhost:3000',
         ws: true,
         changeOrigin: true

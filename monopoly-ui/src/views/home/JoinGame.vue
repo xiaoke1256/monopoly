@@ -70,7 +70,7 @@ export default {
         return;
       }
       console.log(this.roomNo);
-      //启动 ws 等待获取游戏信息
+      //获取游戏信息
       const data = await getGameInfoByTempRoomNo(this.roomNo);
       console.log("data:",data);
       const {gameName,mapId,mapName,userName} = data?.data

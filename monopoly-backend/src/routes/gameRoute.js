@@ -30,6 +30,8 @@ import { dice,
     getFinalPlayer
  } from '../controllers/gameController.js';
 
+import { sendMsgToMain } from '../controllers/gameWsController.js';
+
 const gameRouter = new Router();   
 
 gameRouter.post('/dice', dice);
@@ -61,5 +63,9 @@ gameRouter.post('/player/:playerIndex/exchange', exchange);
 gameRouter.get('/player/:playerIndex/bankrupt',getBankruptInfo)
 gameRouter.post('/player/:playerIndex/bankrupt', bankrupt);
 gameRouter.get('/player/final', getFinalPlayer);
+
+//以下与 websocket有关
+gameRouter.post('/ws/sendToMain', sendMsgToMain);
+
 
 export default gameRouter;

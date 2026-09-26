@@ -2,7 +2,7 @@
     <div class="main">
         <Map ref="map" @game-loaded="onGameLoaded"/>
     </div>
-    <Button v-if="!showDiceModal" style="position:absolute;bottom:0;right:0" type="primary" @click="showDiceModal=true" size="large">Continue</Button>
+    <Button v-if="!showDiceModal && isYourTurn" style="position:absolute;bottom:0;right:0" type="primary" @click="showDiceModal=true" size="large">Continue</Button>
     <GModal
         :show="showDiceModal"
         :maskClosable="isYourTurn"
@@ -117,8 +117,9 @@ export default {
     //初始化webSocket
     const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
     const sessionId = localStorage.getItem('sessionId');
-    this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/main`); 
-    console.log("webSocket created !");
+    const token = localStorage . getItem ( 'token' );
+    this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/main?token=${token}`); 
+    console.log("webSocket created !",`${protocol}//${location.host}/ws/game/main`);
     this.webSocket.onopen=()=>{
       console.log('WebSocket connected!');
     };
@@ -396,12 +397,12 @@ export default {
         console.log("newValue:",newValue)
         //发送websocket给其他玩家。
         try{
-            this.webSocket.send(
+            this.webSocket.send(JSON.stringify(
             {
                 action:'showModal',
                 modalName:'dice',
                 modal:newValue
-            });
+            }));
         }catch(e){
             console.error(e);
         }

@@ -4,7 +4,11 @@ import Session from '../models/Session.js';
 
 export function getCurrentUser(req){
     console.log("req.headers:",req.headers);
-    const authHeader = req.headers.authorization;
+    let authHeader = req.headers.authorization;
+
+    if (!authHeader && req.query?.token) {
+      authHeader = `Bearer ${req.query.token}`;
+    }
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new Error("未提供有效的认证令牌");

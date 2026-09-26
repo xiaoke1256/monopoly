@@ -1,4 +1,5 @@
 import { getCurrentSession } from "../utils/security.js";
+import Game from '../models/Game.js';
 
 const queryCurrentGame = async (req)=> {
     const session = await getCurrentSession(req)
@@ -26,6 +27,8 @@ export const sendMainWsMsg = (gameId,msg) => {
 }
 
 export const listenMainMsg = async (ws, req) => {
+
+    console.log("connecting...")
 
     const game = await queryCurrentGame(req);
     const gameId = game._id;

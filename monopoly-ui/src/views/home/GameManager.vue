@@ -186,6 +186,7 @@ export default {
         const roomNo = this.createForm.roomNo;
         const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
         this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/gm/invite?roomNo=${roomNo}`); 
+        console.log("WebSocket created:",`${protocol}//${location.host}/ws/gm/invite?roomNo=${roomNo}`);
         this.webSocket.onopen=()=>{
           console.log('WebSocket connected!');
         };
