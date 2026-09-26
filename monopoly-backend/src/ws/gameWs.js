@@ -44,7 +44,7 @@ export const listenMainMsg = async (ws, req) => {
 
 
     ws.on('message', (msg) => {
-        console.log('收到邀请者消息:', msg);
+        console.log('收到Main页面消息:', msg);
         try {
             const response = JSON.parse(msg);
             if(gameMainWs[gameId]){
