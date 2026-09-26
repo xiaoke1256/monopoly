@@ -65,7 +65,23 @@ export const listenMainMsg = async (ws, req) => {
     });
 
     ws.on('close', () => {
-        console.log('连接关闭 roomNo:', roomNo);
+        console.log('连接关闭 gameId:', gameId);
+        if (!gameMainWs[gameId]){
+            console.error('该ws没有保存');
+            return;
+        }
+        const index = gameMainWs[gameId].indexOf(ws);
+        if (index !== -1) {
+            gameMainWs[gameId].splice(index, 1);
+        }else{
+            console.error('该ws没有保存');
+            return;
+        }
+        if (gameMainWs[gameId].length===0){
+            delete gameMainWs[roomNo]
+        }
         
     });
 }
+
+const gameDiceWs = {};
