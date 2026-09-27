@@ -133,8 +133,13 @@ export default {
       if(data.sessionId === sessionId){
         return;
       }
-      if (data.action==='showModal' && data.modalName==='dice' ){
-        this.showDiceModal = data.modal
+      if (data.action==='showModal' ){
+        if( data.modalName==='dice'){
+            this.showDiceModal = data.modal
+        }else if( data.modalName==='payRent'){
+            this.showPayRentModal = data.modal
+        }
+        
       }
       
     };
@@ -403,6 +408,26 @@ export default {
                 sessionId,
                 action:'showModal',
                 modalName:'dice',
+                modal:newValue
+            }));
+        }catch(e){
+            console.error(e);
+        }
+        if(!newValue){
+            //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
+            this.$refs.map.fetchMapData();
+        }
+    },
+    showPayRentModal(newValue){
+        console.log("newValue:",newValue)
+        //发送websocket给其他玩家。
+        try{
+            const sessionId = localStorage.getItem('sessionId');
+            this.webSocket.send(JSON.stringify(
+            {
+                sessionId,
+                action:'showModal',
+                modalName:'payRent',
                 modal:newValue
             }));
         }catch(e){
