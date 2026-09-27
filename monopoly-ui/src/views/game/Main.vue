@@ -9,7 +9,7 @@
         :playerIndex="currentPlayerIndex"
         @update:show="showDiceModal = $event"
         title="掷骰子">
-        <Dice v-if="showDiceModal||delayCloseModal" :playerIndex="currentPlayerIndex" @diceRolled="handleDiceRolled" @update:delay="delayCloseModal=$event"/>
+        <Dice v-if="showDiceModal" :playerIndex="currentPlayerIndex" @diceRolled="handleDiceRolled" />
     </GModal> 
     <GModal
         :show="showBuyPropertyModal"
@@ -103,7 +103,6 @@ export default {
       showQuestionModal:false,
       showChanceModal:false,
       showSuccessModal:false,
-      delayCloseModal:false,/* 延迟关闭Modal标志 */
       currentPlayerUserId:'',
       messageType:'',
       currentCell:{},
@@ -205,7 +204,9 @@ export default {
         }).catch(error => {
             console.error('移动玩家失败:', error);
         });
-        this.showDiceModal = false;
+        if (this.isYourTurn){//否则就依靠ws消息触发关闭modal
+            this.showDiceModal = false;
+        }
     },
     async onPlayerMoveComplete() {
         // 查询后台，以确认后续操作。
@@ -412,10 +413,6 @@ export default {
             }));
         }catch(e){
             console.error(e);
-        }
-        if(!newValue){
-            //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
-            this.$refs.map.fetchMapData();
         }
     },
     showPayRentModal(newValue){

@@ -13,7 +13,7 @@
 </template>
 <script>
 import { dice,hasRolePermission,getPlayer,getDiceValue } from '@/api/gameApi.js';
-import { sendStartDice } from '@/api/gameWsApi.js';
+//import { sendStartDice } from '@/api/gameWsApi.js';
 import { isValidJSON } from '../../util/jsonUtils'
 
 export default {
@@ -29,6 +29,7 @@ export default {
       dice:6,
       isRolling:false,
       hasPermission:false,
+      sessionId:'',
       webSocket: undefined,
     }
   },
@@ -51,7 +52,7 @@ export default {
         this.isRolling = true;
         limit=7;
         //向后台发送开始掷骰子的消息
-        sendStartDice();
+        this.webSocket.send(JSON.stringify({action:'startDice',message:'开始掷骰子',sessionId:this.sessionId}))
       }
       console.log("limit:",limit);
       if(limit===0){
@@ -60,13 +61,12 @@ export default {
           return;
         }
         this.dice = (await dice());
-        this.$emit('update:delay', true);
         setTimeout(
           ()=>{
             this.isRolling = false;
             //关掉窗口，触发下一步事件
+            this.webSocket.send(JSON.stringify({action:'onCloseModal',message:'即将关闭窗口',sessionId:this.sessionId}))
             this.$emit('diceRolled',this.dice);
-            this.$emit('update:delay', false);
           }
           ,
           1000
@@ -91,46 +91,39 @@ export default {
     //检查当前玩家是否权限操作,如果没有权限操作则创建webSocket
     this.player = await getPlayer(this.playerIndex);
     this.hasPermission = await hasRolePermission();
-    if(!this.hasPermission){
-      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const token = localStorage . getItem ( 'token' );
-      this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/dice?token=${token}`); 
-      this.webSocket.onopen=()=>{
-        console.log('WebSocket connected!');
-      };
-      this.webSocket.onmessage = async (event) => {
-        console.log('Received message:', event.data);
-        if(!isValidJSON(event.data)){
-          return;
-        }
-        const data = JSON.parse(event.data);
-        if (data.action==='startDice' ){
-          this.doDice({ingornPermission:true});
-        } else if( data.action==='diced' ){
-          //掷骰子完成，从后台获取 diceValue 触发下一步事件
-          const data = await getDiceValue()
-          this.dice = data.dice;
-          this.$emit('update:delay', true);
-          setTimeout(
-            ()=>{
-              this.isRolling = false;
-              //关掉窗口，触发下一步事件
-              this.$emit('diceRolled',this.dice);
-              this.$emit('update:delay', false);
-            }
-            ,
-            1000
-          );
-        }
-        
-      };
-      this.webSocket.onclose = () => {
-        console.log('WebSocket closed!');
-      };
-      this.webSocket.onerror = (error) => {
-        console.error('WebSocket error:', error);
-      };
-    }
+    this.sessionId = localStorage.getItem('sessionId');
+
+    //开启socket
+    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const token = localStorage . getItem ( 'token' );
+    this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/dice?token=${token}`); 
+    this.webSocket.onopen=()=>{
+      console.log('WebSocket connected!');
+    };
+    this.webSocket.onmessage = async (event) => {
+      console.log('Received message:', event.data);
+      if(!isValidJSON(event.data)){
+        return;
+      }
+      const data = JSON.parse(event.data);
+      if (data.action==='startDice' ){
+        this.doDice({ingornPermission:true});
+      } else if( data.action==='diced' ){
+        //掷骰子完成，从后台获取 diceValue 触发下一步事件
+        const data = await getDiceValue()
+        this.dice = data.dice;
+        //TODO 播放骰子停止的动画
+      } else if( data.action==='onCloseModal' ){
+        this.$emit('diceRolled',this.dice);
+      }
+      
+    };
+    this.webSocket.onclose = () => {
+      console.log('WebSocket closed!');
+    };
+    this.webSocket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
 
   },
   computed:{
