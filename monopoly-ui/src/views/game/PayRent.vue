@@ -16,8 +16,8 @@
             </div>
         </div>
         <div class="action-buttons">
-            <Button v-if="isBankrupt" size="large" @click="openBankruptModal" >宣布破产</Button>
-            <Button type="primary" :disabled="isBankrupt" size="large" @click="confirmPayment">确认支付</Button>
+            <Button v-if="isBankrupt" :disabled="!hasPermission" size="large" @click="openBankruptModal" >宣布破产</Button>
+            <Button type="primary" :disabled="isBankrupt||!hasPermission" size="large" @click="confirmPayment">确认支付</Button>
         </div>
     </div>
     <CashBoxModal :otherPlayerIndex="owner.index" :yourPlayerIndex="playerIndex" :payAmount="rentAmount" @confirmPay="pay" ref="cashBoxModal" />
@@ -34,7 +34,7 @@ import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
 import Bankrupt from './Bankrupt.vue';
 import GModal from '@/components/Modal.vue';
-import { payRent,getPayRentEvent } from '../../api/gameApi.js'
+import { payRent,getPayRentEvent,hasRolePermission } from '../../api/gameApi.js'
 
 export default {
     name: 'PayRentComponent',
@@ -62,7 +62,8 @@ export default {
     data(){
         return {
             showBankruptModal:false,
-            bankruptPlayerIndexs:[]
+            bankruptPlayerIndexs:[],
+            hasPermission:false,
         }
     },
     async mounted(){
@@ -70,6 +71,7 @@ export default {
         this.payAmount = this.rentAmount;
         const eventInfo = await getPayRentEvent({playerIndex:this.playerIndex});
         this.bankruptPlayerIndexs = eventInfo.bankruptPlayerIndexs
+        this.hasPermission = await hasRolePermission()
     },
     methods: {
         confirmPayment() {

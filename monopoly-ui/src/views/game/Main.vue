@@ -136,6 +136,7 @@ export default {
         if( data.modalName==='dice'){
             this.showDiceModal = data.modal
         }else if( data.modalName==='payRent'){
+            this.$Modal.remove();//
             this.showPayRentModal = data.modal
         }
         

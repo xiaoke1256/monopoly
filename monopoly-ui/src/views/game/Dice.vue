@@ -13,7 +13,6 @@
 </template>
 <script>
 import { dice,hasRolePermission,getPlayer,getDiceValue } from '@/api/gameApi.js';
-//import { sendStartDice } from '@/api/gameWsApi.js';
 import { isValidJSON } from '../../util/jsonUtils'
 
 export default {
