@@ -34,9 +34,9 @@ export default {
     }
   },
   methods:{
-    async doDice({limit=undefined,ingornPermission=false}={limit:undefined,ingornPermission:false}){
+    async doDice({limit=undefined,ignorePermission=false}={limit:undefined,ignorePermission:false}){
       //检查当前玩家是否权限操作
-      if(!ingornPermission && !this.hasPermission){
+      if(!ignorePermission && !this.hasPermission){
         this.$Modal.error(
           {
             title: '没轮到你！',
@@ -78,7 +78,7 @@ export default {
         console.log("(9-limit)*100:",((9-limit)*100));
         setTimeout(
           ()=>{
-            this.doDice({limit:limit-1,ingornPermission})
+            this.doDice({limit:limit-1,ignorePermission})
           }
           ,
           (8-limit)*100
@@ -107,7 +107,7 @@ export default {
       }
       const data = JSON.parse(event.data);
       if (data.action==='startDice' ){
-        this.doDice({ingornPermission:true});
+        this.doDice({ignorePermission:true});
       } else if( data.action==='diced' ){
         //掷骰子完成，从后台获取 diceValue 触发下一步事件
         const data = await getDiceValue()
