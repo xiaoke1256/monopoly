@@ -61,6 +61,7 @@ export default {
             if(this.playerIndex<0){
                 return require('@/assets/abacus.svg')
             }
+            //TODO 要通过数据库获取
             return this.playerIndex === 0 ? require('@/assets/player1.svg') : require('@/assets/player2.png');
         },
         playerName(){
@@ -68,6 +69,7 @@ export default {
             if(this.playerIndex<0){
                 return '柜坊'
             }
+            //TODO 要通过数据库获取
             return this.playerIndex === 0 ? '舞姬' : '大理寺卿';
         }
     }

@@ -3,7 +3,7 @@ import {JWT_SECRET} from '../config/securityConfig.js';
 import Session from '../models/Session.js';
 
 export function getCurrentUser(req){
-    console.log("req.headers:",req.headers);
+    //console.log("req.headers:",req.headers);
     let authHeader = req.headers.authorization;
 
     if (!authHeader && req.query?.token) {

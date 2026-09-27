@@ -16,6 +16,66 @@ const queryCurrentGame = async (req)=> {
     return game;
 }
 
+const createWsHandle = (wsHolder)=>{
+    return  async (ws, req) => {
+
+        console.log("connecting...")
+
+        const game = await queryCurrentGame(req);
+        const gameId = game._id;
+
+        if(wsHolder[gameId]){
+            wsHolder[gameId].push(ws);
+        }else{
+            wsHolder[gameId]=[ws];
+        }
+
+        console.log('ws 连接成功:', gameId);
+        ws.send(`ws 连接成功:${gameId}`);
+
+
+        ws.on('message', (msg) => {
+            console.log('收到页面消息:', msg);
+            try {
+                const response = JSON.parse(msg);
+                if(wsHolder[gameId]){
+                    for(const toWs of wsHolder[gameId]){
+                        if(toWs===ws){
+                            //防止自己发给自己，引起死循环
+                            console.log("跳过自己发给自己。")
+                            continue;
+                        }
+                        toWs.send(msg);
+                    }
+                }
+                
+            } catch (e) {
+                console.error('消息解析失败:', msg, e);
+            }
+
+        });
+
+        ws.on('close', () => {
+            console.log('连接关闭 gameId:', gameId);
+            if (!wsHolder[gameId]){
+                console.error('该ws没有保存');
+                return;
+            }
+            const index = wsHolder[gameId].indexOf(ws);
+            if (index !== -1) {
+                wsHolder[gameId].splice(index, 1);
+            }else{
+                console.error('该ws没有保存');
+                return;
+            }
+            if (wsHolder[gameId].length===0){
+                delete wsHolder[roomNo]
+            }
+            
+        });
+    }
+}
+
 const gameMainWs = {}
 
 export const sendMainWsMsg = (gameId,msg) => {
@@ -26,62 +86,19 @@ export const sendMainWsMsg = (gameId,msg) => {
     }
 }
 
-export const listenMainMsg = async (ws, req) => {
-
-    console.log("connecting...")
-
-    const game = await queryCurrentGame(req);
-    const gameId = game._id;
-
-    if(gameMainWs[gameId]){
-        gameMainWs[gameId].push(ws);
-    }else{
-        gameMainWs[gameId]=[ws];
-    }
-
-    console.log('main ws 连接成功:', gameId);
-    ws.send(`main ws 连接成功:${gameId}`);
-
-
-    ws.on('message', (msg) => {
-        console.log('收到Main页面消息:', msg);
-        try {
-            const response = JSON.parse(msg);
-            if(gameMainWs[gameId]){
-                for(const toWs of gameMainWs[gameId]){
-                    if(toWs===ws){
-                        //防止自己发给自己，引起死循环
-                        console.log("跳过自己发给自己。")
-                        continue;
-                    }
-                    toWs.send(msg);
-                }
-            }
-            
-        } catch (e) {
-            console.error('消息解析失败:', msg, e);
-        }
-
-    });
-
-    ws.on('close', () => {
-        console.log('连接关闭 gameId:', gameId);
-        if (!gameMainWs[gameId]){
-            console.error('该ws没有保存');
-            return;
-        }
-        const index = gameMainWs[gameId].indexOf(ws);
-        if (index !== -1) {
-            gameMainWs[gameId].splice(index, 1);
-        }else{
-            console.error('该ws没有保存');
-            return;
-        }
-        if (gameMainWs[gameId].length===0){
-            delete gameMainWs[roomNo]
-        }
-        
-    });
-}
+export const listenMainMsg = createWsHandle(gameMainWs)
 
 const gameDiceWs = {};
+
+export const sendDiceWsMsg = (gameId,msg) => {
+    if(!gameDiceWs[gameId] ||gameDiceWs[gameId].length==0 ) {
+        console.log("ws未保存");
+    }
+    if (gameDiceWs[gameId]) {
+        for (const ws of gameDiceWs[gameId]){
+            ws.send(msg)
+        }
+    }
+}
+
+export const listenDiceMsg = createWsHandle(gameDiceWs)

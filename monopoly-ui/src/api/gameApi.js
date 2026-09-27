@@ -330,3 +330,24 @@ export const getFinalPlayer = async ()=>{
         throw error;
     }
 }
+
+export const hasRolePermission = async ()=>{
+    try {
+        const response = await axios.get(`/game/hasRolePermission`);
+        return response.data.hasPermission;
+    } catch (error) {
+        console.error('Error get role permission for message:', error);
+        throw error;
+    }
+}     
+
+export const getPlayer = async (playerIndex)=>{
+    try {
+        const response = await axios.get(`/game/player/${playerIndex}`);
+        return response.data?.player;
+    } catch (error) {
+        console.error('Error get player info for message:', error);
+        throw error;
+    }
+}     
+

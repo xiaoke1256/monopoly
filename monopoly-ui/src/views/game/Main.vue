@@ -9,7 +9,7 @@
         :playerIndex="currentPlayerIndex"
         @update:show="showDiceModal = $event"
         title="掷骰子">
-        <Dice @diceRolled="handleDiceRolled"/>
+        <Dice v-if="showDiceModal||delayCloseModal" :playerIndex="currentPlayerIndex" @diceRolled="handleDiceRolled" @update:delay="delayCloseModal=$event"/>
     </GModal> 
     <GModal
         :show="showBuyPropertyModal"
@@ -103,6 +103,7 @@ export default {
       showQuestionModal:false,
       showChanceModal:false,
       showSuccessModal:false,
+      delayCloseModal:false,/* 延迟关闭Modal标志 */
       currentPlayerUserId:'',
       messageType:'',
       currentCell:{},
@@ -119,7 +120,6 @@ export default {
     const sessionId = localStorage.getItem('sessionId');
     const token = localStorage . getItem ( 'token' );
     this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/main?token=${token}`); 
-    console.log("webSocket created !",`${protocol}//${location.host}/ws/game/main`);
     this.webSocket.onopen=()=>{
       console.log('WebSocket connected!');
     };
@@ -397,14 +397,20 @@ export default {
         console.log("newValue:",newValue)
         //发送websocket给其他玩家。
         try{
+            const sessionId = localStorage.getItem('sessionId');
             this.webSocket.send(JSON.stringify(
             {
+                sessionId,
                 action:'showModal',
                 modalName:'dice',
                 modal:newValue
             }));
         }catch(e){
             console.error(e);
+        }
+        if(!newValue){
+            //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
+            this.$refs.map.fetchMapData();
         }
     }
   }

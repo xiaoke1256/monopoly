@@ -3,7 +3,10 @@ import {
     acceptPlyerApply,
     acceptInviterNotice
 } from './ws/gameManageWs.js'
-import { listenMainMsg } from "./ws/gameWs.js";
+import { 
+    listenMainMsg,
+    listenDiceMsg
+} from "./ws/gameWs.js";
 
 export function initWebSocket(app){
     app.ws('/ws',(ws, req)=>{
@@ -13,4 +16,6 @@ export function initWebSocket(app){
     app.ws('/ws/gm/invitee',acceptInviterNotice);
     
     app.ws('/ws/game/main',listenMainMsg);
+    app.ws('/ws/game/dice',listenDiceMsg);
+    
 }

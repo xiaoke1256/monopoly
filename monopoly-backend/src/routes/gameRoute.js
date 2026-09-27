@@ -27,10 +27,14 @@ import { dice,
     cancelUpgradePropertyAndEndTurn,
     getBankruptInfo,
     bankrupt,
-    getFinalPlayer
+    getFinalPlayer,
+    hasRoleOperPermission,
+    getPlayerInfo
  } from '../controllers/gameController.js';
 
-import { sendMsgToMain } from '../controllers/gameWsController.js';
+import { sendMsgToMain,
+    sendStartDiceMsg
+ } from '../controllers/gameWsController.js';
 
 const gameRouter = new Router();   
 
@@ -38,7 +42,10 @@ gameRouter.post('/dice', dice);
 gameRouter.get('/current', getCurrentGame);
 gameRouter.get('/player-status', getPlayerStatus);
 gameRouter.get('/dice-value', getCurrentDice);
+gameRouter.get('/hasRolePermission', hasRoleOperPermission);
+
 gameRouter.get('/players',getPlayers);
+gameRouter.get('/player/:playerIndex',getPlayerInfo);
 gameRouter.post('/player/:playerIndex/move', movePlayer);
 gameRouter.get('/player/:playerIndex/arrived', onArrived);
 gameRouter.post('/player/:playerIndex/payForProperty', payForPropertyAndEndTurn);
@@ -66,6 +73,7 @@ gameRouter.get('/player/final', getFinalPlayer);
 
 //以下与 websocket有关
 gameRouter.post('/ws/sendToMain', sendMsgToMain);
+gameRouter.post('/ws/sendStartDice', sendStartDiceMsg);
 
 
 export default gameRouter;

@@ -12,21 +12,38 @@
     </div>
 </template>
 <script>
-import { dice } from '@/api/gameApi.js';
+import { dice,hasRolePermission,getPlayer,getDiceValue } from '@/api/gameApi.js';
+import { sendStartDice } from '@/api/gameWsApi.js';
+import { isValidJSON } from '../../util/jsonUtils'
 
 export default {
   name: 'DiceComponent ',
   props: {
+    playerIndex:{
+      type: Number,
+      default: -1
+    }
   },
   data(){
     return {
       dice:6,
-      isRolling:false
+      isRolling:false,
+      hasPermission:false,
+      webSocket: undefined,
     }
   },
   methods:{
-    async doDice(limit){
-      //TODO 检查当前玩家是否权限操作
+    async doDice({limit=undefined,ingornPermission=false}={limit:undefined,ingornPermission:false}){
+      //检查当前玩家是否权限操作
+      if(!ingornPermission && !this.hasPermission){
+        this.$Modal.error(
+          {
+            title: '没轮到你！',
+            content: `现在请${this.playerName}掷骰子。`
+          }
+        );
+        return;
+      }
       if(!limit && limit!==0){
         if(this.isRolling){
           return;
@@ -34,16 +51,22 @@ export default {
         this.isRolling = true;
         limit=7;
         //向后台发送开始掷骰子的消息
+        sendStartDice();
       }
       console.log("limit:",limit);
       if(limit===0){
-        //TODO 如果无权限操作则等待 WebSocket触发。
+        //如果无权限操作则等待 WebSocket触发。
+        if(!this.hasPermission){
+          return;
+        }
         this.dice = (await dice());
+        this.$emit('update:delay', true);
         setTimeout(
           ()=>{
             this.isRolling = false;
             //关掉窗口，触发下一步事件
             this.$emit('diceRolled',this.dice);
+            this.$emit('update:delay', false);
           }
           ,
           1000
@@ -55,7 +78,7 @@ export default {
         console.log("(9-limit)*100:",((9-limit)*100));
         setTimeout(
           ()=>{
-            this.doDice(limit-1)
+            this.doDice({limit:limit-1,ingornPermission})
           }
           ,
           (8-limit)*100
@@ -63,9 +86,57 @@ export default {
       });
     }
   },
-  mounted() {
+  async mounted() {
     this.dice=Math.ceil(Math.random()*6);
-    //TODO 检查当前玩家是否权限操作,如果没有权限操作则创建webSocket
+    //检查当前玩家是否权限操作,如果没有权限操作则创建webSocket
+    this.player = await getPlayer(this.playerIndex);
+    this.hasPermission = await hasRolePermission();
+    if(!this.hasPermission){
+      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const token = localStorage . getItem ( 'token' );
+      this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/dice?token=${token}`); 
+      this.webSocket.onopen=()=>{
+        console.log('WebSocket connected!');
+      };
+      this.webSocket.onmessage = async (event) => {
+        console.log('Received message:', event.data);
+        if(!isValidJSON(event.data)){
+          return;
+        }
+        const data = JSON.parse(event.data);
+        if (data.action==='startDice' ){
+          this.doDice({ingornPermission:true});
+        } else if( data.action==='diced' ){
+          //掷骰子完成，从后台获取 diceValue 触发下一步事件
+          const data = await getDiceValue()
+          this.dice = data.dice;
+          this.$emit('update:delay', true);
+          setTimeout(
+            ()=>{
+              this.isRolling = false;
+              //关掉窗口，触发下一步事件
+              this.$emit('diceRolled',this.dice);
+              this.$emit('update:delay', false);
+            }
+            ,
+            1000
+          );
+        }
+        
+      };
+      this.webSocket.onclose = () => {
+        console.log('WebSocket closed!');
+      };
+      this.webSocket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+    }
+
+  },
+  computed:{
+    playerName(){
+      return this.player.name
+    }
   }
 }
 </script>

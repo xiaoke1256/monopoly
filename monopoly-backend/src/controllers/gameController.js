@@ -1,8 +1,9 @@
 import Game from '../models/Game.js';
-import Map from '../models/Map.js';
 import Question from '../models/Question.js';
 import Chance from '../models/Chance.js';
-import { getCurrentSession } from "../utils/security.js";
+import { getCurrentSession,getCurrentUser } from "../utils/security.js";
+import { sleep } from "../utils/concurrency.js";
+import { sendDiceWsMsg } from "../ws/gameWs.js";
 
 const getCurrentMap = async (req, res) => {
     try {
@@ -20,6 +21,8 @@ const getCurrentMap = async (req, res) => {
 
 const movePlayer = async (req, res ) => {
     try{
+        const userInfo = getCurrentUser(req);
+        const userId = userInfo.id;
         req.params.playerIndex = parseInt(req.params.playerIndex);
         const {playerIndex} = req.params;
         if(playerIndex<0 || playerIndex>=4){
@@ -33,14 +36,28 @@ const movePlayer = async (req, res ) => {
             throw new Error('Player not found');
         }  
 
-        player.hasPassedGo = player.position + steps >= game.cells.length;
-        player.position = (player.position + steps) % game.cells.length;
-        if('after-dice' === game.playerStatus) {
+        console.log("game.playerStatus:",game.playerStatus,"player.userId:",player.userId,"userId:",userId);
+        if('after-dice' === game.playerStatus && String(player.userId) === String(userId) ) {
+            player.hasPassedGo = player.position + steps >= game.cells.length;
+            player.position = (player.position + steps) % game.cells.length;
+        
             await generateEvents(game);
             game.playerStatus = 'arrive-cell';
             await game.save();
+        }else if ( 'after-dice' === game.playerStatus){
+            //休眠一段时间，再获取 playerStatus
+            let counter = 100
+            while(counter>0){
+                await sleep(100);
+                const game = await queryCurrentGame(req);
+                if (game.playerStatus === 'arrive-cell'){
+                    const player = game.players[playerIndex];
+                    return res.json({ newPosition: player.position });
+                }
+                counter--;
+            }
+            throw new Error("长时间没有收到move的反馈");
         }
-        game.save();
         return res.json({ newPosition: player.position });
     } catch (error) {
         console.error('Error moving player:', error);
@@ -73,9 +90,30 @@ const getCurrentGame = async (req, res) => {
     }
 };
 
+/**
+ * 当前用是否有当前角色的操作权限？
+ */
+const hasRoleOperPermission = async (req, res) => {
+    const userInfo = getCurrentUser(req)
+    const game = await queryCurrentGame(req);
+    const currentPlayerIndex = game.currentPlayerIndex;
+    const currentPlayer = game.players[currentPlayerIndex];
+    const userId = userInfo.id;
+    console.log("userId:",String(userId),"currentPlayer.userId:",String(currentPlayer.userId));
+    return res.json({hasPermission:(String(currentPlayer.userId) === String(userId))});
+}
+
 const getPlayers = async (req, res) => {
     const game = await queryCurrentGame(req);
     return res.json({players:game.players});
+}
+
+const getPlayerInfo = async (req, res) => {
+    req.params.playerIndex = parseInt(req.params.playerIndex);
+    const {playerIndex} = req.params;
+    const game = await queryCurrentGame(req);
+    const player = game.players[playerIndex];
+    return res.json({player});
 }
 
 const getCurrentDice = async(req, res)=> {
@@ -87,12 +125,17 @@ const getCurrentDice = async(req, res)=> {
 }
 
 const dice = async (req, res)=>{
+    const session = await getCurrentSession(req)
+    const sessionId = session.sessionId;
     const diceResult=Math.ceil(Math.random()*6);
     const game = await queryCurrentGame(req);
     if(game){
         game.currentDice = diceResult;
         game.playerStatus = 'after-dice';
         await game.save();
+        //发送消息给其他玩家
+        const msg = JSON.stringify({action:'diced',message:'掷骰子完成',sessionId});
+        sendDiceWsMsg(game._id,msg)
     }
     return res.json({ dice:diceResult });
 }
@@ -1082,6 +1125,8 @@ const getFinalPlayer = async (req, res)=>{
 export {
     dice,
     getCurrentGame,
+    hasRoleOperPermission,
+    getPlayerInfo,
     getCurrentDice,
     movePlayer,
     getPlayers,
