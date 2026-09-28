@@ -19,6 +19,7 @@ import { getPlayerQuestion,answerQuestion } from '@/api/gameApi.js';
 
 export default {
   name: 'QuestionComponent',
+  emits: ['close'],
   components: {
     Button,CashBoxModal
   },

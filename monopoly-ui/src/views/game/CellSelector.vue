@@ -23,6 +23,7 @@ import {imageMap} from '../../util/imagesMap.js';
 
 export default {
     name: 'CellSelectorComponent',
+    emits: ['selectd'],
     components: {
         //Card
     },

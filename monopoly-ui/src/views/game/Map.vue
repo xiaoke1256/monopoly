@@ -108,6 +108,7 @@ import { getCurrentGame } from '@/api/gameApi.js';
 
 export default {
     name: 'MapComponent',
+    emits: ['game-loaded'],
     props: {
     },
     data(){

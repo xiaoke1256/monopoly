@@ -38,6 +38,7 @@ import { payRent,getPayRentEvent,hasRolePermission } from '../../api/gameApi.js'
 
 export default {
     name: 'PayRentComponent',
+    emits: ['confirm', 'bankrupted'],
     components: {
         Button,CashBoxModal,Bankrupt,GModal
     },

@@ -7,7 +7,7 @@
     <div class="cash-box-container">
         <div class="box-row">
             <div style="width: 10%;">
-                <PlayerAvatar width="100%" show-name="true" :playerIndex="exchangeing?-1:otherPlayerIndex"></PlayerAvatar>
+                <PlayerAvatar width="100%" :show-name="true" :playerIndex="exchangeing?-1:otherPlayerIndex"></PlayerAvatar>
                 <div style="text-align: center;">({{ otherAmount }}文)</div>
             </div>
             <div id="otherBox" ref="otherBox" class="cash-box" >
@@ -42,7 +42,7 @@
         </div>
         <div class="box-row">
             <div style="width: 10%;">
-                <PlayerAvatar width="100%" show-name="true" :playerIndex="yourPlayerIndex"></PlayerAvatar>
+                <PlayerAvatar width="100%" :show-name="true" :playerIndex="yourPlayerIndex"></PlayerAvatar>
                 <div style="text-align: center;">({{ yourAmount }}文)</div>
             </div>
             <div id="yourBox" ref="yourBox" class="cash-box" >
@@ -80,6 +80,7 @@ import { getPlayerMoney } from '../../api/gameApi.js';
 
 export default {
     name: 'CashBoxComponent',
+    emits: ['exchangeChange'],
     components: {PlayerAvatar},
     props: {
         /*支付金额，正数表示你想别人支付的金额，负数表示你想从别人那里收取的金额*/

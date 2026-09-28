@@ -22,6 +22,7 @@ import { payForSecurityCompany,cancelSecurityCompany} from '../../api/gameApi.js
 
 export default {
     name: 'SecurityCompanyComponent',
+    emits: ['confirm', 'close'],
     components: {
         Button,CashBoxModal,CellSelector
     },

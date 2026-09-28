@@ -16,10 +16,11 @@ const queryCurrentGame = async (req)=> {
     return game;
 }
 
-const createWsHandle = (wsHolder)=>{
+const createWsHandle = (wsHolder,name)=>{
+    const wsName = name?name:'gameWebSocket';
     return  async (ws, req) => {
 
-        console.log("connecting...")
+        console.log(`${wsName} is connecting...`)
 
         const game = await queryCurrentGame(req);
         const gameId = game._id;
@@ -30,8 +31,8 @@ const createWsHandle = (wsHolder)=>{
             wsHolder[gameId]=[ws];
         }
 
-        console.log('ws 连接成功:', gameId);
-        ws.send(`ws 连接成功:${gameId}`);
+        console.log(`${wsName} 连接成功:`, gameId);
+        ws.send(`${wsName} 连接成功:${gameId}`);
 
 
         ws.on('message', (msg) => {
@@ -42,21 +43,22 @@ const createWsHandle = (wsHolder)=>{
                     for(const toWs of wsHolder[gameId]){
                         if(toWs===ws){
                             //防止自己发给自己，引起死循环
-                            console.log("跳过自己发给自己。")
+                            console.log(`${wsName} 跳过自己发给自己。`)
                             continue;
                         }
                         toWs.send(msg);
+                        console.log(`${wsName} 发送了消息`)
                     }
                 }
                 
             } catch (e) {
-                console.error('消息解析失败:', msg, e);
+                console.error(`${wsName}消息解析失败:`, msg, e);
             }
 
         });
 
         ws.on('close', () => {
-            console.log('连接关闭 gameId:', gameId);
+            console.log(`${wsName} 连接关闭 gameId:`, gameId);
             if (!wsHolder[gameId]){
                 console.error('该ws没有保存');
                 return;
@@ -86,7 +88,7 @@ export const sendMainWsMsg = (gameId,msg) => {
     }
 }
 
-export const listenMainMsg = createWsHandle(gameMainWs)
+export const listenMainMsg = createWsHandle(gameMainWs,'mainWs')
 
 const gameDiceWs = {};
 
@@ -101,4 +103,8 @@ export const sendDiceWsMsg = (gameId,msg) => {
     }
 }
 
-export const listenDiceMsg = createWsHandle(gameDiceWs)
+export const listenDiceMsg = createWsHandle(gameDiceWs,'diceWs')
+
+const gameCashBoxModalWs = {};
+
+export const listenCashBoxModalMsg = createWsHandle(gameCashBoxModalWs,'cashBoxModalWs')

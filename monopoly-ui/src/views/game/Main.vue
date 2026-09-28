@@ -21,7 +21,7 @@
         :show="showUpgradePropertyModal"
         :playerIndex="currentPlayerIndex"
         title="升级店铺">
-        <BuyProperty :cell="currentCell" :playerIndex="currentPlayerIndex" :forUpgrade="true" @confirm="afterPayForProperty" @cancel="afterCancelForProperty" />
+        <BuyProperty v-if="showUpgradePropertyModal" :cell="currentCell" :playerIndex="currentPlayerIndex" :forUpgrade="true" @confirm="afterPayForProperty" @cancel="afterCancelForProperty" />
     </GModal> 
     <GModal
         :show="showPayRentModal"

@@ -24,7 +24,7 @@
             <Button size="large" @click="cancelPurchase">{{ forUpgrade ? '取消升级' : '取消购买' }}</Button>
         </div>
     </div>
-    <CashBoxModal otherPlayerIndex="-1" :yourPlayerIndex="playerIndex" :payAmount="forUpgrade ? cell.upgradeCost : cell.price" @confirmPay="pay" ref="cashBoxModal" />
+    <CashBoxModal :otherPlayerIndex="-1" :yourPlayerIndex="playerIndex" :payAmount="forUpgrade ? cell.upgradeCost : cell.price" @confirmPay="pay" ref="cashBoxModal" />
 </template>
 <script>
 import { Button } from 'view-ui-plus';
@@ -32,6 +32,7 @@ import CashBoxModal from './CashBoxModal.vue';
 import { payForProperty , payForUpgradeProperty , cancelForProperty , cancelUpgradeProperty } from '../../api/gameApi.js'
 export default {
     name: 'BuyPropertyComponent',
+    emits: ['confirm', 'cancel'],
     components: {
         Button,CashBoxModal
     },

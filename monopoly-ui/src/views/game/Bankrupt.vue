@@ -10,6 +10,7 @@ import { Button } from 'view-ui-plus';
 import { bankrupt,getBankruptInfo } from '@/api/gameApi.js';
 export default {
     name: 'BankruptComponent',
+    emits: ['close'],
     components: {
         Button
     },

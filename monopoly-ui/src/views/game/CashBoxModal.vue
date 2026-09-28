@@ -23,9 +23,11 @@
 <script>
 import { Modal, Button } from 'view-ui-plus';
 import CashBox from './CashBox.vue';
-import { exchange } from '../../api/gameApi.js'
+import { exchange,hasRolePermission } from '../../api/gameApi.js'
+import { isValidJSON } from '../../util/jsonUtils'
 export default {
   name: 'MainIndex',
+  emits: ['confirmPay'],
   components: {
     Modal, Button, CashBox
   },
@@ -48,6 +50,8 @@ export default {
       showPayModal: false,
       payModalLoading: false,
       exchangeing:false,
+      webSocket: undefined,
+      hasPermission:false,
     };
   },
   methods:{
@@ -103,6 +107,68 @@ export default {
     },
     onExchangeingChange(exchangeing){
         this.exchangeing = exchangeing;
+    }
+  },
+  async mounted(){
+    this.hasPermission = await hasRolePermission();
+    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const token = localStorage . getItem ( 'token' );
+    this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/cashBoxModal?token=${token}`);
+    this.webSocket.onopen=()=>{
+      console.log('WebSocket connected!');
+    };
+    this.webSocket.onmessage = async (event) => {
+      console.log('Received message:', event.data);
+      if(!isValidJSON(event.data)){
+        return;
+      }
+      const data = JSON.parse(event.data);
+      const sessionId = localStorage.getItem('sessionId');
+      if (data.sessionId === sessionId) {
+        console.warn('收到了自己发给自己的消息');
+        return;
+      }
+      if (data.action==='showModal' ){
+        if(this.showPayModal!==data.modal){
+            this.showPayModal = data.modal
+        }
+        
+      }
+      
+    };
+    this.webSocket.onclose = () => {
+      console.log('WebSocket closed!');
+    };
+    this.webSocket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+  },
+  unmounted(){
+    try{
+        this.webSocket.close();
+    }catch(e){
+        console.error('error!',e);
+    }
+  },
+  watch:{
+    showPayModal(nweValue,oldValue){
+        console.log("newValue:",nweValue,"oldValue:",oldValue)
+        if(!this.hasPermission){
+            return;
+        }
+        //发送websocket给其他玩家。
+        try{
+            const sessionId = localStorage.getItem('sessionId');
+            this.webSocket.send(JSON.stringify(
+            {
+                sessionId,
+                action:'showModal',
+                modal:nweValue
+            }));
+            console.log("发了消息了")
+        }catch(e){
+            console.error(e);
+        }
     }
   }
   

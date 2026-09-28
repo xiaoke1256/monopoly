@@ -17,6 +17,7 @@ import { isValidJSON } from '../../util/jsonUtils'
 
 export default {
   name: 'DiceComponent ',
+  emits: ['diceRolled'],
   props: {
     playerIndex:{
       type: Number,
