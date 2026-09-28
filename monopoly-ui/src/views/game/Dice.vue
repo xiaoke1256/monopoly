@@ -27,21 +27,24 @@ export default {
     return {
       dice:6,
       isRolling:false,
-      hasPermission:false,
       sessionId:'',
       webSocket: undefined,
+      modalIsShowing: false,
     }
   },
   methods:{
     async doDice({limit=undefined,ignorePermission=false}={limit:undefined,ignorePermission:false}){
+      const hasPermission = await hasRolePermission();
       //检查当前玩家是否权限操作
-      if(!ignorePermission && !this.hasPermission){
+      if(!ignorePermission && !hasPermission){
         this.$Modal.error(
           {
             title: '没轮到你！',
-            content: `现在请${this.playerName}掷骰子。`
+            content: `现在请${this.playerName}掷骰子。`,
+            onOk: ()=>{this.modalIsShowing=false;}
           }
         );
+        this.modalIsShowing = true;
         return;
       }
       if(!limit && limit!==0){
@@ -51,12 +54,14 @@ export default {
         this.isRolling = true;
         limit=7;
         //向后台发送开始掷骰子的消息
-        this.webSocket.send(JSON.stringify({action:'startDice',message:'开始掷骰子',sessionId:this.sessionId}))
+        if(hasPermission){
+          this.webSocket.send(JSON.stringify({action:'startDice',message:'开始掷骰子',sessionId:this.sessionId}))
+        }
       }
       console.log("limit:",limit);
       if(limit===0){
         //如果无权限操作则等待 WebSocket触发。
-        if(!this.hasPermission){
+        if(!hasPermission){
           return;
         }
         this.dice = (await dice());
@@ -89,7 +94,6 @@ export default {
     this.dice=Math.ceil(Math.random()*6);
     //检查当前玩家是否权限操作,如果没有权限操作则创建webSocket
     this.player = await getPlayer(this.playerIndex);
-    this.hasPermission = await hasRolePermission();
     this.sessionId = localStorage.getItem('sessionId');
 
     //开启socket
@@ -124,6 +128,17 @@ export default {
       console.error('WebSocket error:', error);
     };
 
+  },
+  unmounted(){
+    try{
+      this.webSocket.close();
+    }catch(e){
+      console.error('WebSocket close error:', e);
+    }
+    if(this.modalIsShowing){
+      this.$Modal.remove()
+      this.modalIsShowing = false;
+    }
   },
   computed:{
     playerName(){

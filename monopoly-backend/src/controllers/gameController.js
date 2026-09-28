@@ -29,8 +29,8 @@ const movePlayer = async (req, res ) => {
             throw new Error('Invalid player index');
         }
         console.log(`Moving player at index ${playerIndex}`);
-        const { steps } = req.body;
         const game = await queryCurrentGame(req);
+        const steps = game.currentDice;
         const player = game.players[playerIndex];
         if (!player) {
             throw new Error('Player not found');
@@ -42,6 +42,7 @@ const movePlayer = async (req, res ) => {
             player.position = (player.position + steps) % game.cells.length;
         
             await generateEvents(game);
+            game.currentDice = 0;
             game.playerStatus = 'arrive-cell';
             await game.save();
         }else if ( 'after-dice' === game.playerStatus){
@@ -130,6 +131,10 @@ const dice = async (req, res)=>{
     const diceResult=Math.ceil(Math.random()*6);
     const game = await queryCurrentGame(req);
     if(game){
+        //检查是否有权限
+        if(game.playerStatus !== 'before-dice'){
+            return res.status(400).json({ success:false,message:'游戏状态错误' });
+        }
         game.currentDice = diceResult;
         game.playerStatus = 'after-dice';
         await game.save();
