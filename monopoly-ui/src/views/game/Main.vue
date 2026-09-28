@@ -218,12 +218,14 @@ export default {
             console.log('玩家可以购买地产');
             // 打开购买地产的弹窗
             this.currentCell = data.cell;
+            //TODO 打开窗口之前检查一下 isYourTurn
             this.showBuyPropertyModal = true;
         }else if ('upgradeProperty'===action) {
             // 处理升级地产逻辑
             console.log('玩家可以升级地产');   
             // 打开升级地产的弹窗
             this.currentCell = data.cell;
+            //TODO 打开窗口之前检查一下 isYourTurn
             this.showUpgradePropertyModal = true;
 
         }else if('payRent'===action){
@@ -232,22 +234,28 @@ export default {
             this.rentOwner = data.owner;
             console.log("this.rentOwner:",this.rentOwner);
             this.rentAmount = data.rentAmount;
+            //TODO 打开窗口之前检查一下 isYourTurn
             this.showPayRentModal = true;
         }else if('passGo'===action){
             console.log('玩家经过起点，获得奖励:', data.reward);
+            //TODO 打开窗口之前检查一下 isYourTurn
             this.showMessageModal = true;
         }else if('getSecurityCompany'===action){
             console.log('进入镖局:', data);
+            //TODO 打开窗口之前检查一下 isYourTurn
             this.showSecurityCompanyModal = true;
         }else if('showMessage'===action){
             console.log('显示消息:', data);
+            //TODO 打开窗口之前检查一下 isYourTurn
             this.showMessageModal = true;
             this.messageType = data.messageType
         }else if('question'===action){
             console.log('玩家抽取问答卡:', data);
+            //TODO 打开窗口之前检查一下 isYourTurn
             this.showQuestionModal = true;
         }else if('getChance'===action){
             console.log('玩家抽取机会卡:', data);
+            //TODO 打开窗口之前检查一下 isYourTurn
             this.showChanceModal = true;
         }else if('nothing'===action){
             console.log('玩家无需操作，直接结束回合');
