@@ -513,7 +513,7 @@ const nextPlayerIndex = (game)=>{
 
 const endTurn = async (req, res) => {
     const game = await queryCurrentGame(req); 
-    if (game.playerStatus == 'before-dice') {
+    if (game.playerStatus == 'before-dice' || game.playerStatus == 'after-dice' ) {
         return res.status(400).json({ message: '状态错误，仅completed状态才可以调用endTurn.',playerStatus:game.playerStatus });
     }
     //  'arrive-cell' 表示刚到达cell还没经行相关业务处理
