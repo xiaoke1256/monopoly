@@ -76,7 +76,8 @@
 <script>
 import { animate } from 'animejs';
 import PlayerAvatar from '@/components/PlayerAvatar.vue';
-import { getPlayerMoney } from '../../api/gameApi.js';
+import { getPlayerMoney,hasRolePermission,getPlayer } from '../../api/gameApi.js';
+import { isValidJSON } from '../../util/jsonUtils'
 
 export default {
     name: 'CashBoxComponent',
@@ -140,11 +141,73 @@ export default {
                 }
             },
             exchangeing:false,
+            yourName:'',
+            hasPermission:false,
+            webSocket: undefined,
         }
     },
-    mounted(){
+    async mounted(){
         console.log("mounted.....");
+        this.hasPermission = await hasRolePermission();
+        const player = await getPlayer(this.yourPlayerIndex);
+        this.yourName = player.name;
+        const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const token = localStorage . getItem ( 'token' );
+        this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/cashBox?token=${token}`);
+        this.webSocket.onopen=()=>{
+            console.log('WebSocket connected!');
+        };
+        this.webSocket.onmessage = async (event) => {
+            console.log('Received message:', event.data);
+            if(this.hasPermission){
+                return;
+            }
+            if(!isValidJSON(event.data)){
+                return;
+            }
+            const data = JSON.parse(event.data);
+            const sessionId = localStorage.getItem('sessionId');
+            if (data.sessionId === sessionId) {
+                console.warn('收到了自己发给自己的消息');
+                return;
+            }
+            if (data.action==='selectMoney' ){
+                const {denomination,boxName,isUnSelect} = data;
+                let box = this.other;
+                if(boxName==='you'){
+                    box = this.you;
+                }
+                const boxSelect = box.selected;
+                if(!isUnSelect){
+                    boxSelect[`cash${denomination}`] ++;
+                }else{
+                    boxSelect[`cash${denomination}`] --;
+                }
+            }else if (data.action==='playAnimation') {
+                const {type} = data;
+                if (type === 'pay'){
+                    this.pay(()=>{console.log('pay 动画播放完成')});
+                } else if(type === 'exchange'){
+                    this.exchange(()=>{console.log('exchange 动画播放完成')});
+                }
+
+            }
+            
+        };
+        this.webSocket.onclose = () => {
+            console.log('WebSocket closed!');
+        };
+        this.webSocket.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
         this.loadMoney();
+    },
+    unmounted(){
+        try{
+            this.webSocket.close();
+        }catch(e){
+            console.error('error!',e);
+        }
     },
     methods:{
         loadMoney(){
@@ -370,6 +433,10 @@ export default {
             this.selectYourBox(denomination,currentIndex,maxIndex,true);
         },
         selectBox(denomination,currentIndex,isUnSelect=false,maxIndex,boxName){
+            if(!this.hasPermission){
+                this.$Message.error(`没轮到你，现在请${this.yourName}操作。`);
+                return;
+            }
             if(!["other","you"].includes(boxName)){
                 throw new Error("boxName 的取值范围只能是：'other','you'");
             }
@@ -396,7 +463,16 @@ export default {
             }else{
                 boxSelect[`cash${denomination}`] --;
             }
-
+            //发送ws消息
+            const sessionId = localStorage.getItem('sessionId');
+            this.webSocket.send(JSON.stringify(
+            {
+                sessionId,
+                action:'selectMoney',
+                denomination,
+                boxName,
+                isUnSelect
+            }));
         },
         selectOtherBox(denomination,currentIndex,isUnSelect=false,maxIndex){
             this.selectBox(denomination,currentIndex,isUnSelect,maxIndex,'other')
@@ -435,6 +511,14 @@ export default {
             }
 
             this.$nextTick(()=>{
+                                //发送消息
+                const sessionId = localStorage.getItem('sessionId');
+                this.webSocket.send(JSON.stringify(
+                {
+                    sessionId,
+                    action:'playAnimation',
+                    type:'exchange'
+                }));
                 //把selected的货币记录下来，后面将作为callback的参数传递给父组件
                 const yourSelectedMoney = {...this.you.selected};
                 const otherSelectedMoney = {...this.other.selected};
@@ -472,6 +556,14 @@ export default {
             }
             
             this.$nextTick(()=>{
+                //发送消息
+                const sessionId = localStorage.getItem('sessionId');
+                this.webSocket.send(JSON.stringify(
+                {
+                    sessionId,
+                    action:'playAnimation',
+                    type:'pay'
+                }));
                 //把selected的货币记录下来，后面将作为callback的参数传递给父组件
                 const yourSelectedMoney = {...this.you.selected};
                 const otherSelectedMoney = {...this.other.selected};
@@ -495,7 +587,7 @@ export default {
                 fromBox = 'yourBox';
                 toBox = 'otherBox';
             }
-            console.log("this.$refs[fromBox]:",this.$refs[fromBox])
+            console.log("fromBox:",fromBox,"this.$refs[fromBox]:",this.$refs[fromBox])
             const cashes = this.$refs[fromBox].getElementsByClassName('selected');
             console.log("cashes:",cashes)
             if(cashes && cashes.length>0){
@@ -554,7 +646,7 @@ export default {
                                 this.$nextTick(()=>{
                                     this.payFrom('you',callback);
                                 });
-                            }else if(callback){
+                            }else if(this.hasPermission && callback){
                                 this.$nextTick(()=>{
                                     callback({ isSuccess: true });
                                 });

@@ -108,3 +108,7 @@ export const listenDiceMsg = createWsHandle(gameDiceWs,'diceWs')
 const gameCashBoxModalWs = {};
 
 export const listenCashBoxModalMsg = createWsHandle(gameCashBoxModalWs,'cashBoxModalWs')
+
+const gameCashBoxWs = {};
+
+export const listenCashBoxMsg = createWsHandle(gameCashBoxWs,'cashBoxWs')

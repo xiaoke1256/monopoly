@@ -14,8 +14,8 @@
         </div>
         <template #footer>
             <div style="text-align:center;">
-                <Button v-if="exchangeing" :loading="payModalLoading" type="primary" size="large" @click="exchange">兑换</Button>
-                <Button v-if="!exchangeing" :loading="payModalLoading" type="primary" size="large" @click="pay">确认</Button>
+                <Button v-if="exchangeing" :disabled="!hasPermission" :loading="payModalLoading" type="primary" size="large" @click="exchange">兑换</Button>
+                <Button v-if="!exchangeing" :disabled="!hasPermission" :loading="payModalLoading" type="primary" size="large" @click="pay">确认</Button>
             </div>
         </template>
     </Modal> 
