@@ -71,7 +71,7 @@ const createWsHandle = (wsHolder,name)=>{
                 return;
             }
             if (wsHolder[gameId].length===0){
-                delete wsHolder[roomNo]
+                delete wsHolder[gameId]
             }
             
         });
