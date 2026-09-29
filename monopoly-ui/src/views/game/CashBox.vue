@@ -588,6 +588,10 @@ export default {
                 toBox = 'otherBox';
             }
             console.log("fromBox:",fromBox,"this.$refs[fromBox]:",this.$refs[fromBox])
+            if(!this.$refs[fromBox] || !this.$refs[toBox] ){
+                console.error(`${fromBox}已经不存在了。`);
+                return;
+            }
             const cashes = this.$refs[fromBox].getElementsByClassName('selected');
             console.log("cashes:",cashes)
             if(cashes && cashes.length>0){

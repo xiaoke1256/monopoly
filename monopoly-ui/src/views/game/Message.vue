@@ -8,10 +8,10 @@
     </div>
   </div>
   <div class="action-buttons">
-    <Button v-if="isBankrupt" size="large" @click="openBankruptModal" >宣布破产</Button>
-    <Button v-if="payAmount > 0" :disabled="isBankrupt" type="primary" size="large" @click="confirmPayment">确认支付</Button>
-    <Button v-if="payAmount < 0 && otherPlayerIndex < 0" type="primary" size="large" @click="confirmPayment">领取</Button>
-    <Button v-if="!payAmount " type="primary" size="large" @click="confirmMsg">确定</Button>
+    <Button v-if="isBankrupt" :disabled="!hasPermission" size="large" @click="openBankruptModal" >宣布破产</Button>
+    <Button v-if="payAmount > 0" :disabled="isBankrupt || !hasPermission" type="primary" size="large" @click="confirmPayment">确认支付</Button>
+    <Button v-if="payAmount < 0 && otherPlayerIndex < 0" :disabled="!hasPermission" type="primary" size="large" @click="confirmPayment">领取</Button>
+    <Button v-if="!payAmount " :disabled="!hasPermission" type="primary" size="large" @click="confirmMsg">确定</Button>
   </div>
   <CashBoxModal :otherPlayerIndex="otherPlayerIndex" :yourPlayerIndex="playerIndex" :payAmount="payAmount" @confirmPay="pay" ref="cashBoxModal" />
   <GModal
@@ -26,7 +26,7 @@
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
 import Bankrupt from './Bankrupt.vue';
-import { getPlayerMessage, payForMessage, consumeMessage } from '@/api/gameApi.js';
+import { getPlayerMessage, payForMessage, consumeMessage, hasRolePermission } from '@/api/gameApi.js';
 import GModal from '@/components/Modal.vue';
 
 export default {
@@ -52,9 +52,11 @@ export default {
             payAmount:0,
             bankruptPlayerIndexs:[],
             showBankruptModal:false,
+            hasPermission:false,
         };
     },
-    mounted() {
+    async mounted() {
+        this.hasPermission = await hasRolePermission();
         console.log("MessageComponent mounted");
         //从后台查找当前的消息。
         getPlayerMessage(this.playerIndex,this.messageType).then((data) => {

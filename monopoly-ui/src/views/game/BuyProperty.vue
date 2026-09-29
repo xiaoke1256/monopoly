@@ -20,8 +20,8 @@
             </div>
         </div>
         <div class="action-buttons">
-            <Button type="primary" size="large" @click="confirmPurchase">{{ forUpgrade ? '确认升级' : '确认购买' }}</Button>
-            <Button size="large" @click="cancelPurchase">{{ forUpgrade ? '取消升级' : '取消购买' }}</Button>
+            <Button type="primary" :disabled="!hasPermission" size="large" @click="confirmPurchase">{{ forUpgrade ? '确认升级' : '确认购买' }}</Button>
+            <Button size="large" :disabled="!hasPermission" @click="cancelPurchase">{{ forUpgrade ? '取消升级' : '取消购买' }}</Button>
         </div>
     </div>
     <CashBoxModal :otherPlayerIndex="-1" :yourPlayerIndex="playerIndex" :payAmount="forUpgrade ? cell.upgradeCost : cell.price" @confirmPay="pay" ref="cashBoxModal" />
@@ -29,7 +29,7 @@
 <script>
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
-import { payForProperty , payForUpgradeProperty , cancelForProperty , cancelUpgradeProperty } from '../../api/gameApi.js'
+import { payForProperty , payForUpgradeProperty , cancelForProperty , cancelUpgradeProperty , hasRolePermission } from '../../api/gameApi.js'
 export default {
     name: 'BuyPropertyComponent',
     emits: ['confirm', 'cancel'],
@@ -49,6 +49,14 @@ export default {
             type: Number,
             default: -1
         },
+    },
+    data(){
+        return {
+            hasPermission:false,
+        }
+    },
+    async mounted(){
+        this.hasPermission = await hasRolePermission();
     },
     methods: {
         confirmPurchase() {

@@ -137,6 +137,12 @@ export default {
             this.showDiceModal = data.modal
         }else if( data.modalName==='payRent'){
             this.showPayRentModal = data.modal
+        }else if(data.modalName==='buyProperty'){
+            this.showBuyPropertyModal = data.modal
+        }else if(data.modalName==='upgradeProperty'){
+            this.showUpgradePropertyModal = data.modal
+        }else if(data.modalName==='message'){
+            this.showMessageModal = data.modal
         }
         
       }
@@ -398,6 +404,20 @@ export default {
         .catch(error => {
             console.error('结束回合失败:', error);
         });
+    },
+    sendWsOnModalChange(modalName,newModal){
+        try{
+            const sessionId = localStorage.getItem('sessionId');
+            this.webSocket.send(JSON.stringify(
+            {
+                sessionId,
+                action:'showModal',
+                modalName,
+                modal:newModal
+            }));
+        }catch(e){
+            console.error(e);
+        }
     }
   },
   computed: {
@@ -410,34 +430,39 @@ export default {
     showDiceModal(newValue){
         console.log("newValue:",newValue)
         //发送websocket给其他玩家。
-        try{
-            const sessionId = localStorage.getItem('sessionId');
-            this.webSocket.send(JSON.stringify(
-            {
-                sessionId,
-                action:'showModal',
-                modalName:'dice',
-                modal:newValue
-            }));
-        }catch(e){
-            console.error(e);
-        }
+        this.sendWsOnModalChange('dice',newValue)
     },
     showPayRentModal(newValue){
         console.log("newValue:",newValue)
         //发送websocket给其他玩家。
-        try{
-            const sessionId = localStorage.getItem('sessionId');
-            this.webSocket.send(JSON.stringify(
-            {
-                sessionId,
-                action:'showModal',
-                modalName:'payRent',
-                modal:newValue
-            }));
-        }catch(e){
-            console.error(e);
+        this.sendWsOnModalChange('payRent',newValue)
+        if(!newValue){
+            //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
+            this.$refs.map.fetchMapData();
         }
+    },
+    showBuyPropertyModal(newValue){
+        console.log("newValue:",newValue)
+        //发送websocket给其他玩家。
+        this.sendWsOnModalChange('buyProperty',newValue)
+        if(!newValue){
+            //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
+            this.$refs.map.fetchMapData();
+        }
+    },
+    showUpgradePropertyModal(newValue){
+        console.log("newValue:",newValue)
+        //发送websocket给其他玩家。
+        this.sendWsOnModalChange('upgradeProperty',newValue)
+        if(!newValue){
+            //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
+            this.$refs.map.fetchMapData();
+        }
+    },
+    showMessageModal(newValue){
+        console.log("newValue:",newValue)
+        //发送websocket给其他玩家。
+        this.sendWsOnModalChange('message',newValue)
         if(!newValue){
             //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
             this.$refs.map.fetchMapData();
