@@ -143,8 +143,13 @@ export default {
             this.showUpgradePropertyModal = data.modal
         }else if(data.modalName==='message'){
             this.showMessageModal = data.modal
+        }else if(data.modalName==='question'){
+            this.showQuestionModal = data.modal
+        }else if(data.modalName==='chance'){
+            this.showChanceModal = data.modal
+        }else if(data.modalName==='success'){
+            this.showSuccessModal = data.modal
         }
-        
       }
       
     };
@@ -331,13 +336,13 @@ export default {
         });
     },
     afterBankrupt(){
-        this.showPayRentModal = false;
-        this.showMessageModal = false;
+        //this.showPayRentModal = false; //不需要刻意关闭模态框，将在endTurn函数中处理
+        //this.showMessageModal = false;
         this.endTurn();
     },
     closeMessageModal({action, currentPlayerIndex,isWaiting,message}) {
         const doClose = ()=>{
-            this.showMessageModal = false;
+            //this.showMessageModal = false; //不需要刻意关闭模态框，将在endTurn函数中处理
             if(action==='endTurn' && currentPlayerIndex!=undefined){
                 //需要切换玩家
                 console.log("here .....")
@@ -367,19 +372,19 @@ export default {
         
     },
     closeQuestionModal(){
-        this.showQuestionModal = false;
+        //this.showQuestionModal = false;//不需要刻意关闭模态框，将在endTurn函数中处理
         this.checkStatus();
     },
     closeChanceModal(){
-        this.showChanceModal = false;
+        //this.showChanceModal = false;//不需要刻意关闭模态框，将在endTurn函数中处理
         this.checkStatus();
     },
     afterSelectCell(){
-        this.showSecurityCompanyModal = false;
+        //this.showSecurityCompanyModal = false;//不需要刻意关闭模态框，将在endTurn函数中处理
         this.handleDiceRolled();
     },
     closeSecurityCompany(){
-        this.showSecurityCompanyModal = false;
+        //this.showSecurityCompanyModal = false;//不需要刻意关闭模态框，将在endTurn函数中处理
         this.checkStatus();
     },
     endTurn(){
@@ -391,7 +396,11 @@ export default {
             this.$refs.map.currentPlayerIndex = this.currentPlayerIndex;
             this.showBuyPropertyModal = false;
             this.showUpgradePropertyModal = false;
+            this.showMessageModal = false;
             this.showPayRentModal = false;
+            this.showSecurityCompanyModal = false;
+            this.showQuestionModal = false;
+            this.showChanceModal = false;
             if(data.isGameOver){
                 this.showSuccessModal = true;
             }
@@ -467,7 +476,43 @@ export default {
             //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
             this.$refs.map.fetchMapData();
         }
-    }
+    },
+    showSecurityCompanyModal(newValue){
+        console.log("newValue:",newValue)
+        //发送websocket给其他玩家。
+        this.sendWsOnModalChange('securityCompany',newValue)
+        if(!newValue){
+            //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
+            this.$refs.map.fetchMapData();
+        }
+    },
+    showQuestionModal(newValue){
+        console.log("newValue:",newValue)
+        //发送websocket给其他玩家。
+        this.sendWsOnModalChange('question',newValue)
+        if(!newValue){
+            //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
+            this.$refs.map.fetchMapData();
+        }
+    },
+    showChanceModal(newValue){
+        console.log("newValue:",newValue)
+        //发送websocket给其他玩家。
+        this.sendWsOnModalChange('chance',newValue)
+        if(!newValue){
+            //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
+            this.$refs.map.fetchMapData();
+        }
+    },
+    showSuccessModal(newValue){
+        console.log("newValue:",newValue)
+        //发送websocket给其他玩家。
+        this.sendWsOnModalChange('success',newValue)
+        if(!newValue){
+            //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
+            this.$refs.map.fetchMapData();
+        }
+    },
   }
 }
 </script>
