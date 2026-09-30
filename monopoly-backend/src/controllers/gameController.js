@@ -336,6 +336,11 @@ const onArrived = async (req, res) => {
         console.log(`Player at index ${currentPlayerIndex} `);  
         const currentPlayer = game.players[currentPlayerIndex];
         console.log("currentPlayer:",currentPlayer);
+        
+        //必须是 arrive-cell 才可以触发此函数
+        if (game.playerStatus!=='arrive-cell'){
+            return res.status(404).json({ success:false,message: 'invalidate status.' });
+        }
 
         if( game.events && game.events.length>0 ){
             const event = game.events[0];
@@ -520,6 +525,8 @@ const endTurn = async (req, res) => {
     if (game.playerStatus == 'arrive-cell') {
         return res.status(400).json({ message: '相关业务还没处理完' });
     }
+
+    //TODO 应当由当前玩家触发
 
     game.currentPlayerIndex = nextPlayerIndex(game);
     
