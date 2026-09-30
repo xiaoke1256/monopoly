@@ -337,12 +337,6 @@ const onArrived = async (req, res) => {
         const currentPlayer = game.players[currentPlayerIndex];
         console.log("currentPlayer:",currentPlayer);
         
-        //必须是 arrive-cell 才可以触发此函数
-        if (game.playerStatus!=='arrive-cell'){
-            console.log('invalidate status:',game.playerStatus);
-            return res.status(404).json({ success:false,message: 'invalidate status.',playerStatus:game.playerStatus });
-        }
-
         if( game.events && game.events.length>0 ){
             const event = game.events[0];
             const cell = game.cells[event.cellPosition];
@@ -353,14 +347,17 @@ const onArrived = async (req, res) => {
             }
             return res.json({...event.toObject({ getters: true }),cell});
         }else if(currentPlayer.waitingRound>0){//需要暂停一轮
+            //TODO 这里有重复创建event的风险。
             const event = {actionType: 'showMessage', messageType:'waiting', message: `暂停中。剩余${currentPlayer.waitingRound-1}轮`};
             game.events.push(event);
             await game.save();
             const cell = game.cells[event.cellPosition];
             return res.json({...event,cell});
-        } else{
+        } else if(game.playerStatus === 'arrive-cell'){
             game.playerStatus = 'completed';//其他情况就视为完成了业务
             await game.save();
+            return res.json({ actionType: 'nothing' });
+        } else {
             return res.json({ actionType: 'nothing' });
         }
 
