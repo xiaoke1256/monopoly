@@ -339,7 +339,8 @@ const onArrived = async (req, res) => {
         
         //必须是 arrive-cell 才可以触发此函数
         if (game.playerStatus!=='arrive-cell'){
-            return res.status(404).json({ success:false,message: 'invalidate status.' });
+            console.log('invalidate status:',game.playerStatus);
+            return res.status(404).json({ success:false,message: 'invalidate status.',playerStatus:game.playerStatus });
         }
 
         if( game.events && game.events.length>0 ){
