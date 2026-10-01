@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="action-buttons">
-        <CellSelector v-if="showCellSelector" @selectd="selectdCell" ></CellSelector>
+        <CellSelector v-if="showCellSelector" :playerIndex="playerIndex" @selectd="selectdCell" ></CellSelector>
         <Button v-if="!showCellSelector" :disabled="!hasPermission" type="primary" size="large" @click="confirmPayment">确认支付</Button>
         <Button v-if="!showCellSelector" :disabled="!hasPermission" size="large" @click="cancel">取消</Button>
     </div>

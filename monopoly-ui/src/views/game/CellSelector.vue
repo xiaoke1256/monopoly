@@ -3,7 +3,7 @@
         <!-- <div style="flex:0 0 20%; border: solid 1px #aaa;" v-for="(cell,index) in cells" :key="index" >
             <div>{{cell.name}}</div>
         </div> -->
-        <Card class="cell-card" v-for="(cell,index) in cells" :key="index" @click="selectd(index+1)" >
+        <Card :class="{'cell-card':true,'selected':selectdIndex==index}" v-for="(cell,index) in cells" :key="index" @click="selectd(index+1)" >
             <div style="width: 100%;position: relative;" >
                 <div class="cell-containner" >
                     <div v-if="cell.type==='property'" class="color-div" style="width:100%;height:100%;">
@@ -17,8 +17,7 @@
     </div>
 </template>
 <script>
-//import { Card } from 'view-ui-plus';
-import { getCurrentMap ,getPlayers } from '../../api/gameApi.js'
+import { getCurrentMap ,getPlayers ,hasRolePermission } from '../../api/gameApi.js'
 import {imageMap} from '../../util/imagesMap.js';
 import { throttle ,onScrollXAction } from '../../util/scrollUtils.js'
 import { createWebSocket, closeWebSocket,send } from '../../util/socketUtils.js'
@@ -28,25 +27,37 @@ export default {
     name: 'CellSelectorComponent',
     emits: ['selectd'],
     components: {
-        //Card
+    },
+    props: {
+        playerIndex: {
+            type: Number,
+            default: -1
+        },
     },
     data(){
         return {
             cells:[],
             players:[],
+            yourName:'',
+            hasPermission:false,
             webSocket: undefined,
+            selectdIndex:-1,
         }
     },
     async mounted (){
+        this.hasPermission = await hasRolePermission();
         this.webSocket = createWebSocket('/ws/game/cellSelector',(data)=>{
             if (data.action==='scroll' ){
                 const scrollRate = data.scrollRate;
                 this.$refs.selectorContainner.scrollLeft = this.$refs.selectorContainner.scrollWidth*scrollRate
-                
+            }else if (data.action==='selectd'){
+                this.selectdIndex = data.selectdIndex;
             }
         });
         const cells = await getCurrentMap();
         this.players = await getPlayers();
+        const player = this.players[this.playerIndex]
+        this.yourName = player.name;
         const securityCompanyCell = cells.filter((cell)=>cell.type==='security-company')[0];
         const cellsForSelect = cells.slice(securityCompanyCell.position+1,cells.length)
         for(let i = 0;i < 20-(cells.length-securityCompanyCell.position);i++){
@@ -94,8 +105,16 @@ export default {
             return '#aaa';
         },
         selectd(forwardStep){
+            if(!this.hasPermission){
+                this.$Message.error(`没轮到你，现在请${this.yourName}操作。`);
+                return;
+            }
             console.log("step:",forwardStep);
-            this.$emit('selectd',forwardStep);
+            send(this.webSocket,{action:'selectd',selectdIndex:(forwardStep-1)});
+            this.selectdIndex = forwardStep-1;
+            setTimeout(() => {
+                this.$emit('selectd',forwardStep);
+            }, 500); 
         },
         handleScroll:throttle(function(e){onScrollXAction(e,(scrollLeft,scrollWidth)=>{
             console.log("scrollLeft:",scrollLeft,"scrollWidth:",scrollWidth);

@@ -147,6 +147,8 @@ export default {
             this.showQuestionModal = data.modal
         }else if(data.modalName==='chance'){
             this.showChanceModal = data.modal
+        }else if(data.modalName==='securityCompany'){
+            this.showSecurityCompanyModal = data.modal
         }else if(data.modalName==='success'){
             this.showSuccessModal = data.modal
         }
@@ -380,7 +382,7 @@ export default {
         this.checkStatus();
     },
     afterSelectCell(){
-        //this.showSecurityCompanyModal = false;//不需要刻意关闭模态框，将在endTurn函数中处理
+        this.showSecurityCompanyModal = false;//这里必须要明确关闭
         this.handleDiceRolled();
     },
     closeSecurityCompany(){
