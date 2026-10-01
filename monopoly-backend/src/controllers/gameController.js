@@ -358,6 +358,9 @@ const onArrived = async (req, res) => {
             await game.save();
             return res.json({ actionType: 'nothing', playerStatus:game.playerStatus });
         } else {
+            if(game.playerStatus !== 'completed'){
+                console.warn('only arrive-cell & completed status can call this method.');
+            }
             return res.json({ actionType: 'nothing', playerStatus:game.playerStatus });
         }
 
