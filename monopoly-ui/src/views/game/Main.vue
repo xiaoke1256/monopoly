@@ -342,7 +342,6 @@ export default {
     },
     closeMessageModal({action, currentPlayerIndex,isWaiting,message}) {
         const doClose = ()=>{
-            //this.showMessageModal = false; //不需要刻意关闭模态框，将在endTurn函数中处理
             if(action==='endTurn' && currentPlayerIndex!=undefined){
                 //需要切换玩家
                 console.log("here .....")
@@ -352,6 +351,7 @@ export default {
                     this.onPlayerMoveComplete();
                     return;
                 }
+                this.showMessageModal = false;
                 this.showDiceModal = true;
                 return;
             }
