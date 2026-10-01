@@ -19,7 +19,7 @@ import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
 import CellSelector from './CellSelector.vue';
 import { payForSecurityCompany,cancelSecurityCompany,hasRolePermission,getPlayer} from '../../api/gameApi.js'
-import { isValidJSON } from '../../util/jsonUtils'
+import { createWebSocket, closeWebSocket,send } from '../../util/socketUtils.js'
 
 export default {
     name: 'SecurityCompanyComponent',
@@ -48,42 +48,14 @@ export default {
         this.hasPermission = await hasRolePermission();
         const player = await getPlayer(this.playerIndex);
         this.yourName = player.name;
-        const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const token = localStorage . getItem ( 'token' );
-        this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/securityCompany?token=${token}`);
-        this.webSocket.onopen=()=>{
-            console.log('WebSocket connected!');
-        };
-        this.webSocket.onmessage = async (event) => {
-            console.log('Received message:', event.data);
-            if(!isValidJSON(event.data)){
-                return;
-            }
-            const data = JSON.parse(event.data);
-            const sessionId = localStorage.getItem('sessionId');
-            if (data.sessionId === sessionId) {
-                console.warn('收到了自己发给自己的消息');
-                return;
-            }
+        this.webSocket = createWebSocket('/ws/game/securityCompany',(data)=>{
             if (data.action==='showSelector' ){
                 this.showCellSelector = data.show
-                
             }
-        
-        };
-        this.webSocket.onclose = () => {
-            console.log('WebSocket closed!');
-        };
-        this.webSocket.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
+        });
     },
     unmounted(){
-        try{
-            this.webSocket.close();
-        }catch(e){
-            console.error('error!',e);
-        }
+        closeWebSocket();
     },
     methods: {
         confirmPayment(){
@@ -115,8 +87,7 @@ export default {
             this.otherSelectedMoney = otherSelectedMoney;
             successCallback();
             this.showCellSelector = true;
-            const sessionId = localStorage.getItem('sessionId');
-            this.webSocket.send(JSON.stringify({action:'showSelector',show:true,sessionId}))
+            send(this.webSocket,{action:'showSelector',show:true});
         }
     }
 }
