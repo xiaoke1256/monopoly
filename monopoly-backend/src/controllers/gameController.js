@@ -356,9 +356,9 @@ const onArrived = async (req, res) => {
         } else if(game.playerStatus === 'arrive-cell'){
             game.playerStatus = 'completed';//其他情况就视为完成了业务
             await game.save();
-            return res.json({ actionType: 'nothing' });
+            return res.json({ actionType: 'nothing', playerStatus:game.playerStatus });
         } else {
-            return res.json({ actionType: 'nothing' });
+            return res.json({ actionType: 'nothing', playerStatus:game.playerStatus });
         }
 
     } catch (error) {
