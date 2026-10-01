@@ -8,14 +8,14 @@
     </div>
   </div>
   <div class="action-buttons">
-        <Button v-for="(option, index) in options" :key="index" size="large" @click="selectOption(option)">{{ option }}</Button>
+        <Button v-for="(option, index) in options" :key="index" size="large" :disabled="!hasPermission" @click="selectOption(option)">{{ option }}</Button>
   </div>
   <CashBoxModal :otherPlayerIndex="-1" :yourPlayerIndex="playerIndex" :payAmount="-reward" @confirmPay="pay" ref="cashBoxModal" />
 </template>
 <script>
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
-import { getPlayerQuestion,answerQuestion } from '@/api/gameApi.js';
+import { getPlayerQuestion,answerQuestion,hasRolePermission } from '@/api/gameApi.js';
 
 export default {
   name: 'QuestionComponent',
@@ -35,10 +35,12 @@ export default {
             options: [],
             correctOption: null,
             selectedOption: null,
-            reward: 0
+            reward: 0,
+            hasPermission:false,
         };
     },
-    mounted(){
+    async mounted(){
+        this.hasPermission = await hasRolePermission();
         getPlayerQuestion(this.playerIndex).then((question) => {
             this.content = question.stem;
             this.options = question.options;
