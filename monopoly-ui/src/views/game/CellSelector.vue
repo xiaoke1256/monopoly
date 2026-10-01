@@ -1,5 +1,5 @@
 <template>
-    <div class="selector-containner">
+    <div class="selector-containner"  @scroll.passive="handleScroll" ref="selectorContainner">
         <!-- <div style="flex:0 0 20%; border: solid 1px #aaa;" v-for="(cell,index) in cells" :key="index" >
             <div>{{cell.name}}</div>
         </div> -->
@@ -20,6 +20,9 @@
 //import { Card } from 'view-ui-plus';
 import { getCurrentMap ,getPlayers } from '../../api/gameApi.js'
 import {imageMap} from '../../util/imagesMap.js';
+import { throttle ,onScrollXAction } from '../../util/scrollUtils.js'
+import { createWebSocket, closeWebSocket,send } from '../../util/socketUtils.js'
+
 
 export default {
     name: 'CellSelectorComponent',
@@ -31,9 +34,17 @@ export default {
         return {
             cells:[],
             players:[],
+            webSocket: undefined,
         }
     },
     async mounted (){
+        this.webSocket = createWebSocket('/ws/game/cellSelector',(data)=>{
+            if (data.action==='scroll' ){
+                const scrollRate = data.scrollRate;
+                this.$refs.selectorContainner.scrollLeft = this.$refs.selectorContainner.scrollWidth*scrollRate
+                
+            }
+        });
         const cells = await getCurrentMap();
         this.players = await getPlayers();
         const securityCompanyCell = cells.filter((cell)=>cell.type==='security-company')[0];
@@ -42,6 +53,9 @@ export default {
             cellsForSelect.push(cells[i]);
         }
         this.cells = cellsForSelect
+    },
+    unmounted(){
+        closeWebSocket(this.webSocket)
     },
     methods:{
         buildingImage(cell){
@@ -82,7 +96,12 @@ export default {
         selectd(forwardStep){
             console.log("step:",forwardStep);
             this.$emit('selectd',forwardStep);
-        }
+        },
+        handleScroll:throttle(function(e){onScrollXAction(e,(scrollLeft,scrollWidth)=>{
+            console.log("scrollLeft:",scrollLeft,"scrollWidth:",scrollWidth);
+            send(this.webSocket,{action:'scroll',scrollRate:(scrollLeft/scrollWidth)});
+            console.log("发送了webSocket");
+        })},200)
     }
 
 }

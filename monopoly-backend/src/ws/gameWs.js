@@ -112,3 +112,11 @@ export const listenCashBoxModalMsg = createWsHandle(gameCashBoxModalWs,'cashBoxM
 const gameCashBoxWs = {};
 
 export const listenCashBoxMsg = createWsHandle(gameCashBoxWs,'cashBoxWs')
+
+const gameSecurityCompanyWs = {};
+
+export const listenSecurityCompanyMsg = createWsHandle(gameSecurityCompanyWs,'securityCompanyWs')
+
+const gameCellSelectorWs = {};
+
+export const listenCellSelectorMsg = createWsHandle(gameCellSelectorWs,'cellSelectorWs')

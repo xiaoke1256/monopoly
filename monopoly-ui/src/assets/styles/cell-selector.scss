@@ -4,6 +4,7 @@
     justify-content: start;
     overflow-x: auto;
     .cell-card{
+        cursor: pointer;
         flex: 0 0 19%;
         margin: 5px;
         position: relative;
