@@ -199,6 +199,8 @@ export default {
             } else if (playerStatus==='completed'){
                 this.endTurn();
             } else {
+                //先确保所有弹窗都关闭，
+                this.closeAllModal();
                 this.onPlayerMoveComplete(currentPlayerPosition);
             }
         });
@@ -276,6 +278,15 @@ export default {
         }
 
     },
+    closeAllModal(){
+        this.showBuyPropertyModal = false;
+        this.showUpgradePropertyModal = false;
+        this.showMessageModal = false;
+        this.showPayRentModal = false;
+        this.showSecurityCompanyModal = false;
+        this.showQuestionModal = false;
+        this.showChanceModal = false;
+    },
     afterPayForProperty({currentPlayerIndex,forUpgrade,isWaiting}){
         //界面上提示“商铺购买成功”
         this.$Modal.success({
@@ -350,6 +361,7 @@ export default {
                 this.$refs.map.fetchMapData();
                 this.currentPlayerIndex = currentPlayerIndex;
                 if(isWaiting){
+                    this.showMessageModal = false;
                     this.onPlayerMoveComplete();
                     return;
                 }
@@ -360,7 +372,9 @@ export default {
             //检查当前的状态
             this.checkStatus();
         }
-        console.log('玩家关闭消息弹窗:',action,currentPlayerIndex,isWaiting,message);
+        console.log('玩家关闭消息弹窗:',"action:",action,
+            "currentPlayerIndex:",currentPlayerIndex,
+            "isWaiting:",isWaiting,"message:",message);
         
         if (message){
             this.$Modal.success({
@@ -396,13 +410,7 @@ export default {
             // 处理回合结束后的逻辑，例如切换到下一个玩家
             this.currentPlayerIndex = data.currentPlayerIndex; // 更新当前玩家索引
             this.$refs.map.currentPlayerIndex = this.currentPlayerIndex;
-            this.showBuyPropertyModal = false;
-            this.showUpgradePropertyModal = false;
-            this.showMessageModal = false;
-            this.showPayRentModal = false;
-            this.showSecurityCompanyModal = false;
-            this.showQuestionModal = false;
-            this.showChanceModal = false;
+            this.closeAllModal()
             if(data.isGameOver){
                 this.showSuccessModal = true;
             }
