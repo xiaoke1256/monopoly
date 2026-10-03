@@ -122,7 +122,7 @@ export default {
     this.webSocket.onopen=()=>{
       console.log('WebSocket connected!');
     };
-    this.webSocket.onmessage = (event) => {
+    this.webSocket.onmessage = async (event) => {
       console.log('Received message:', event.data);
       if(!isValidJSON(event.data)){
         return;
@@ -133,6 +133,13 @@ export default {
         return;
       }
       if (data.action==='showModal' ){
+        if(data.modal){
+            //打开窗口之前要刷新一下 playerIndex。
+            console.log("打开窗口之前刷新，刷新前玩家索引为:",this.currentPlayerIndex);
+            await this.$refs.map.refreshPlayerIndex();
+            console.log("打开窗口之前刷新，刷新后玩家索引为:",this.currentPlayerIndex);
+        }
+
         if( data.modalName==='dice'){
             this.showDiceModal = data.modal
         }else if( data.modalName==='payRent'){
@@ -457,7 +464,7 @@ export default {
         this.sendWsOnModalChange('payRent',newValue)
         if(!newValue){
             //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
-            this.$refs.map.fetchMapData();
+            this.$refs.map.refreshPlayerIndex();
         }
     },
     showBuyPropertyModal(newValue){
@@ -484,7 +491,7 @@ export default {
         this.sendWsOnModalChange('message',newValue)
         if(!newValue){
             //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
-            this.$refs.map.fetchMapData();
+            this.$refs.map.refreshPlayerIndex();
         }
     },
     showSecurityCompanyModal(newValue){
@@ -493,7 +500,7 @@ export default {
         this.sendWsOnModalChange('securityCompany',newValue)
         if(!newValue){
             //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
-            this.$refs.map.fetchMapData();
+            this.$refs.map.refreshPlayerIndex();
         }
     },
     showQuestionModal(newValue){
@@ -502,7 +509,7 @@ export default {
         this.sendWsOnModalChange('question',newValue)
         if(!newValue){
             //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
-            this.$refs.map.fetchMapData();
+            this.$refs.map.refreshPlayerIndex();
         }
     },
     showChanceModal(newValue){
@@ -511,7 +518,7 @@ export default {
         this.sendWsOnModalChange('chance',newValue)
         if(!newValue){
             //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
-            this.$refs.map.fetchMapData();
+            this.$refs.map.refreshPlayerIndex();
         }
     },
     showSuccessModal(newValue){
@@ -520,7 +527,7 @@ export default {
         this.sendWsOnModalChange('success',newValue)
         if(!newValue){
             //关闭窗口往往意味着playerIndex改变了所以要刷新地图数据
-            this.$refs.map.fetchMapData();
+            this.$refs.map.refreshPlayerIndex();
         }
     },
   }

@@ -29,7 +29,8 @@ import { dice,
     bankrupt,
     getFinalPlayer,
     hasRoleOperPermission,
-    getPlayerInfo
+    getPlayerInfo,
+    getCurrentPlayerIndex
  } from '../controllers/gameController.js';
 
 import { sendMsgToMain,
@@ -45,6 +46,7 @@ gameRouter.get('/dice-value', getCurrentDice);
 gameRouter.get('/hasRolePermission', hasRoleOperPermission);
 
 gameRouter.get('/players',getPlayers);
+gameRouter.get('/players/currentIndex',getCurrentPlayerIndex);
 gameRouter.get('/player/:playerIndex',getPlayerInfo);
 gameRouter.post('/player/:playerIndex/move', movePlayer);
 gameRouter.get('/player/:playerIndex/arrived', onArrived);

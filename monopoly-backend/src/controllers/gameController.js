@@ -109,6 +109,11 @@ const getPlayers = async (req, res) => {
     return res.json({players:game.players});
 }
 
+const getCurrentPlayerIndex = async (req, res) => {
+    const game = await queryCurrentGame(req);
+    return res.json({currentPlayerIndex:game.currentPlayerIndex});
+}
+
 const getPlayerInfo = async (req, res) => {
     req.params.playerIndex = parseInt(req.params.playerIndex);
     const {playerIndex} = req.params;
@@ -476,6 +481,7 @@ const consumeChance = async (req, res) => {
 const answerQuestion = async (req, res) => {
     try {
         const game = await queryCurrentGame(req);
+        //TODO 检查当前用户
         if( game.events && game.events.length>0 ){
             const event = game.events.shift();
             if(event.actionType !== 'question'){
@@ -1019,6 +1025,7 @@ const consumeMessage = async (req, res) => {
         }
 
         if (messageType != event.messageType) {
+            console.log(`messageType not match! expected: ${event.messageType}, received: ${messageType}`);
             return res.status(400).json({ message: 'messageType not match!' });
         }
 
@@ -1140,6 +1147,7 @@ export {
     getCurrentGame,
     hasRoleOperPermission,
     getPlayerInfo,
+    getCurrentPlayerIndex,
     getCurrentDice,
     movePlayer,
     getPlayers,

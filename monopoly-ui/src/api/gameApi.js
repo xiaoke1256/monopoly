@@ -105,6 +105,16 @@ export const getPlayers = async () => {
     }
 }
 
+export const getCurrentPlayerIndex = async () => {
+    try {
+        const response = await axios.get(`/game/players/currentIndex`);
+        return response.data.currentPlayerIndex;
+    } catch (error) {
+        console.error('Error fetching current player index:', error);
+        throw error;
+    }
+};
+
 export const getPlayerMessage = async (playerIndex,messageType) => {
     try {
         const response = await axios.get(`/game/player/${playerIndex}/message?messageType=${messageType}`);

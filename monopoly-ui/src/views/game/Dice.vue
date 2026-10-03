@@ -48,7 +48,9 @@ export default {
         this.modalIsShowing = true;
         return;
       }
+      console.log("doDice limit:",limit);
       if(!limit && limit!==0){
+        console.log("this.isRolling:",this.isRolling);
         if(this.isRolling){
           return;
         }
@@ -56,6 +58,7 @@ export default {
         limit=7;
         //向后台发送开始掷骰子的消息
         if(hasPermission){
+          console.log("向后台发送开始掷骰子的消息。。。。");
           this.webSocket.send(JSON.stringify({action:'startDice',message:'开始掷骰子',sessionId:this.sessionId}))
         }
       }

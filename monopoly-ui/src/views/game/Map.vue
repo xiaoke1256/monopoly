@@ -104,7 +104,7 @@
 <script>
 import { animate } from 'animejs';
 import {imageMap} from '../../util/imagesMap.js';
-import { getCurrentGame } from '@/api/gameApi.js';
+import { getCurrentGame, getCurrentPlayerIndex } from '@/api/gameApi.js';
 
 export default {
     name: 'MapComponent',
@@ -146,14 +146,32 @@ export default {
                 this.$emit('game-loaded', this.currentPlayerIndex);
             }
         },
+        async refreshPlayerIndex(){
+            try {
+                const currentPlayerIndex = await getCurrentPlayerIndex();
+                this.currentPlayerIndex = currentPlayerIndex;
+                console.log('当前玩家索引已刷新:', this.currentPlayerIndex);
+                this.$emit('game-loaded', this.currentPlayerIndex);
+            } catch (err) {
+                console.error('刷新当前玩家索引失败:', err);
+            }
+        },
         getLocationOfPlayer(playerIdx,blockId) {
             blockId = blockId%40;
             let mapContainer = document.getElementById('map-container');
             let mapDiv = document.getElementById('map-div');
+            if (!mapContainer || !mapDiv) {
+                console.error('地图容器元素未找到');
+                return { left: 0, top: 0 };
+            }
             const skyHeight = mapContainer.offsetHeight-mapDiv.offsetHeight
             const mapContainerRect = mapContainer.getBoundingClientRect();
 
             let playerDiv = document.getElementById(`player${playerIdx}`);
+            if (!playerDiv) {
+                console.error(`玩家${playerIdx}的DOM元素未找到`);
+                return { left: 0, top: 0 };
+            }
             let block = document.getElementById(`block-${blockId}`);
             if (playerDiv&&!block) {
                 const playerHeight = playerDiv.offsetHeight;
@@ -233,11 +251,18 @@ export default {
                 //alert("top:"+top+ " left:"+left+" playerHeight:"+playerHeight);
                 return {left: left+width*0.2+pDWidth, top: top-skyHeight-playerHeight+pDHeight};
             }
+            // 兜底：road 未找到时返回默认位置
+            console.warn(`block-${blockId} 内未找到 road 元素，返回默认位置`);
+            return { left: 0, top: 0 };
         },
         locatePlayerToBlock(playerIdx,blockId) {
             this.$nextTick(() => {
                 const location = this.getLocationOfPlayer(playerIdx,blockId);
                 let playerDiv = document.getElementById(`player${playerIdx}`);
+                if (!playerDiv) {
+                    console.error(`玩家${playerIdx}的DOM元素未找到，无法定位`);
+                    return;
+                }
                 playerDiv.style.position = 'absolute';
                 playerDiv.style.top = location.top+'px';
                 playerDiv.style.left = location.left+'px';
@@ -247,7 +272,12 @@ export default {
             console.log("curPosition,targetPosition:",curPosition,targetPosition);
             if(curPosition==targetPosition) {
                 this.players[this.currentPlayerIndex].position = targetPosition;
+                console.log("玩家移动完成，当前玩家位置更新为:", this.players[this.currentPlayerIndex].position);
                 if (callback) callback(targetPosition);
+                return;
+            }
+            if (!playerDiv) {
+                console.error('moving: playerDiv 为 null，无法移动玩家');
                 return;
             }
             const newPosition = (curPosition + 1)%this.cells.length;
