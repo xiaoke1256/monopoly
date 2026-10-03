@@ -96,7 +96,7 @@ export default {
   },
   async mounted() {
     this.dice=Math.ceil(Math.random()*6);
-    //检查当前玩家是否权限操作,如果没有权限操作则创建webSocket
+
     this.player = await getPlayer(this.playerIndex);
     this.sessionId = localStorage.getItem('sessionId');
 
@@ -147,6 +147,22 @@ export default {
   computed:{
     playerName(){
       return this.player.name
+    }
+  },
+  watch:{
+    playerIndex(newVal,oldVal){
+      //本控件有可能没有经历过卸载再重载的过程，而是直接修改了 playerIndex。
+      console.log("playerIndex changed:",newVal,oldVal);
+      getPlayer(newVal).then((player)=>{
+        this.player = player;
+      }).catch((error)=>{
+        console.error("获取玩家信息失败：",error);
+      });
+      this.isRolling = false;
+      if(this.modalIsShowing){
+        this.$Modal.remove()
+        this.modalIsShowing = false;
+      }
     }
   }
 }
