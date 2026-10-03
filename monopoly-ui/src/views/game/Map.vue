@@ -307,6 +307,7 @@ export default {
                 console.error(`未找到玩家${this.currentPlayerIndex}的DOM元素`);
                 return;
             }
+            console.log("开始移动玩家....","当前玩家索引:",this.currentPlayerIndex,"当前玩家位置:", currentPlayer.position, "目标位置:", targetPosition);
             this.moving(playerDiv, currentPlayer.position, targetPosition,callback);
         },
         buildingColor(cell) {

@@ -43,6 +43,11 @@ export const closeWebSocket = (webSocket)=>{
 }
 
 export const send = (webSocket,data) => {
+    // send 之前检查 webSocket 状态
+    if (!webSocket || webSocket.readyState === WebSocket.CLOSED  || webSocket.readyState === WebSocket.CLOSING) {
+        //先打日志，以后想办法实现重连机制
+        console.warn(`WebSocket is ${webSocket?.readyState}.`);
+    }
     const sessionId = localStorage.getItem('sessionId');
     webSocket.send(JSON.stringify({...data,sessionId}))
 }

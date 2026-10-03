@@ -433,6 +433,7 @@ export default {
             this.selectYourBox(denomination,currentIndex,maxIndex,true);
         },
         selectBox(denomination,currentIndex,isUnSelect=false,maxIndex,boxName){
+            console.log(`selectBox: denomination=${denomination}, currentIndex=${currentIndex}, isUnSelect=${isUnSelect}, maxIndex=${maxIndex}, boxName=${boxName}`);
             if(!this.hasPermission){
                 this.$Message.error(`没轮到你，现在请${this.yourName}操作。`);
                 return;
