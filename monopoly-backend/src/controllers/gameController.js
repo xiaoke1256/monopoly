@@ -525,7 +525,7 @@ const nextPlayerIndex = (game)=>{
 
 const endTurn = async (req, res) => {
     const game = await queryCurrentGame(req); 
-    if (game.playerStatus == 'before-dice' || game.playerStatus == 'after-dice' ) {
+    if ( game.playerStatus == 'after-dice' ) {
         return res.status(400).json({ message: '状态错误，仅completed状态才可以调用endTurn.',playerStatus:game.playerStatus });
     }
     //  'arrive-cell' 表示刚到达cell还没经行相关业务处理
@@ -533,13 +533,13 @@ const endTurn = async (req, res) => {
         return res.status(400).json({ message: '相关业务还没处理完' });
     }
 
-    //TODO 应当由当前玩家触发
-
-    game.currentPlayerIndex = nextPlayerIndex(game);
-    
-    game.playerStatus = 'before-dice';
-    game.events = [];
-    await game.save();
+    //如果 game.playerStatus 是 'before-dice'，则说明endTurn已经被调用过了
+    if (game.playerStatus !== 'before-dice') { 
+        game.currentPlayerIndex = nextPlayerIndex(game);
+        game.playerStatus = 'before-dice';
+        game.events = [];
+        await game.save();
+    }
     //检查切换后玩家是否处于暂停状态？
     const currentPlayer = game.players[game.currentPlayerIndex];
     //是否结束游戏？
@@ -618,10 +618,11 @@ const cancelBuyPropertyAndEndTurn = async (req, res) => {
     await game.save();
     //检查切换后玩家是否处于暂停状态？
     const newPlayer = game.players[game.currentPlayerIndex];
+    const currentPlayerUserId = newPlayer.userId;
     if (newPlayer.waitingRound>0){
-        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex,forUpgrade:false });
+        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex,forUpgrade:false,currentPlayerUserId });
     }
-    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex,forUpgrade:false });
+    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex,forUpgrade:false,currentPlayerUserId });
 }
 
 const cancelUpgradePropertyAndEndTurn = async (req, res) => {
@@ -647,10 +648,11 @@ const cancelUpgradePropertyAndEndTurn = async (req, res) => {
     await game.save();
     //检查切换后玩家是否处于暂停状态？
     const newPlayer = game.players[game.currentPlayerIndex];
+    const currentPlayerUserId = newPlayer.userId;
     if (newPlayer.waitingRound>0){
-        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex,forUpgrade:true });
+        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex,forUpgrade:true,currentPlayerUserId });
     }
-    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex,forUpgrade:true });
+    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex,forUpgrade:true,currentPlayerUserId });
 }
 
 const payForUpgradePropertyAndEndTurn = async (req, res) => {

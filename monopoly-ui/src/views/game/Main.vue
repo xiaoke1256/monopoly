@@ -159,6 +159,8 @@ export default {
         }else if(data.modalName==='success'){
             this.showSuccessModal = data.modal
         }
+      }else if(data.action==='afterSecurityCompany'){
+        this.handleDiceRolled();
       }
       
     };
@@ -218,6 +220,7 @@ export default {
         console.log('骰子点数:', diceValue);
         movePlayer({playerIndex:this.currentPlayerIndex,steps:diceValue})
         .then(data => {
+            this.closeAllModal();
             const newPosition = data.newPosition;
             this.$refs.map.movePlayerToBlock(newPosition, () => {
                 console.log('玩家移动完成，新位置:', newPosition);
@@ -317,12 +320,13 @@ export default {
             }
         });
     },
-    afterCancelForProperty({action, message, currentPlayerIndex,forUpgrade,isWaiting}) {
-        console.log('已取消购买地产:', {action, message, currentPlayerIndex,isWaiting});
+    afterCancelForProperty({action, message, currentPlayerIndex,forUpgrade,isWaiting,currentPlayerUserId}) {
+        console.log('已取消购买地产:', {action, message, currentPlayerIndex,isWaiting,currentPlayerUserId});
         this.$refs.map.fetchMapData();
         if(action==='endTurn'){
             console.log('已取消购买地产 - endTurn:', {action, message, currentPlayerIndex});
             this.currentPlayerIndex = currentPlayerIndex;
+            this.currentPlayerUserId = currentPlayerUserId;
             
             if(forUpgrade){
                 this.showUpgradePropertyModal = false;
@@ -404,6 +408,8 @@ export default {
     },
     afterSelectCell(){
         this.showSecurityCompanyModal = false;//这里必须要明确关闭
+        //发送webSocket消息，要处理后续事务
+        this.webSocket.send(JSON.stringify({action:'afterSecurityCompany',message:'镖局选择完毕',sessionId:localStorage.getItem('sessionId')}))
         this.handleDiceRolled();
     },
     closeSecurityCompany(){
@@ -434,6 +440,10 @@ export default {
     sendWsOnModalChange(modalName,newModal){
         try{
             const sessionId = localStorage.getItem('sessionId');
+            if (!this.webSocket || this.webSocket.readyState === WebSocket.CLOSED  || this.webSocket.readyState === WebSocket.CLOSING) {
+                //先打日志，以后想办法实现重连机制
+                console.warn(`WebSocket is ${this.webSocket?.readyState}.`);
+            }
             this.webSocket.send(JSON.stringify(
             {
                 sessionId,
