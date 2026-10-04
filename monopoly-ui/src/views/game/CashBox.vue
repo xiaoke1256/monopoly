@@ -76,7 +76,7 @@
 <script>
 import { animate } from 'animejs';
 import PlayerAvatar from '@/components/PlayerAvatar.vue';
-import { getPlayerMoney,hasRolePermission,getPlayer } from '../../api/gameApi.js';
+import { getPlayerMoney,getPlayer } from '../../api/gameApi.js';
 import { isValidJSON } from '../../util/jsonUtils'
 
 export default {
@@ -141,16 +141,13 @@ export default {
                 }
             },
             exchangeing:false,
-            yourName:'',
-            hasPermission:false,
+            yourPlayer: undefined,
             webSocket: undefined,
         }
     },
     async mounted(){
         console.log("mounted.....");
-        this.hasPermission = await hasRolePermission();
-        const player = await getPlayer(this.yourPlayerIndex);
-        this.yourName = player.name;
+        this.yourPlayer = await getPlayer(this.yourPlayerIndex);
         const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
         const token = localStorage . getItem ( 'token' );
         this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/cashBox?token=${token}`);
@@ -159,7 +156,7 @@ export default {
         };
         this.webSocket.onmessage = async (event) => {
             console.log('Received message:', event.data);
-            if(this.hasPermission){
+            if(this.isYourTurn){
                 return;
             }
             if(!isValidJSON(event.data)){
@@ -434,7 +431,7 @@ export default {
         },
         selectBox(denomination,currentIndex,isUnSelect=false,maxIndex,boxName){
             console.log(`selectBox: denomination=${denomination}, currentIndex=${currentIndex}, isUnSelect=${isUnSelect}, maxIndex=${maxIndex}, boxName=${boxName}`);
-            if(!this.hasPermission){
+            if(!this.isYourTurn){
                 this.$Message.error(`没轮到你，现在请${this.yourName}操作。`);
                 return;
             }
@@ -651,7 +648,7 @@ export default {
                                 this.$nextTick(()=>{
                                     this.payFrom('you',callback);
                                 });
-                            }else if(this.hasPermission && callback){
+                            }else if(this.isYourTurn && callback){
                                 this.$nextTick(()=>{
                                     callback({ isSuccess: true });
                                 });
@@ -706,6 +703,9 @@ export default {
         }
     },
     computed:{
+        yourName(){
+            return this.yourPlayer?.name?this.yourPlayer.name:'';
+        },
         otherAmount(){
             let amount = 0;
             for(let denomination of [1,20,100,200,500,1000,2000,5000]){
@@ -719,6 +719,10 @@ export default {
                 amount += this.you[`cash${denomination}`]*denomination;
             }
             return amount;
+        },
+        isYourTurn(){
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            return this.yourPlayer?.userId === userInfo.id;
         }
     },
     watch:{

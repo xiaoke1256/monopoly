@@ -14,8 +14,8 @@
         </div>
         <template #footer>
             <div style="text-align:center;">
-                <Button v-if="exchangeing" :disabled="!hasPermission" :loading="payModalLoading" type="primary" size="large" @click="exchange">兑换</Button>
-                <Button v-if="!exchangeing" :disabled="!hasPermission" :loading="payModalLoading" type="primary" size="large" @click="pay">确认</Button>
+                <Button v-if="exchangeing" :disabled="!isYourTurn" :loading="payModalLoading" type="primary" size="large" @click="exchange">兑换</Button>
+                <Button v-if="!exchangeing" :disabled="!isYourTurn" :loading="payModalLoading" type="primary" size="large" @click="pay">确认</Button>
             </div>
         </template>
     </Modal> 
@@ -23,7 +23,7 @@
 <script>
 import { Modal, Button } from 'view-ui-plus';
 import CashBox from './CashBox.vue';
-import { exchange,hasRolePermission } from '../../api/gameApi.js'
+import { exchange,getPlayer } from '../../api/gameApi.js'
 import { isValidJSON } from '../../util/jsonUtils'
 export default {
   name: 'MainIndex',
@@ -51,7 +51,7 @@ export default {
       payModalLoading: false,
       exchangeing:false,
       webSocket: undefined,
-      hasPermission:false,
+      yourPlayer: undefined,
     };
   },
   methods:{
@@ -110,7 +110,7 @@ export default {
     }
   },
   async mounted(){
-    this.hasPermission = await hasRolePermission();
+    this.yourPlayer = await getPlayer(this.yourPlayerIndex);
     const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
     const token = localStorage . getItem ( 'token' );
     this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/cashBoxModal?token=${token}`);
@@ -150,10 +150,20 @@ export default {
         console.error('error!',e);
     }
   },
+  computed:{
+    yourName(){
+        return this.yourPlayer?.name?this.yourPlayer.name:'';
+    },
+    isYourTurn(){
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        console.log("yourPlayer:",this.yourPlayer,"userInfo:",userInfo);
+        return this.yourPlayer?.userId === userInfo.id;
+    }
+  },
   watch:{
     showPayModal(nweValue,oldValue){
         console.log("newValue:",nweValue,"oldValue:",oldValue)
-        if(!this.hasPermission){
+        if(!this.isYourTurn){
             return;
         }
         //发送websocket给其他玩家。
@@ -169,6 +179,15 @@ export default {
         }catch(e){
             console.error(e);
         }
+    },
+    yourPlayerIndex(newVal,oldVal){
+        //本控件有可能没有经历过卸载再重载的过程，而是直接修改了 playerIndex。
+        console.log("yourPlayerIndex changed:",newVal,oldVal);
+        getPlayer(newVal).then((player)=>{
+            this.yourPlayer = player;
+        }).catch((error)=>{
+            console.error('Error fetching player:', error);
+        });
     }
   }
   
