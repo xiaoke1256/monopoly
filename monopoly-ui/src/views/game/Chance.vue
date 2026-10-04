@@ -9,10 +9,10 @@
     </div>
   </div>
   <div class="action-buttons">
-    <Button v-if="isBankrupt" :disabled="!hasPermission" size="large" @click="openBankruptModal" >宣布破产</Button>
-    <Button v-if="payAmount > 0" :disabled="isBankrupt || !hasPermission" type="primary" size="large" @click="confirmPayment">支付</Button>
-    <Button v-if="payAmount < 0 && otherPlayerIndex < 0" :disabled="!hasPermission" type="primary" size="large" @click="confirmPayment">领取</Button>
-    <Button v-if="!payAmount " :disabled="!hasPermission" type="primary" size="large" @click="confirmMsg">确定</Button>
+    <Button v-if="isBankrupt" :disabled="!isYourTurn" size="large" @click="openBankruptModal" >宣布破产</Button>
+    <Button v-if="payAmount > 0" :disabled="isBankrupt || !isYourTurn" type="primary" size="large" @click="confirmPayment">支付</Button>
+    <Button v-if="payAmount < 0 && otherPlayerIndex < 0" :disabled="!isYourTurn" type="primary" size="large" @click="confirmPayment">领取</Button>
+    <Button v-if="!payAmount " :disabled="!isYourTurn" type="primary" size="large" @click="confirmMsg">确定</Button>
   </div>
   <CashBoxModal :otherPlayerIndex="otherPlayerIndex" :yourPlayerIndex="yourPlayerIndex" :payAmount="payAmount" @confirmPay="pay" ref="cashBoxModal" />
   <GModal
@@ -27,7 +27,7 @@
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
 import Bankrupt from './Bankrupt.vue';
-import { getPlayerChance, consumeChance, hasRolePermission } from '@/api/gameApi.js';
+import { getPlayerChance, consumeChance, getPlayers } from '@/api/gameApi.js';
 import GModal from '@/components/Modal.vue';
 
 export default {
@@ -51,12 +51,14 @@ export default {
             payAmount:0,
             bankruptPlayerIndexs:[],
             showBankruptModal:false,
-            hasPermission:false,
+            players:[],
+            currentPlayerUserId:'',
         };
     },
     async mounted() {
         console.log("MessageComponent mounted");
-        this.hasPermission = await hasRolePermission();
+        this.players = await getPlayers();
+        this.currentPlayerUserId = this.players[this.playerIndex].userId
         this.loadChance();
     },
     methods: {
@@ -123,6 +125,14 @@ export default {
         isBankrupt(){
             return this.bankruptPlayerIndexs.includes(this.yourPlayerIndex)
         },
+        isYourTurn(){
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            if(this.yourPlayerIndex < 0){
+                return this.currentPlayerUserId=== userInfo.id;
+            }
+            return this.players[this.yourPlayerIndex].userId === userInfo.id;
+            
+        }
     }
 }
 </script>
