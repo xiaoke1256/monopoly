@@ -39,14 +39,11 @@ export default {
         playerIndex: {
             type: Number,
             default: -1
-        },
-        messageType: {
-            type: String,
-            default: ''
         }
     },
     data() {
         return {
+            messageType:'',
             content:'',
             otherPlayerIndex:-1,
             payAmount:0,
@@ -59,13 +56,14 @@ export default {
         this.hasPermission = await hasRolePermission();
         console.log("MessageComponent mounted");
         //从后台查找当前的消息。
-        getPlayerMessage(this.playerIndex,this.messageType).then((data) => {
+        getPlayerMessage(this.playerIndex).then((data) => {
             console.log("getPlayerMessage data:", data);
             if(!data.exists){
                 this.content = "暂无消息";
                 return;
             }
             this.content = data.message;
+            this.messageType = data.messageType;
             this.otherPlayerIndex = data.otherPlayerIndex||-1;
             this.payAmount = data.payAmount;
             this.bankruptPlayerIndexs = data.bankruptPlayerIndexs;
@@ -111,9 +109,6 @@ export default {
     },
     computed:{
         isBankrupt(){
-            console.log("触发了计算属性");
-            console.log("this.bankruptPlayerIndexs:",this.bankruptPlayerIndexs);
-            console.log("this.playerIndex:",this.playerIndex);
             return this.bankruptPlayerIndexs.includes(this.playerIndex)
         },
     }

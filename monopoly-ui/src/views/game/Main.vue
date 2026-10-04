@@ -33,7 +33,7 @@
         :show="showMessageModal"
         :playerIndex="currentPlayerIndex"
         title="消息">
-        <Message v-if="showMessageModal" :playerIndex="currentPlayerIndex" :messageType="messageType" @confirm="closeMessageModal" @bankrupted="afterBankrupt" />
+        <Message v-if="showMessageModal" :playerIndex="currentPlayerIndex" @confirm="closeMessageModal" @bankrupted="afterBankrupt" />
     </GModal> 
     <GModal
         :show="showSecurityCompanyModal"
@@ -104,7 +104,6 @@ export default {
       showChanceModal:false,
       showSuccessModal:false,
       currentPlayerUserId:'',
-      messageType:'',
       currentCell:{},
       rentOwner:{},
       rentAmount:0,
@@ -273,7 +272,6 @@ export default {
             console.log('显示消息:', data);
             //TODO 打开窗口之前检查一下 isYourTurn
             this.showMessageModal = true;
-            this.messageType = data.messageType
         }else if('question'===action){
             console.log('玩家抽取问答卡:', data);
             //TODO 打开窗口之前检查一下 isYourTurn
