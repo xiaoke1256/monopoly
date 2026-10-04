@@ -415,13 +415,13 @@ export default {
         this.checkStatus();
     },
     endTurn(){
+        this.closeAllModal();
         postEndTurn(this.currentPlayerIndex)
         .then(data => {
             console.log('回合结束:', data);
             // 处理回合结束后的逻辑，例如切换到下一个玩家
             this.currentPlayerIndex = data.currentPlayerIndex; // 更新当前玩家索引
             this.$refs.map.currentPlayerIndex = this.currentPlayerIndex;
-            this.closeAllModal()
             if(data.isGameOver){
                 this.showSuccessModal = true;
             }
