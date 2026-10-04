@@ -912,7 +912,6 @@ const getPlayerStatus = async (req, res) => {
 const getCurrentMessage = async (req, res) => {
     req.params.playerIndex = parseInt(req.params.playerIndex);
     const {playerIndex} = req.params;
-    const {messageType} =  req.query;
     try {
         const game = await queryCurrentGame(req);  
         const currentPlayer = game.players[playerIndex];
