@@ -358,8 +358,8 @@ export default {
         });
     },
     afterBankrupt(){
-        //this.showPayRentModal = false; //不需要刻意关闭模态框，将在endTurn函数中处理
-        //this.showMessageModal = false;
+        this.showPayRentModal = false;
+        this.showMessageModal = false;
         this.endTurn();
     },
     closeMessageModal({action, currentPlayerIndex,isWaiting,message}) {
@@ -375,7 +375,8 @@ export default {
                     return;
                 }
                 this.showMessageModal = false;
-                this.showDiceModal = true;
+                //this.showDiceModal = true;
+                this.checkStatus();
                 return;
             }
             //检查当前的状态
@@ -397,21 +398,21 @@ export default {
         
     },
     closeQuestionModal(){
-        //this.showQuestionModal = false;//不需要刻意关闭模态框，将在endTurn函数中处理
+        this.showQuestionModal = false;
         this.checkStatus();
     },
     closeChanceModal(){
-        //this.showChanceModal = false;//不需要刻意关闭模态框，将在endTurn函数中处理
+        this.showChanceModal = false;
         this.checkStatus();
     },
     afterSelectCell(){
-        this.showSecurityCompanyModal = false;//这里必须要明确关闭
+        this.showSecurityCompanyModal = false;
         //发送webSocket消息，要处理后续事务
         this.webSocket.send(JSON.stringify({action:'afterSecurityCompany',message:'镖局选择完毕',sessionId:localStorage.getItem('sessionId')}))
         this.handleDiceRolled();
     },
     closeSecurityCompany(){
-        //this.showSecurityCompanyModal = false;//不需要刻意关闭模态框，将在endTurn函数中处理
+        this.showSecurityCompanyModal = false;
         this.checkStatus();
     },
     endTurn(){
@@ -424,6 +425,7 @@ export default {
             this.$refs.map.currentPlayerIndex = this.currentPlayerIndex;
             if(data.isGameOver){
                 this.showSuccessModal = true;
+                return;
             }
             if(data.isWaiting){
                 this.onPlayerMoveComplete();
