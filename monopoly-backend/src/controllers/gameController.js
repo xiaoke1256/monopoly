@@ -138,7 +138,7 @@ const dice = async (req, res)=>{
     if(game){
         //检查是否有权限
         if(game.playerStatus !== 'before-dice'){
-            return res.status(400).json({ success:false,message:'游戏状态错误' });
+            return res.status(400).json({ success:false,message:'游戏状态错误',playerStatus:game.playerStatus });
         }
         game.currentDice = diceResult;
         game.playerStatus = 'after-dice';
