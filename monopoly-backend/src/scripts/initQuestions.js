@@ -241,7 +241,7 @@ const initQuestions = async () => {
         {
             mapId: existingMap._id,
             stem: '唐朝一共存在了多少年答对获得1200文',
-            options: ['289年', '300年', '289年', '250年', '200年', '150年'],
+            options: ['289年', '300年', '298年', '250年', '200年', '150年'],
             correctOption: '289年',
             reward: 1200
         },
