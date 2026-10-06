@@ -55,7 +55,7 @@ export default {
         });
     },
     unmounted(){
-        closeWebSocket();
+        closeWebSocket(this.webSocket);
     },
     methods: {
         confirmPayment(){

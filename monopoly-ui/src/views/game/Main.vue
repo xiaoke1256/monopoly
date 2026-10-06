@@ -205,6 +205,7 @@ export default {
             } else if (playerStatus==='after-dice'){
                 this.handleDiceRolled()
             } else if (playerStatus==='completed'){
+                this.closeAllModal();
                 this.endTurn();
             } else {
                 //先确保所有弹窗都关闭，
@@ -287,6 +288,8 @@ export default {
 
     },
     closeAllModal(){
+        console.log("关闭所有弹窗")
+        this.showDiceModal = false;
         this.showBuyPropertyModal = false;
         this.showUpgradePropertyModal = false;
         this.showMessageModal = false;
@@ -464,6 +467,7 @@ export default {
   },
   watch: {
     showDiceModal(newValue){
+        console.log("打开或关闭掷骰子弹窗:",newValue)
         console.log("newValue:",newValue)
         //发送websocket给其他玩家。
         this.sendWsOnModalChange('dice',newValue)

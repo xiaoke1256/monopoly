@@ -49,7 +49,8 @@ export default {
         }).catch((error) => {
             console.error('Error fetching player question:', error);
         });
-    },methods: {
+    },
+    methods: {
         selectOption(option) {
             this.selectedOption = option;
             if (option === this.correctOption) {
