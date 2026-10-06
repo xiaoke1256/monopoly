@@ -29,6 +29,7 @@ import CashBoxModal from './CashBoxModal.vue';
 import Bankrupt from './Bankrupt.vue';
 import { getPlayerChance, consumeChance, getPlayers } from '@/api/gameApi.js';
 import GModal from '@/components/Modal.vue';
+import { createWebSocket,closeWebSocket,send } from '@/util/socketUtils.js';
 
 export default {
     name: 'ChanceComponent',
@@ -53,13 +54,22 @@ export default {
             showBankruptModal:false,
             players:[],
             currentPlayerUserId:'',
+            webSocket: undefined,
         };
     },
     async mounted() {
+        this.webSocket = createWebSocket('/ws/game/chance',(data)=>{
+            if (data.action==='refreshChance'){
+                this.loadChance();
+            }
+        });
         console.log("MessageComponent mounted");
         this.players = await getPlayers();
         this.currentPlayerUserId = this.players[this.playerIndex].userId
         this.loadChance();
+    },
+    unmounted(){
+        closeWebSocket(this.webSocket);
     },
     methods: {
         loadChance() {
@@ -103,6 +113,8 @@ export default {
                 if(data.hasNext){
                     //还有下一笔支付
                     this.loadChance();
+                    // 发送websocket消息，通知其他玩家刷新机会卡
+                    send(this.webSocket,{action:'refreshChance'});
                 }else{
                     this.$emit('confirm',data);
                 }
@@ -127,9 +139,11 @@ export default {
         },
         isYourTurn(){
             const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            console.log("isYourTurn check:",this.yourPlayerIndex,this.currentPlayerUserId,userInfo.id);
             if(this.yourPlayerIndex < 0){
                 return this.currentPlayerUserId=== userInfo.id;
             }
+            console.log("isYourTurn check:",this.players[this.yourPlayerIndex],userInfo.id);
             return this.players[this.yourPlayerIndex].userId === userInfo.id;
             
         }

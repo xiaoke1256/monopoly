@@ -9,7 +9,8 @@ import {
     listenCashBoxModalMsg,
     listenCashBoxMsg,
     listenSecurityCompanyMsg,
-    listenCellSelectorMsg
+    listenCellSelectorMsg,
+    listenChanceMsg
 } from "./ws/gameWs.js";
 
 export function initWebSocket(app){
@@ -25,5 +26,6 @@ export function initWebSocket(app){
     app.ws('/ws/game/cashBox',listenCashBoxMsg);
     app.ws('/ws/game/securityCompany',listenSecurityCompanyMsg);
     app.ws('/ws/game/cellSelector',listenCellSelectorMsg);
+    app.ws('/ws/game/chance',listenChanceMsg);
     
 }

@@ -120,3 +120,7 @@ export const listenSecurityCompanyMsg = createWsHandle(gameSecurityCompanyWs,'se
 const gameCellSelectorWs = {};
 
 export const listenCellSelectorMsg = createWsHandle(gameCellSelectorWs,'cellSelectorWs')
+
+const gameChanceWs = {};
+
+export const listenChanceMsg = createWsHandle(gameChanceWs,'chanceWs')
