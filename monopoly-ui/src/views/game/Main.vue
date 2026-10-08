@@ -73,7 +73,7 @@ import Message from './Message.vue';
 import Chance from './Chance.vue';
 import Sucess from './Sucess.vue';
 import { getPlayerStatus,getDiceValue,movePlayer,onArrived,postEndTurn } from '@/api/gameApi.js';
-import { isValidJSON } from '../../util/jsonUtils'
+import { createWebSocket, closeWebSocket,send } from '../../util/socketUtils.js'
 
 export default {
   name: 'MainIndex',
@@ -114,68 +114,41 @@ export default {
   mounted() {
     this.checkStatus();
     //初始化webSocket
-    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const sessionId = localStorage.getItem('sessionId');
-    const token = localStorage . getItem ( 'token' );
-    this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/main?token=${token}`); 
-    this.webSocket.onopen=()=>{
-      console.log('WebSocket connected!');
-    };
-    this.webSocket.onmessage = async (event) => {
-      console.log('Received message:', event.data);
-      if(!isValidJSON(event.data)){
-        return;
-      }
-      const data = JSON.parse(event.data);
-      //如果是自己发送给自己则不处理
-      if(data.sessionId === sessionId){
-        return;
-      }
-      if (data.action==='showModal' ){
-        if(data.modal){
-            //打开窗口之前要刷新一下 playerIndex。
-            console.log("打开窗口之前刷新，刷新前玩家索引为:",this.currentPlayerIndex);
-            await this.$refs.map.refreshPlayerIndex();
-            console.log("打开窗口之前刷新，刷新后玩家索引为:",this.currentPlayerIndex);
-        }
+    this.webSocket = createWebSocket('/ws/game/main', async (data)=>{
+        if (data.action==='showModal' ){
+            if(data.modal){
+                //打开窗口之前要刷新一下 playerIndex。
+                console.log("打开窗口之前刷新，刷新前玩家索引为:",this.currentPlayerIndex);
+                await this.$refs.map.refreshPlayerIndex();
+                console.log("打开窗口之前刷新，刷新后玩家索引为:",this.currentPlayerIndex);
+            }
 
-        if( data.modalName==='dice'){
-            this.showDiceModal = data.modal
-        }else if( data.modalName==='payRent'){
-            this.showPayRentModal = data.modal
-        }else if(data.modalName==='buyProperty'){
-            this.showBuyPropertyModal = data.modal
-        }else if(data.modalName==='upgradeProperty'){
-            this.showUpgradePropertyModal = data.modal
-        }else if(data.modalName==='message'){
-            this.showMessageModal = data.modal
-        }else if(data.modalName==='question'){
-            this.showQuestionModal = data.modal
-        }else if(data.modalName==='chance'){
-            this.showChanceModal = data.modal
-        }else if(data.modalName==='securityCompany'){
-            this.showSecurityCompanyModal = data.modal
-        }else if(data.modalName==='success'){
-            this.showSuccessModal = data.modal
+            if( data.modalName==='dice'){
+                this.showDiceModal = data.modal
+            }else if( data.modalName==='payRent'){
+                this.showPayRentModal = data.modal
+            }else if(data.modalName==='buyProperty'){
+                this.showBuyPropertyModal = data.modal
+            }else if(data.modalName==='upgradeProperty'){
+                this.showUpgradePropertyModal = data.modal
+            }else if(data.modalName==='message'){
+                this.showMessageModal = data.modal
+            }else if(data.modalName==='question'){
+                this.showQuestionModal = data.modal
+            }else if(data.modalName==='chance'){
+                this.showChanceModal = data.modal
+            }else if(data.modalName==='securityCompany'){
+                this.showSecurityCompanyModal = data.modal
+            }else if(data.modalName==='success'){
+                this.showSuccessModal = data.modal
+            }
+        }else if(data.action==='afterSecurityCompany'){
+            this.handleDiceRolled();
         }
-      }else if(data.action==='afterSecurityCompany'){
-        this.handleDiceRolled();
-      }
-      
-    };
-    this.webSocket.onclose = () => {
-      console.log('WebSocket closed!');
-    };
-    this.webSocket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
+    });
   },
   unmounted(){
-    try{
-      this.webSocket.close();
-    }catch(e){
-      console.error(e);
-    }
+    closeWebSocket(this.webSocket);
     this.webSocket = undefined;
   },
   methods: {
@@ -411,7 +384,7 @@ export default {
     afterSelectCell(){
         this.showSecurityCompanyModal = false;
         //发送webSocket消息，要处理后续事务
-        this.webSocket.send(JSON.stringify({action:'afterSecurityCompany',message:'镖局选择完毕',sessionId:localStorage.getItem('sessionId')}))
+        send(this.webSocket,{action:'afterSecurityCompany',message:'镖局选择完毕',sessionId:localStorage.getItem('sessionId')})
         this.handleDiceRolled();
     },
     closeSecurityCompany(){
@@ -447,13 +420,12 @@ export default {
                 //先打日志，以后想办法实现重连机制
                 console.warn(`WebSocket is ${this.webSocket?.readyState}.`);
             }
-            this.webSocket.send(JSON.stringify(
-            {
+            send(this.webSocket,{
                 sessionId,
                 action:'showModal',
                 modalName,
                 modal:newModal
-            }));
+            });
         }catch(e){
             console.error(e);
         }
