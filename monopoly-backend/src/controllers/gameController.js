@@ -1074,6 +1074,13 @@ const consumeMessage = async (req, res) => {
     }
 };
 
+const getBankruptInfos = async (req, res)=>{
+    const game = await queryCurrentGame(req); 
+    const bankruptInfos = canBankrupt(game)
+    console.log("bankruptInfos:",bankruptInfos);
+    return res.json({ bankruptInfos: bankruptInfos });
+}
+
 const getBankruptInfo = async (req, res)=>{
     req.params.playerIndex = parseInt(req.params.playerIndex);
     const {playerIndex} = req.params;
@@ -1174,6 +1181,7 @@ export {
     answerQuestion,
     exchange,
     getBankruptInfo,
+    getBankruptInfos,
     bankrupt,
     getFinalPlayer
 };

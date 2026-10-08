@@ -310,6 +310,16 @@ export const getPayRentEvent = async ({playerIndex}) => {
     }
 }
 
+export const getBankruptInfos = async () => {
+    try {
+        const response = await axios.get(`/game/bankrupt-infos`);
+        return response.data;
+    } catch (error) {
+        console.error('Error geting for bankrupt info :', error);
+        throw error;
+    }
+}
+
 export const getBankruptInfo = async ({playerIndex}) => {
     try {
         const response = await axios.get(`/game/player/${playerIndex}/bankrupt`);
@@ -331,6 +341,7 @@ export const bankrupt = async ({playerIndex}) => {
         throw error;
     }
 }
+
 export const getFinalPlayer = async ()=>{
     try {
         const response = await axios.get('/game/player/final');

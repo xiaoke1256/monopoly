@@ -26,6 +26,7 @@ import { dice,
     cancelBuyPropertyAndEndTurn,
     cancelUpgradePropertyAndEndTurn,
     getBankruptInfo,
+    getBankruptInfos,
     bankrupt,
     getFinalPlayer,
     hasRoleOperPermission,
@@ -47,7 +48,6 @@ gameRouter.get('/hasRolePermission', hasRoleOperPermission);
 
 gameRouter.get('/players',getPlayers);
 gameRouter.get('/players/currentIndex',getCurrentPlayerIndex);
-gameRouter.get('/player/:playerIndex',getPlayerInfo);
 gameRouter.post('/player/:playerIndex/move', movePlayer);
 gameRouter.get('/player/:playerIndex/arrived', onArrived);
 gameRouter.post('/player/:playerIndex/payForProperty', payForPropertyAndEndTurn);
@@ -69,9 +69,12 @@ gameRouter.post('/player/:playerIndex/consumeMessage', consumeMessage);
 gameRouter.post('/player/:playerIndex/consumeChance',consumeChance);
 gameRouter.post('/player/:playerIndex/answerQuestion', answerQuestion);
 gameRouter.post('/player/:playerIndex/exchange', exchange);
-gameRouter.get('/player/:playerIndex/bankrupt',getBankruptInfo)
+gameRouter.get('/player/:playerIndex/bankrupt',getBankruptInfo);
+gameRouter.get('/bankrupt-infos',getBankruptInfos);
 gameRouter.post('/player/:playerIndex/bankrupt', bankrupt);
 gameRouter.get('/player/final', getFinalPlayer);
+
+gameRouter.get('/player/:playerIndex',getPlayerInfo);
 
 //以下与 websocket有关
 gameRouter.post('/ws/sendToMain', sendMsgToMain);

@@ -124,3 +124,7 @@ export const listenCellSelectorMsg = createWsHandle(gameCellSelectorWs,'cellSele
 const gameChanceWs = {};
 
 export const listenChanceMsg = createWsHandle(gameChanceWs,'chanceWs')
+
+const acceptBankruptWs = {};
+
+export const listenBankruptMsg = createWsHandle(acceptBankruptWs,'bankruptWs')

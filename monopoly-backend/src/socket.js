@@ -10,7 +10,8 @@ import {
     listenCashBoxMsg,
     listenSecurityCompanyMsg,
     listenCellSelectorMsg,
-    listenChanceMsg
+    listenChanceMsg,
+    listenBankruptMsg
 } from "./ws/gameWs.js";
 
 export function initWebSocket(app){
@@ -27,5 +28,6 @@ export function initWebSocket(app){
     app.ws('/ws/game/securityCompany',listenSecurityCompanyMsg);
     app.ws('/ws/game/cellSelector',listenCellSelectorMsg);
     app.ws('/ws/game/chance',listenChanceMsg);
+    app.ws('/ws/game/bankrupt',listenBankruptMsg);
     
 }

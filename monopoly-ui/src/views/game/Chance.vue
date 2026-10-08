@@ -9,33 +9,25 @@
     </div>
   </div>
   <div class="action-buttons">
-    <Button v-if="isBankrupt" :disabled="!isYourTurn" size="large" @click="openBankruptModal" >宣布破产</Button>
+    <Bankrupt :playerIndex="yourPlayerIndex" @close="closeBankruptModal" ref="bankruptModal" />
     <Button v-if="payAmount > 0" :disabled="isBankrupt || !isYourTurn" type="primary" size="large" @click="confirmPayment">支付</Button>
     <Button v-if="payAmount < 0 && otherPlayerIndex < 0" :disabled="!isYourTurn" type="primary" size="large" @click="confirmPayment">领取</Button>
     <Button v-if="!payAmount " :disabled="!isYourTurn" type="primary" size="large" @click="confirmMsg">确定</Button>
   </div>
   <CashBoxModal :otherPlayerIndex="otherPlayerIndex" :yourPlayerIndex="yourPlayerIndex" :payAmount="payAmount" @confirmPay="pay" ref="cashBoxModal" />
-  <GModal
-    :show="showBankruptModal"
-    :playerIndex="yourPlayerIndex"
-    title="破产"
-    >
-    <Bankrupt v-if="showBankruptModal" :playerIndex="yourPlayerIndex" @close="closeBankruptModal" />
-  </GModal>
 </template>
 <script>
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
 import Bankrupt from './Bankrupt.vue';
 import { getPlayerChance, consumeChance, getPlayers } from '@/api/gameApi.js';
-import GModal from '@/components/Modal.vue';
 import { createWebSocket,closeWebSocket,send } from '@/util/socketUtils.js';
 
 export default {
     name: 'ChanceComponent',
     emits: ['confirm'],
     components: {
-        Button,CashBoxModal,GModal,Bankrupt
+        Button,CashBoxModal,Bankrupt
     },
     props: {
         playerIndex: {
@@ -50,8 +42,6 @@ export default {
             otherPlayerIndex:-1,
             yourPlayerIndex:-1,
             payAmount:0,
-            bankruptPlayerIndexs:[],
-            showBankruptModal:false,
             players:[],
             currentPlayerUserId:'',
             webSocket: undefined,
@@ -78,7 +68,6 @@ export default {
                 console.log("getPlayerMessage data:", data);
                 this.title = data.title
                 this.content = data.description;
-                this.bankruptPlayerIndexs=data.bankruptPlayerIndexs;
                 const payments = data.payments;
                 const payment = payments.filter((p)=>!p.isPaid)[0];
                 if(payment){//需要支付
@@ -123,11 +112,7 @@ export default {
                 failCallback();
             });
         },
-        openBankruptModal(){
-            this.showBankruptModal = true;
-        },
         closeBankruptModal({message,endTurn,isGameOver}){
-            this.showBankruptModal = false;
             if(endTurn){
                 this.$emit('confirm',{message,endTurn,isGameOver});
             }
@@ -135,7 +120,7 @@ export default {
     },
     computed:{
         isBankrupt(){
-            return this.bankruptPlayerIndexs.includes(this.yourPlayerIndex)
+            return this.$refs.bankruptModal?.bankruptInfos.map((info) => info.playerIndex).includes(this.yourPlayerIndex)
         },
         isYourTurn(){
             const userInfo = JSON.parse(localStorage.getItem('userInfo'));

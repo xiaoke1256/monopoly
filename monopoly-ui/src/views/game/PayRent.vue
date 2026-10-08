@@ -21,26 +21,19 @@
         </div>
     </div>
     <CashBoxModal :otherPlayerIndex="owner.index" :yourPlayerIndex="playerIndex" :payAmount="rentAmount" @confirmPay="pay" ref="cashBoxModal" />
-    <GModal
-        :show="showBankruptModal"
-        :playerIndex="playerIndex"
-        title="破产"
-        >
-        <Bankrupt v-if="showBankruptModal" :playerIndex="playerIndex" @close="closeBankruptModal" />
-    </GModal>
+    <Bankrupt :playerIndex="playerIndex" @close="closeBankruptModal" ref="bankruptModal" />
 </template>
 <script>
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
 import Bankrupt from './Bankrupt.vue';
-import GModal from '@/components/Modal.vue';
 import { payRent,getPayRentEvent,hasRolePermission } from '../../api/gameApi.js'
 
 export default {
     name: 'PayRentComponent',
     emits: ['confirm', 'bankrupted'],
     components: {
-        Button,CashBoxModal,Bankrupt,GModal
+        Button,CashBoxModal,Bankrupt
     },
     props: {
         cell: {
@@ -62,7 +55,6 @@ export default {
     },
     data(){
         return {
-            showBankruptModal:false,
             bankruptPlayerIndexs:[],
             hasPermission:false,
         }
@@ -90,10 +82,10 @@ export default {
         },
         openBankruptModal(){
             console.log("点击了破产按钮")
-            this.showBankruptModal = true;
+            this.$refs.bankruptModal.show();
         },
         closeBankruptModal({message,endTurn,isGameOver}){
-            this.showBankruptModal = false;
+            this.$refs.bankruptModal.close();
             if(endTurn){
                 this.$emit('bankrupted',{message,action:endTurn?'endTurn':'',endTurn,isGameOver});
             }
