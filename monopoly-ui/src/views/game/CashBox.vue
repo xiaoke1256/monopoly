@@ -77,7 +77,7 @@
 import { animate } from 'animejs';
 import PlayerAvatar from '@/components/PlayerAvatar.vue';
 import { getPlayerMoney,getPlayer } from '../../api/gameApi.js';
-import { isValidJSON } from '../../util/jsonUtils'
+import { createWebSocket, closeWebSocket,send } from '../../util/socketUtils.js'
 
 export default {
     name: 'CashBoxComponent',
@@ -148,63 +148,35 @@ export default {
     async mounted(){
         console.log("mounted.....");
         this.yourPlayer = await getPlayer(this.yourPlayerIndex);
-        const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const token = localStorage . getItem ( 'token' );
-        this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/cashBox?token=${token}`);
-        this.webSocket.onopen=()=>{
-            console.log('WebSocket connected!');
-        };
-        this.webSocket.onmessage = async (event) => {
-            console.log('Received message:', event.data);
-            if(this.isYourTurn){
-                return;
-            }
-            if(!isValidJSON(event.data)){
-                return;
-            }
-            const data = JSON.parse(event.data);
-            const sessionId = localStorage.getItem('sessionId');
-            if (data.sessionId === sessionId) {
-                console.warn('收到了自己发给自己的消息');
-                return;
-            }
-            if (data.action==='selectMoney' ){
-                const {denomination,boxName,isUnSelect} = data;
-                let box = this.other;
-                if(boxName==='you'){
-                    box = this.you;
-                }
-                const boxSelect = box.selected;
-                if(!isUnSelect){
-                    boxSelect[`cash${denomination}`] ++;
-                }else{
-                    boxSelect[`cash${denomination}`] --;
-                }
-            }else if (data.action==='playAnimation') {
-                const {type} = data;
-                if (type === 'pay'){
-                    this.pay(()=>{console.log('pay 动画播放完成')});
-                } else if(type === 'exchange'){
-                    this.exchange(()=>{console.log('exchange 动画播放完成')});
-                }
+        this.webSocket = createWebSocket('/ws/game/cashBox',
+            (data)=>{
+                if (data.action==='selectMoney' ){
+                    const {denomination,boxName,isUnSelect} = data;
+                    let box = this.other;
+                    if(boxName==='you'){
+                        box = this.you;
+                    }
+                    const boxSelect = box.selected;
+                    if(!isUnSelect){
+                        boxSelect[`cash${denomination}`] ++;
+                    }else{
+                        boxSelect[`cash${denomination}`] --;
+                    }
+                }else if (data.action==='playAnimation') {
+                    const {type} = data;
+                    if (type === 'pay'){
+                        this.pay(()=>{console.log('pay 动画播放完成')});
+                    } else if(type === 'exchange'){
+                        this.exchange(()=>{console.log('exchange 动画播放完成')});
+                    }
 
+                }
             }
-            
-        };
-        this.webSocket.onclose = () => {
-            console.log('WebSocket closed!');
-        };
-        this.webSocket.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
+        );
         this.loadMoney();
     },
     unmounted(){
-        try{
-            this.webSocket.close();
-        }catch(e){
-            console.error('error!',e);
-        }
+        closeWebSocket(this.webSocket);
     },
     methods:{
         loadMoney(){
@@ -463,14 +435,13 @@ export default {
             }
             //发送ws消息
             const sessionId = localStorage.getItem('sessionId');
-            this.webSocket.send(JSON.stringify(
-            {
+            send(this.webSocket,{
                 sessionId,
                 action:'selectMoney',
                 denomination,
                 boxName,
                 isUnSelect
-            }));
+            });
         },
         selectOtherBox(denomination,currentIndex,isUnSelect=false,maxIndex){
             this.selectBox(denomination,currentIndex,isUnSelect,maxIndex,'other')
@@ -511,12 +482,11 @@ export default {
             this.$nextTick(()=>{
                                 //发送消息
                 const sessionId = localStorage.getItem('sessionId');
-                this.webSocket.send(JSON.stringify(
-                {
+                send(this.webSocket,{
                     sessionId,
                     action:'playAnimation',
                     type:'exchange'
-                }));
+                });
                 //把selected的货币记录下来，后面将作为callback的参数传递给父组件
                 const yourSelectedMoney = {...this.you.selected};
                 const otherSelectedMoney = {...this.other.selected};
@@ -556,12 +526,11 @@ export default {
             this.$nextTick(()=>{
                 //发送消息
                 const sessionId = localStorage.getItem('sessionId');
-                this.webSocket.send(JSON.stringify(
-                {
+                send(this.webSocket,{
                     sessionId,
                     action:'playAnimation',
                     type:'pay'
-                }));
+                });
                 //把selected的货币记录下来，后面将作为callback的参数传递给父组件
                 const yourSelectedMoney = {...this.you.selected};
                 const otherSelectedMoney = {...this.other.selected};

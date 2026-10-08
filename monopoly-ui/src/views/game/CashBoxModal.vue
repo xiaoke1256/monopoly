@@ -24,7 +24,7 @@
 import { Modal, Button } from 'view-ui-plus';
 import CashBox from './CashBox.vue';
 import { exchange,getPlayer } from '../../api/gameApi.js'
-import { isValidJSON } from '../../util/jsonUtils'
+import { createWebSocket, closeWebSocket,send } from '../../util/socketUtils.js'
 export default {
   name: 'MainIndex',
   emits: ['confirmPay'],
@@ -111,44 +111,19 @@ export default {
   },
   async mounted(){
     this.yourPlayer = await getPlayer(this.yourPlayerIndex);
-    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const token = localStorage . getItem ( 'token' );
-    this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/game/cashBoxModal?token=${token}`);
-    this.webSocket.onopen=()=>{
-      console.log('WebSocket connected!');
-    };
-    this.webSocket.onmessage = async (event) => {
-      console.log('Received message:', event.data);
-      if(!isValidJSON(event.data)){
-        return;
-      }
-      const data = JSON.parse(event.data);
-      const sessionId = localStorage.getItem('sessionId');
-      if (data.sessionId === sessionId) {
-        console.warn('收到了自己发给自己的消息');
-        return;
-      }
-      if (data.action==='showModal' ){
-        if(this.showPayModal!==data.modal){
-            this.showPayModal = data.modal
-        }
-        
-      }
-      
-    };
-    this.webSocket.onclose = () => {
-      console.log('WebSocket closed!');
-    };
-    this.webSocket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
+    this.webSocket = createWebSocket('/ws/game/cashBoxModal',
+        (data)=>{
+            if (data.action==='showModal' ){
+                if(this.showPayModal!==data.modal){
+                    this.showPayModal = data.modal
+                }
+                
+            }
+            
+        });
   },
   unmounted(){
-    try{
-        this.webSocket.close();
-    }catch(e){
-        console.error('error!',e);
-    }
+    closeWebSocket(this.webSocket);
   },
   computed:{
     yourName(){
@@ -169,12 +144,11 @@ export default {
         //发送websocket给其他玩家。
         try{
             const sessionId = localStorage.getItem('sessionId');
-            this.webSocket.send(JSON.stringify(
-            {
+            send(this.webSocket,{
                 sessionId,
                 action:'showModal',
                 modal:nweValue
-            }));
+            });
             console.log("发了消息了")
         }catch(e){
             console.error(e);
