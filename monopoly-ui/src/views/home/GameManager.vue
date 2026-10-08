@@ -32,7 +32,7 @@
             </FormItem>
             <FormItem label="玩家" prop="players">
               <div v-for="(player,index) in createForm.players" :key="index" class="player-row" >
-                <Poptip width="150" class="poptip-flex" placement="right" trigger="hover">
+                <Poptip width="150" class="poptip-flex" placement="right" trigger="hover" transfer>
                   <Select v-model="createForm.players[index].roleId" placeholder="请选择玩家角色"  >
                     <Option v-for="role in roles" :key="role.roleId" :value="role.roleId" >{{ role.name }}</Option>
                   </Select>
@@ -49,7 +49,7 @@
               </div>
               <div style="display:flex;flex-direction:row;justify-content:space-between;gap: 4px;">
                 <Button style="flex: 7;" type="dashed" long icon="md-add" @click="addPlayer" >新增玩家</Button>
-                <Poptip style="flex: 1;" trigger="hover" width="100" content="邀请码">
+                <Poptip style="flex: 1;" trigger="hover" width="100" content="邀请码" transfer>
                   <Button icon="md-barcode" :disabled="!createForm.mapId" @click="showRoomNo" ></Button>
                 </Poptip>
               </div>

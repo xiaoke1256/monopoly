@@ -1,6 +1,6 @@
 <template>
     <div v-if="otherPlayerIndex>=0" @click="switchBank" style="height: 8%;aspect-ratio: 1 / 1;position: absolute;z-index: 10;">
-        <Poptip trigger="hover" :content="exchangeing?'返回支付':'兑换现金'" placement="top">
+        <Poptip trigger="hover" :content="exchangeing?'返回支付':'兑换现金'" placement="top" transfer>
             <PlayerAvatar width="100%" :playerIndex="exchangeing?otherPlayerIndex:-1"></PlayerAvatar>
         </Poptip>
     </div>
