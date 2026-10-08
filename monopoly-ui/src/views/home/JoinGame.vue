@@ -15,10 +15,11 @@
         <div v-if="!!userName" class="row">
           <div style="flex:1">邀请玩家：</div><div style="flex:3" >{{ userName }}</div>
         </div>
-        <div v-if="!!mapId" class="row">
-          <Select v-model="roleId" placeholder="请选择玩家角色"  >
+        <div v-if="!!mapId" class="row" style="align-items: center;">
+          <Select v-model="roleId" placeholder="请选择玩家角色" style="flex:3">
             <Option v-for="role in roles" :key="role.roleId" :value="role.roleId" >{{ role.name }}</Option>
           </Select>
+          <img v-if="selectedRoleImage" :src="selectedRoleImage" class="role-preview-img" />
         </div>
       </div>
       <div class="actions">
@@ -31,6 +32,7 @@
 import { getMapById } from '../../api/mapApi';
 import {getGameInfoByTempRoomNo,postPayerToInviter } from '../../api/gameManageApi'
 import { useRoute } from 'vue-router'
+import { imageMap } from '../../util/imagesMap.js'
 
 export default {
   name: 'JoinGame',
@@ -95,6 +97,12 @@ export default {
       this.roles = map.roles;
       this.mapName = map.name;
     }
+  },
+  computed:{
+    selectedRoleImage(){
+      const role = this.roles.find(r => r.roleId === this.roleId);
+      return role ? imageMap[role.image] : null;
+    }
   }
 }
 </script>
@@ -110,5 +118,13 @@ export default {
     flex-direction: row;
     gap: 4px;
   }
+}
+
+.role-preview-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #f8fafc;
 }
 </style>

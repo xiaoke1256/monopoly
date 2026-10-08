@@ -37,7 +37,8 @@
                     <Option v-for="role in roles" :key="role.roleId" :value="role.roleId" >{{ role.name }}</Option>
                   </Select>
                   <template #content>
-                    <img v-if="getRoleImg(index)" style="width: 100%;aspect-ratio: 1 / 2 ; object-fit: contain " :src="getRoleImg(index)" />
+                    <Image v-if="getRoleImg(index)" style="width: 100%;aspect-ratio: 1 / 2 ; object-fit: contain " :src="getRoleImg(index)" />
+                    <Paragraph class="ivu-mt"></Paragraph>
                   </template>
                 </Poptip>
                 <Select v-if="createForm.players[index].type!=='other'" class="player-type-select" v-model="createForm.players[index].type"  >
