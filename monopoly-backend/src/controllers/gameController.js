@@ -1090,7 +1090,7 @@ const getBankruptInfo = async (req, res)=>{
     if(bankruptInfo){
         return res.json({...bankruptInfo,message:`${currentPlayer.name}需要支付${bankruptInfo.payAmount}文，目前仅有${bankruptInfo.totalCash}文现金。`});
     }else{
-        res.status(404).json({ playerIndex,message: '该玩家没有破产' });
+        res.json({ playerIndex,message: '该玩家没有破产' });
     }
         
 }

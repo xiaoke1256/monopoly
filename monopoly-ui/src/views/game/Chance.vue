@@ -9,12 +9,13 @@
     </div>
   </div>
   <div class="action-buttons">
-    <Bankrupt :playerIndex="yourPlayerIndex" @close="closeBankruptModal" ref="bankruptModal" />
+    <Button v-if="isBankrupt" :disabled="!isYourTurn" size="large" @click="openBankruptModal" >宣布破产</Button>
     <Button v-if="payAmount > 0" :disabled="isBankrupt || !isYourTurn" type="primary" size="large" @click="confirmPayment">支付</Button>
     <Button v-if="payAmount < 0 && otherPlayerIndex < 0" :disabled="!isYourTurn" type="primary" size="large" @click="confirmPayment">领取</Button>
     <Button v-if="!payAmount " :disabled="!isYourTurn" type="primary" size="large" @click="confirmMsg">确定</Button>
   </div>
   <CashBoxModal :otherPlayerIndex="otherPlayerIndex" :yourPlayerIndex="yourPlayerIndex" :payAmount="payAmount" @confirmPay="pay" ref="cashBoxModal" />
+  <Bankrupt :playerIndex="yourPlayerIndex" @close="closeBankruptModal" ref="bankruptModal" />
 </template>
 <script>
 import { Button } from 'view-ui-plus';
@@ -112,6 +113,10 @@ export default {
                 failCallback();
             });
         },
+        openBankruptModal(){
+            console.log("点击了破产按钮")
+            this.$refs.bankruptModal.show();
+        },
         closeBankruptModal({message,endTurn,isGameOver}){
             if(endTurn){
                 this.$emit('confirm',{message,endTurn,isGameOver});
@@ -120,6 +125,7 @@ export default {
     },
     computed:{
         isBankrupt(){
+            console.log("isBankrupt check:",this.$refs.bankruptModal?.bankruptInfos,this.yourPlayerIndex);
             return this.$refs.bankruptModal?.bankruptInfos.map((info) => info.playerIndex).includes(this.yourPlayerIndex)
         },
         isYourTurn(){

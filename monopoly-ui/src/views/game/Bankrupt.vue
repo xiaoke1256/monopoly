@@ -54,9 +54,12 @@ export default {
             console.log("getBankruptInfos data:", data);
             this.bankruptInfos = data.bankruptInfos;
             console.log("this.playerIndex:",this.playerIndex);
-            getBankruptInfo({playerIndex: this.playerIndex}).then((bankruptInfo)=>{
-                this.bankruptMessage = `${bankruptInfo?.message}确认要宣布破产？` || '确认要宣布破产？';
-            });
+            if(this.bankruptInfos.some((info)=>info.playerIndex===this.playerIndex)){
+                getBankruptInfo({playerIndex: this.playerIndex}).then((bankruptInfo)=>{
+                    this.bankruptMessage = `${bankruptInfo?.message}确认要宣布破产？` || '确认要宣布破产？';
+                });
+            }
+            
         });
         getPlayers().then((players)=>{
             this.players = players;
