@@ -128,3 +128,7 @@ export const listenChanceMsg = createWsHandle(gameChanceWs,'chanceWs')
 const acceptBankruptWs = {};
 
 export const listenBankruptMsg = createWsHandle(acceptBankruptWs,'bankruptWs')
+
+const successWs = {};
+
+export const listenSuccessMsg = createWsHandle(successWs,'successWs')

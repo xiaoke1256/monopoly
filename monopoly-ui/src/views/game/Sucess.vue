@@ -14,6 +14,7 @@
 <script>
 import { Button } from 'view-ui-plus';
 import { getFinalPlayer } from '@/api/gameApi.js';
+import { createWebSocket,closeWebSocket,send } from '@/util/socketUtils.js';
 
 export default {
     name: 'SuccessComponent',
@@ -23,17 +24,27 @@ export default {
     data() {
         return {
             content:'',
-            player:{}
+            player:{},
+            webSocket: undefined,
         };
     },
     async mounted() {
+        this.webSocket = createWebSocket('/ws/game/success',(data)=>{
+            if (data.action==='toHome'){
+                this.$router.push('/')
+            }
+        });
         const player = await getFinalPlayer();
         this.player = player;
         this.content = `${player.name}取得了最终胜利！`;
     },
+    unmounted(){
+        closeWebSocket(this.webSocket);
+    },
     methods: {
         returnMain(){
-            this.$router.push('/')
+            this.$router.push('/');
+            send(this.webSocket,{action:'toHome'});
         }
     }
 }
