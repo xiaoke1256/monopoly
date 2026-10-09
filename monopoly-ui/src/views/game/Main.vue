@@ -35,7 +35,7 @@
         :show="showPayRentModal"
         :playerIndex="currentPlayerIndex"
         title="支付租金">
-        <PayRent v-if="showPayRentModal" :cell="currentCell" :owner="rentOwner" :playerIndex="currentPlayerIndex" :rentAmount="rentAmount" @confirm="afterPayRent" @bankrupted="afterBankrupt" />
+        <PayRent v-if="showPayRentModal" :playerIndex="currentPlayerIndex" @confirm="afterPayRent" @bankrupted="afterBankrupt" />
     </GModal> 
     <GModal
         :show="showMessageModal"
@@ -116,8 +116,6 @@ export default {
       showSuccessModal:false,
       currentPlayerUserId:'',
       currentCell:{},
-      rentOwner:{},
-      rentAmount:0,
       currentPlayerIndex: 0,
       webSocket: undefined,
     };
@@ -129,9 +127,7 @@ export default {
         if (data.action==='showModal' ){
             if(data.modal){
                 //打开窗口之前要刷新一下 playerIndex。
-                console.log("打开窗口之前刷新，刷新前玩家索引为:",this.currentPlayerIndex);
                 await this.$refs.map.refreshPlayerIndex();
-                console.log("打开窗口之前刷新，刷新后玩家索引为:",this.currentPlayerIndex);
             }
 
             if( data.modalName==='dice'){
@@ -239,10 +235,6 @@ export default {
 
         }else if('payRent'===action){
             console.log('玩家需要支付租金');
-            this.currentCell = data.cell;
-            this.rentOwner = data.owner;
-            console.log("this.rentOwner:",this.rentOwner);
-            this.rentAmount = data.rentAmount;
             //TODO 打开窗口之前检查一下 isYourTurn
             this.showPayRentModal = true;
         }else if('passGo'===action){
@@ -329,7 +321,7 @@ export default {
         console.log('支付租金成功:', {action, message, currentPlayerIndex,isWaiting});
         this.$Modal.success({
             title: '支付成功',
-            content: `您已成功支付租金 ${this.rentAmount} 文！`,
+            content: message,
             onOk: () => {
                 this.$refs.map.fetchMapData();
                 if(action==='endTurn'){

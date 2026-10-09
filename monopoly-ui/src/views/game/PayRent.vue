@@ -36,33 +36,27 @@ export default {
         Button,CashBoxModal,Bankrupt
     },
     props: {
-        cell: {
-            type: Object,
-            default: () => ({})
-        },
-        owner: {
-            type: Object,
-            default: () => ({})
-        },
         playerIndex: {
             type: Number,
             default: -1
-        },
-        rentAmount: {
-            type: Number,
-            default: 0
         }
     },
     data(){
         return {
             bankruptPlayerIndexs:[],
             hasPermission:false,
+            cell:{},
+            owner:{},
+            rentAmount:0,
         }
     },
     async mounted(){
         console.log("mounted");
         this.payAmount = this.rentAmount;
         const eventInfo = await getPayRentEvent({playerIndex:this.playerIndex});
+        this.cell = eventInfo.cell;
+        this.owner = eventInfo.owner;
+        this.rentAmount = eventInfo.payAmount;
         this.bankruptPlayerIndexs = eventInfo.bankruptPlayerIndexs
         this.hasPermission = await hasRolePermission()
     },
