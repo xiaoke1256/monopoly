@@ -71,7 +71,7 @@ export const register = async (req, res) => {
 // 登录
 export const login = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, roomNo } = req.body;
 
     if (!username || !password) {
       return res.status(400).json({ success: false, message: '用户名和密码均为必填项' });
@@ -89,8 +89,18 @@ export const login = async (req, res) => {
       return res.status(400).json({ success: false, message: '用户名或密码错误' });
     }
 
+    let gameId = null;
+    if (roomNo) {
+      // 检查房间号是否存在
+      const game = await Game.findOne({ roomNo });
+      if (!game) {
+        return res.status(400).json({ success: false, message: '无效的房间号' });
+      }
+      gameId = game._id;
+    }
+
     // 生成 sessionId 并存库
-    const sessionId = await createSession(user._id);
+    const sessionId = await createSession(user._id, gameId);
 
     // 生成 token
     const token = jwt.sign(
@@ -105,6 +115,7 @@ export const login = async (req, res) => {
       data: {
         token,
         sessionId,
+        gameId,
         user: { id: user._id, username: user.username, nickname: user.nickname },
       },
     });

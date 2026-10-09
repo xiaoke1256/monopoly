@@ -18,11 +18,12 @@ export const register = async ({ username, password, nickname }) => {
   }
 };
 
-export const login = async ({ username, password }) => {
+export const login = async ({ username, password, roomNo }) => {
   try {
     const response = await axios.post('/user/login', {
       username,
       password,
+      roomNo,
     });
     return response.data;
   } catch (error) {

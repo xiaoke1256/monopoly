@@ -7,7 +7,7 @@
         width="520">
         <template #header>
             <div style="display:flex;align-items:center;gap:12px;">
-                <PlayerAvatar :playerIndex="playerIndex" />
+                <PlayerAvatar v-if="playerIndex>=0" :playerIndex="playerIndex" />
                 <span style="font-size:20px;font-weight:600;color:#2d8cf0;">{{ title }}</span>
             </div>
         </template>
@@ -29,7 +29,8 @@ export default {
         },
         playerIndex: {
             type: Number,
-            required: true
+            required: true,
+            default: -1
         },
         closable: {
             type: Boolean,

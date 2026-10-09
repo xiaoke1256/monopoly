@@ -3,6 +3,14 @@
         <Map ref="map" @game-loaded="onGameLoaded"/>
     </div>
     <Button v-if="!showDiceModal && isYourTurn" style="position:absolute;bottom:0;right:0" type="primary" @click="showDiceModal=true" size="large">Continue</Button>
+    <Button v-if="!showDiceModal && isYourTurn" style="position:absolute;top:0;right:0" type="primary" @click="showRoomNoModal=true" size="large">房间号</Button>
+    <GModal
+        :show="showRoomNoModal"
+        :maskClosable="true"
+        @update:show="showRoomNoModal = $event"
+        title="房间号">
+        <RoomNo/>
+    </GModal> 
     <GModal
         :show="showDiceModal"
         :maskClosable="isYourTurn"
@@ -74,10 +82,12 @@ import Chance from './Chance.vue';
 import Sucess from './Sucess.vue';
 import { getPlayerStatus,getDiceValue,movePlayer,onArrived,postEndTurn } from '@/api/gameApi.js';
 import { createWebSocket, closeWebSocket,send } from '../../util/socketUtils.js'
+import RoomNo from './RoomNo.vue';
 
 export default {
   name: 'MainIndex',
   components: {
+    RoomNo,
     Dice,
     Map,
     BuyProperty,
@@ -94,6 +104,7 @@ export default {
   },
   data() {
     return {
+      showRoomNoModal:false,
       showDiceModal:false,
       showBuyPropertyModal:false,
       showUpgradePropertyModal:false,

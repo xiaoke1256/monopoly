@@ -91,6 +91,16 @@ const getCurrentGame = async (req, res) => {
     }
 };
 
+const getCurrentRoomNo = async (req, res) => {
+    try {
+        const game = await queryCurrentGame(req);
+        return res.json({ roomNo: game.roomNo });
+    } catch (error) {
+        console.error('Error fetching current room number:', error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
 /**
  * 当前用是否有当前角色的操作权限？
  */
@@ -1153,6 +1163,7 @@ const getFinalPlayer = async (req, res)=>{
 export {
     dice,
     getCurrentGame,
+    getCurrentRoomNo,
     hasRoleOperPermission,
     getPlayerInfo,
     getCurrentPlayerIndex,

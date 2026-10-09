@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { dice,
     getCurrentGame,
+    getCurrentRoomNo,
     getCurrentDice,
     movePlayer,
     getPlayers,
@@ -42,6 +43,7 @@ const gameRouter = new Router();
 
 gameRouter.post('/dice', dice);
 gameRouter.get('/current', getCurrentGame);
+gameRouter.get('/current/room-no', getCurrentRoomNo);
 gameRouter.get('/player-status', getPlayerStatus);
 gameRouter.get('/dice-value', getCurrentDice);
 gameRouter.get('/hasRolePermission', hasRoleOperPermission);

@@ -9,6 +9,9 @@
         <FormItem label="密码" prop="password">
           <Input v-model="form.password" type="password" placeholder="请输入密码" show-password />
         </FormItem>
+        <FormItem v-if="form.roomNo" prop="roomNo">
+          登录后将自动加入房间 {{ form.roomNo }}
+        </FormItem>
         <FormItem>
           <Button type="primary" :loading="loading" @click="handleLogin" long>登录</Button>
         </FormItem>
@@ -23,6 +26,7 @@
 
 <script>
 import { login } from '@/api/authApi';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'LoginIndex',
@@ -32,6 +36,7 @@ export default {
       form: {
         username: '',
         password: '',
+        roomNo: '',
       },
       rules: {
         username: [
@@ -43,6 +48,13 @@ export default {
         ],
       },
     };
+  },
+  mounted() {
+    const route = useRoute()
+    if(route.query.roomNo) {
+      this.form.roomNo = route.query.roomNo
+      
+    }
   },
   methods: {
     async handleLogin() {
@@ -58,7 +70,11 @@ export default {
           localStorage.setItem('userInfo', JSON.stringify(res.data.user));
           this.$Message.success('登录成功');
           //跳转向游戏选择页面
-          this.$router.push('/gameManage');
+          if (res.data.gameId) {
+            this.$router.push(`/game`);
+          } else {
+            this.$router.push('/gameManage');
+          }
         } else {
           this.$Message.error(res.message || '登录失败');
         }

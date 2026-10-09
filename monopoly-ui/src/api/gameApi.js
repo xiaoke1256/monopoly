@@ -22,6 +22,16 @@ export const getCurrentGame = async ()=>{
     }
 } 
 
+export const getCurrentRoomNo = async ()=>{
+    try {
+        const response = await axios.get(`/game/current/room-no`);
+        return response.data.roomNo;
+    } catch (error) {
+        console.error('Error fetching current room number:', error);
+        throw error;
+    }
+}
+
 export const dice = async ()=>{
     try {
         const response = await axios.post(`/game/dice`);
