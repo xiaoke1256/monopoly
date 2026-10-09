@@ -165,9 +165,9 @@ export default {
                 }else if (data.action==='playAnimation') {
                     const {type} = data;
                     if (type === 'pay'){
-                        this.pay(()=>{console.log('pay 动画播放完成')});
+                        this.pay(()=>{console.log('pay 动画播放完成')},true);
                     } else if(type === 'exchange'){
-                        this.exchange(()=>{console.log('exchange 动画播放完成')});
+                        this.exchange(()=>{console.log('exchange 动画播放完成')},true);
                     }
 
                 }
@@ -449,7 +449,7 @@ export default {
         unSelectOtherBox(denomination,currentIndex,maxIndex){
             this.selectOtherBox(denomination,currentIndex,true,maxIndex);
         },
-        exchange(callback){
+        exchange(callback,callBySocket=false){
             console.log("callback.....");
             //交易之前先抵消同面值货币
             for(let denomination of [1,20,100,200,500,1000,2000,5000]){
@@ -481,19 +481,19 @@ export default {
 
             this.$nextTick(()=>{
                                 //发送消息
-                const sessionId = localStorage.getItem('sessionId');
-                send(this.webSocket,{
-                    sessionId,
-                    action:'playAnimation',
-                    type:'exchange'
-                });
+                if(!callBySocket){
+                    send(this.webSocket,{
+                        action:'playAnimation',
+                        type:'exchange'
+                    });
+                }
                 //把selected的货币记录下来，后面将作为callback的参数传递给父组件
                 const yourSelectedMoney = {...this.you.selected};
                 const otherSelectedMoney = {...this.other.selected};
                 this.payFrom(undefined,({...params})=>callback({...params,yourSelectedMoney,otherSelectedMoney}));
             });
         },
-        pay(callback){
+        pay(callback,callBySocket=false){
             console.log("pay.....");
             //交易之前先抵消同面值货币
             for(let denomination of [1,20,100,200,500,1000,2000,5000]){
@@ -525,12 +525,12 @@ export default {
             
             this.$nextTick(()=>{
                 //发送消息
-                const sessionId = localStorage.getItem('sessionId');
-                send(this.webSocket,{
-                    sessionId,
-                    action:'playAnimation',
-                    type:'pay'
-                });
+                if(!callBySocket){
+                    send(this.webSocket,{
+                        action:'playAnimation',
+                        type:'pay'
+                    });
+                }
                 //把selected的货币记录下来，后面将作为callback的参数传递给父组件
                 const yourSelectedMoney = {...this.you.selected};
                 const otherSelectedMoney = {...this.other.selected};
