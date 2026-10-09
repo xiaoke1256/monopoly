@@ -113,6 +113,15 @@ export default {
   color: #333;
   font-size: 24px;
 }
+@media (orientation: landscape) and (max-width: 960px) {
+  .title {
+    font-size: 20px;
+    margin-bottom: 28px;
+  }
+  .ivu-form-item {
+    margin-bottom: 12px;
+  }
+}
 
 .form {
   margin-top: 20px;
