@@ -23,3 +23,9 @@ body, html {
 .actions {
   margin-top: 8px;
 }
+
+@media (orientation: landscape) and (max-width: 960px) {
+  .ivu-form-item {
+    margin-bottom: 12px;
+  }
+}
