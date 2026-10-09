@@ -313,6 +313,14 @@ const initMap = async () => {
             }else if(cell.type==='question'){
                 cell.buildingImage='question2'
             }
+        }else if (cell.type === 'go') {
+            cell.buildingImage = 'building3';
+        }else if (cell.type === 'hospital') {
+            cell.buildingImage = 'building3';
+        }else if (cell.type === 'jail') {
+            cell.buildingImage = 'building4';
+        }else if (cell.type === 'security-company') {
+            cell.buildingImage = 'building4';
         }
     });
 
