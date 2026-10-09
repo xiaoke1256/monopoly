@@ -4,6 +4,7 @@
         footer-hide
         :closable="closable"
         :mask-closable="maskClosable"
+        class-name="vertical-center-modal"
         width="520">
         <template #header>
             <div style="display:flex;align-items:center;gap:12px;">
