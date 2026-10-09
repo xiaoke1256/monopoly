@@ -729,7 +729,7 @@ const getPayRentEvent = async (req, res)=>{
     }
     const cellPosition = event.cellPosition;
     const cell = game.cells[cellPosition];
-    const owner = game.players.find(p => String(p.id) === String(cell.owner));
+    const owner = game.players.map((p, i) => ({ name: p.name,id: p.id, index: i })).find(p => String(p.id) === String(cell.owner));
     const payAmount = event.payAmount;
     // 检查是否会造成玩家破产
     const bankruptPlayerIndexs = canBankrupt(game).map(p=>p.playerIndex);
@@ -776,9 +776,9 @@ const payRentAndEndTurn = async (req, res) => {
     //检查切换后玩家是否处于暂停状态？
     const newPlayer = game.players[game.currentPlayerIndex];
     if (newPlayer.waitingRound>0){
-        return res.json({ action: 'endTurn', message: `您已成功支付租金 ${this.rentAmount} 文！`, isWaiting:true, currentPlayerIndex: game.currentPlayerIndex });
+        return res.json({ action: 'endTurn', message: `您已成功支付租金 ${rentAmount} 文！`, isWaiting:true, currentPlayerIndex: game.currentPlayerIndex });
     }
-    return res.json({ action: 'endTurn', message: `您已成功支付租金 ${this.rentAmount} 文！`, currentPlayerIndex: game.currentPlayerIndex });
+    return res.json({ action: 'endTurn', message: `您已成功支付租金 ${rentAmount} 文！`, currentPlayerIndex: game.currentPlayerIndex });
 }
 
 const payForSecurityCompany = async (req, res) => {

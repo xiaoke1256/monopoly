@@ -12,7 +12,7 @@
             </div>
             <div class="info-row">
                 <span class="info-label">支付租金</span>
-                <span class="info-value rent">{{ rentAmount }}文</span>
+                <span class="info-value rent">{{ rentAmount }}文 {{ playerIndex }}</span>
             </div>
         </div>
         <div class="action-buttons">
@@ -65,7 +65,7 @@ export default {
             this.$refs.cashBoxModal.show();
         },
         pay({yourSelectedMoney,otherSelectedMoney,successCallback,failCallback}){
-            payRent({yourSelectedMoney, otherSelectedMoney}).then(({action, message, currentPlayerIndex, isWaiting})=>{
+            payRent({playerIndex:this.playerIndex, yourSelectedMoney, otherSelectedMoney}).then(({action, message, currentPlayerIndex, isWaiting})=>{
                 successCallback();
                 this.$emit('confirm', { action, message, currentPlayerIndex, isWaiting }); //执行结果传给父页面
             }).catch((err)=>{
