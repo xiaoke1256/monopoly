@@ -12,7 +12,7 @@
             </div>
             <div class="info-row">
                 <span class="info-label">支付租金</span>
-                <span class="info-value rent">{{ rentAmount }}文 {{ playerIndex }}</span>
+                <span class="info-value rent">{{ rentAmount }}文</span>
             </div>
         </div>
         <div class="action-buttons">

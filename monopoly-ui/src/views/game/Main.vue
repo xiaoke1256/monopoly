@@ -23,13 +23,13 @@
         :show="showBuyPropertyModal"
         :playerIndex="currentPlayerIndex"
         title="购买店铺">
-        <BuyProperty v-if="showBuyPropertyModal" :cell="currentCell" :playerIndex="currentPlayerIndex" @confirm="afterPayForProperty" @cancel="afterCancelForProperty" />
+        <BuyProperty v-if="showBuyPropertyModal" :playerIndex="currentPlayerIndex" @confirm="afterPayForProperty" @cancel="afterCancelForProperty" />
     </GModal> 
     <GModal
         :show="showUpgradePropertyModal"
         :playerIndex="currentPlayerIndex"
         title="升级店铺">
-        <BuyProperty v-if="showUpgradePropertyModal" :cell="currentCell" :playerIndex="currentPlayerIndex" :forUpgrade="true" @confirm="afterPayForProperty" @cancel="afterCancelForProperty" />
+        <BuyProperty v-if="showUpgradePropertyModal" :playerIndex="currentPlayerIndex" :forUpgrade="true" @confirm="afterPayForProperty" @cancel="afterCancelForProperty" />
     </GModal> 
     <GModal
         :show="showPayRentModal"
@@ -115,7 +115,6 @@ export default {
       showChanceModal:false,
       showSuccessModal:false,
       currentPlayerUserId:'',
-      currentCell:{},
       currentPlayerIndex: 0,
       webSocket: undefined,
     };
@@ -221,15 +220,11 @@ export default {
         if('buyProperty'===action){
             // 处理购买地产逻辑
             console.log('玩家可以购买地产');
-            // 打开购买地产的弹窗
-            this.currentCell = data.cell;
             //TODO 打开窗口之前检查一下 isYourTurn
             this.showBuyPropertyModal = true;
         }else if ('upgradeProperty'===action) {
             // 处理升级地产逻辑
             console.log('玩家可以升级地产');   
-            // 打开升级地产的弹窗
-            this.currentCell = data.cell;
             //TODO 打开窗口之前检查一下 isYourTurn
             this.showUpgradePropertyModal = true;
 

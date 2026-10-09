@@ -561,6 +561,21 @@ const endTurn = async (req, res) => {
     return res.json({ action: 'endTurn', message: 'Turn ended', isGameOver , currentPlayerIndex: game.currentPlayerIndex });
 }
 
+const getPayForPropertyEvent = async (req, res)=>{
+    const game = await queryCurrentGame(req); 
+    const currentPlayerIndex = game.currentPlayerIndex ;
+    console.log(`Player at index ${currentPlayerIndex} paying rent`);  
+    const currentPlayer = game.players[currentPlayerIndex];
+    const event = game.events[0]
+    if(!event || event.actionType !== 'buyProperty'){
+        return res.status(404).json({ message: 'can not find buyProperty type event!' });
+    }
+    const cellPosition = event.cellPosition;
+    const cell = game.cells[cellPosition];
+    const payAmount = event.payAmount;
+    return res.json({...event.toObject({ getters: true }), cell, payAmount});
+}
+
 const payForPropertyAndEndTurn = async (req, res) => {
     const game = await queryCurrentGame(req); 
     //TODO 检查 game.playerStatus
@@ -663,6 +678,21 @@ const cancelUpgradePropertyAndEndTurn = async (req, res) => {
         return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex,forUpgrade:true,currentPlayerUserId });
     }
     return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex,forUpgrade:true,currentPlayerUserId });
+}
+
+const getPayForUpgradePropertyEvent = async (req, res)=>{
+    const game = await queryCurrentGame(req); 
+    const currentPlayerIndex = game.currentPlayerIndex ;
+    console.log(`Player at index ${currentPlayerIndex} paying rent`);  
+    const currentPlayer = game.players[currentPlayerIndex];
+    const event = game.events[0]
+    if(!event || event.actionType !== 'upgradeProperty'){
+        return res.status(404).json({ message: 'can not find upgradeProperty type event!' });
+    }
+    const cellPosition = event.cellPosition;
+    const cell = game.cells[cellPosition];
+    const payAmount = event.payAmount;
+    return res.json({...event.toObject({ getters: true }), cell, payAmount});
 }
 
 const payForUpgradePropertyAndEndTurn = async (req, res) => {
@@ -1177,8 +1207,10 @@ export {
     getPlayerStatus,
     onArrived,
     endTurn,
+    getPayForPropertyEvent,
     payForPropertyAndEndTurn,
     cancelBuyPropertyAndEndTurn,
+    getPayForUpgradePropertyEvent,
     payForUpgradePropertyAndEndTurn,
     cancelUpgradePropertyAndEndTurn,
     payRentAndEndTurn,

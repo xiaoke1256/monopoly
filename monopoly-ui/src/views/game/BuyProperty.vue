@@ -29,7 +29,7 @@
 <script>
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
-import { payForProperty , payForUpgradeProperty , cancelForProperty , cancelUpgradeProperty , hasRolePermission } from '../../api/gameApi.js'
+import { payForProperty , payForUpgradeProperty , cancelForProperty , cancelUpgradeProperty , hasRolePermission , getPayForPropertyEvent , getPayForUpgradePropertyEvent } from '../../api/gameApi.js'
 export default {
     name: 'BuyPropertyComponent',
     emits: ['confirm', 'cancel'],
@@ -37,10 +37,6 @@ export default {
         Button,CashBoxModal
     },
     props: {
-        cell: {
-            type: Object,
-            default: () => ({})
-        },
         forUpgrade: {
             type: Boolean,
             default: false
@@ -53,10 +49,19 @@ export default {
     data(){
         return {
             hasPermission:false,
+            cell:{},
         }
     },
     async mounted(){
         this.hasPermission = await hasRolePermission();
+        if (this.forUpgrade) {
+            console.log("forUpgrade");
+            this.cell = await getPayForUpgradePropertyEvent({playerIndex: this.playerIndex});
+        } else {
+            console.log("forBuy");
+            this.cell = await getPayForPropertyEvent({playerIndex: this.playerIndex});
+        }
+        
     },
     methods: {
         confirmPurchase() {

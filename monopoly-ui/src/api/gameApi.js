@@ -184,6 +184,25 @@ export const consumeChance = async ({playerIndex,yourSelectedMoney,otherSelected
     }
 };
 
+export const getPayForPropertyEvent = async ({playerIndex}) => {
+    try {
+        const response = await axios.get(`/game/player/${playerIndex}/payForPropertyEvent`);    
+        return response.data?.cell;
+    } catch (error) {
+        console.error('Error fetching pay for property event:', error);
+        throw error;
+    }
+}
+
+export const getPayForUpgradePropertyEvent = async ({playerIndex}) => {
+    try {
+        const response = await axios.get(`/game/player/${playerIndex}/payForUpgradePropertyEvent`);
+        return response.data?.cell;
+    } catch (error) {
+        console.error('Error fetching pay for upgrade property event:', error);
+        throw error;
+    }
+}
 
 export const payRent = async ({playerIndex, rentAmount,yourSelectedMoney, otherSelectedMoney}) => {
     try {

@@ -7,7 +7,9 @@ import { dice,
     getPlayers,
     onArrived,
     endTurn,
+    getPayForPropertyEvent,
     payForPropertyAndEndTurn,
+    getPayForUpgradePropertyEvent,
     payForUpgradePropertyAndEndTurn,
     getPayRentEvent,
     payRentAndEndTurn,
@@ -52,8 +54,10 @@ gameRouter.get('/players',getPlayers);
 gameRouter.get('/players/currentIndex',getCurrentPlayerIndex);
 gameRouter.post('/player/:playerIndex/move', movePlayer);
 gameRouter.get('/player/:playerIndex/arrived', onArrived);
+gameRouter.get('/player/:playerIndex/payForPropertyEvent', getPayForPropertyEvent);
 gameRouter.post('/player/:playerIndex/payForProperty', payForPropertyAndEndTurn);
 gameRouter.post('/player/:playerIndex/cancelForProperty', cancelBuyPropertyAndEndTurn);
+gameRouter.get('/player/:playerIndex/payForUpgradePropertyEvent', getPayForUpgradePropertyEvent);
 gameRouter.post('/player/:playerIndex/payForUpgradeProperty', payForUpgradePropertyAndEndTurn);
 gameRouter.post('/player/:playerIndex/cancelUpgradeProperty',cancelUpgradePropertyAndEndTurn);
 gameRouter.get('/player/:playerIndex/payRentEvent',getPayRentEvent);
