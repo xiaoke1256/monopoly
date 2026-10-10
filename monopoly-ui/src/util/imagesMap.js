@@ -13,7 +13,7 @@ import shop2_lv3 from '@/assets/shop2-lv3.svg'
 import building3 from '@/assets/building3.svg'
 import building4 from '@/assets/building4.svg'
 import player1 from '@/assets/player1.svg'
-import player2 from'@/assets/player2.png'
+import player2 from '@/assets/player2.svg'
  
 export const imageMap = {
     "shop-lv2":shopImg,

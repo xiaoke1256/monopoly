@@ -62,7 +62,7 @@ export default {
                 return require('@/assets/abacus.svg')
             }
             //TODO 要通过数据库获取
-            return this.playerIndex === 0 ? require('@/assets/player1.svg') : require('@/assets/player2.png');
+            return this.playerIndex === 0 ? require('@/assets/player1.svg') : require('@/assets/player2.svg');
         },
         playerName(){
              console.log('当前玩家索引:', this.playerIndex);
