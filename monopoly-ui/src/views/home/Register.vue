@@ -125,6 +125,13 @@ export default {
   font-size: 24px;
 }
 
+@media (orientation: landscape) and (max-width: 960px) {
+  .title {
+    font-size: 20px;
+    margin-bottom: 28px;
+  }
+}
+
 .form {
   margin-top: 20px;
 }
