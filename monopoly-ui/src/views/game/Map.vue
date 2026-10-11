@@ -105,6 +105,7 @@
 import { animate } from 'animejs';
 import {imageMap} from '../../util/imagesMap.js';
 import { getCurrentGame, getCurrentPlayerIndex } from '@/api/gameApi.js';
+import { setPlayers } from '@/util/playersStorage.js';
 
 export default {
     name: 'MapComponent',
@@ -133,6 +134,7 @@ export default {
                 this.currentPlayerIndex = gameData.currentPlayerIndex;
                 this.cells = gameData.cells;
                 this.players = gameData.players;
+                setPlayers(this.players);
                 console.log('玩家数据已读取:', this.players);
                 for(let i = 0; i < this.players.length; i++){
                     this.locatePlayerToBlock(i, this.players[i].position);

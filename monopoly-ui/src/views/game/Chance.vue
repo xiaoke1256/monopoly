@@ -21,8 +21,9 @@
 import { Button } from 'view-ui-plus';
 import CashBoxModal from './CashBoxModal.vue';
 import Bankrupt from './Bankrupt.vue';
-import { getPlayerChance, consumeChance, getPlayers } from '@/api/gameApi.js';
+import { getPlayerChance, consumeChance } from '@/api/gameApi.js';
 import { createWebSocket,closeWebSocket,send } from '@/util/socketUtils.js';
+import { getPlayers } from '@/util/playersStorage.js';
 
 export default {
     name: 'ChanceComponent',
@@ -55,7 +56,7 @@ export default {
             }
         });
         console.log("MessageComponent mounted");
-        this.players = await getPlayers();
+        this.players = getPlayers();
         this.currentPlayerUserId = this.players[this.playerIndex].userId
         this.loadChance();
     },

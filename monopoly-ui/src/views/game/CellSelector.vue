@@ -17,10 +17,11 @@
     </div>
 </template>
 <script>
-import { getCurrentMap ,getPlayers ,hasRolePermission } from '../../api/gameApi.js'
+import { getCurrentMap ,hasRolePermission } from '../../api/gameApi.js'
 import {imageMap} from '../../util/imagesMap.js';
 import { throttle ,onScrollXAction } from '../../util/scrollUtils.js'
 import { createWebSocket, closeWebSocket,send } from '../../util/socketUtils.js'
+import { getPlayers } from '../../util/playersStorage.js';
 
 
 export default {
@@ -55,7 +56,7 @@ export default {
             }
         });
         const cells = await getCurrentMap();
-        this.players = await getPlayers();
+        this.players = getPlayers();
         const player = this.players[this.playerIndex]
         this.yourName = player.name;
         const securityCompanyCell = cells.filter((cell)=>cell.type==='security-company')[0];

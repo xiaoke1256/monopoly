@@ -21,8 +21,10 @@
 </template>
 <script>
 import { Button } from 'view-ui-plus';
-import { bankrupt,getPlayers,getBankruptInfos,getBankruptInfo } from '@/api/gameApi.js';
-import { createWebSocket, closeWebSocket,send } from '../../util/socketUtils.js'
+import { bankrupt,getBankruptInfos,getBankruptInfo } from '@/api/gameApi.js';
+import { createWebSocket, closeWebSocket,send } from '../../util/socketUtils.js';
+import { getPlayers } from '@/util/playersStorage.js';
+
 export default {
     name: 'BankruptComponent',
     emits: ['close'],
@@ -61,9 +63,7 @@ export default {
             }
             
         });
-        getPlayers().then((players)=>{
-            this.players = players;
-        });
+        this.players = getPlayers();
     },
     unmounted(){
         closeWebSocket(this.webSocket);

@@ -8,6 +8,9 @@
 </template>
 
 <script>
+import { getPlayers } from '@/util/playersStorage.js';
+import { imageMap } from '@/util/imagesMap.js';
+
 export default {
     name: 'PlayerAvatar',
     props: {
@@ -34,10 +37,11 @@ export default {
     },
     data(){
         return {
-            
+            players: []
         }
     },
-    mouthed(){
+    mounted(){
+        this.players = getPlayers();
     },
     computed: {
         containerStyle() {
@@ -61,16 +65,14 @@ export default {
             if(this.playerIndex<0){
                 return require('@/assets/abacus.svg')
             }
-            //TODO 要通过数据库获取
-            return [require('@/assets/player1.svg'), require('@/assets/player2.svg'), require('@/assets/player3.svg')][this.playerIndex];
+            return imageMap[this.players[this.playerIndex]?.image]|| require('@/assets/abacus.svg');
         },
         playerName(){
              console.log('当前玩家索引:', this.playerIndex);
             if(this.playerIndex<0){
                 return '柜坊'
             }
-            //TODO 要通过数据库获取
-            return ['舞姬', '大理寺卿', '画师'][this.playerIndex];
+            return this.players[this.playerIndex]?.name
         }
     }
 }
