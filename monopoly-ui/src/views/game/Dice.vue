@@ -31,13 +31,13 @@ export default {
       sessionId:'',
       webSocket: undefined,
       modalIsShowing: false,
+      hasPermission:false,
     }
   },
   methods:{
     async doDice({limit=undefined,ignorePermission=false}={limit:undefined,ignorePermission:false}){
-      const hasPermission = await hasRolePermission();
       //检查当前玩家是否权限操作
-      if(!ignorePermission && !hasPermission){
+      if(!ignorePermission && !this.hasPermission){
         this.$Modal.error(
           {
             title: '没轮到你！',
@@ -57,7 +57,7 @@ export default {
         this.isRolling = true;
         limit=7;
         //向后台发送开始掷骰子的消息
-        if(hasPermission){
+        if(this.hasPermission){
           console.log("向后台发送开始掷骰子的消息。。。。");
           send(this.webSocket,{action:'startDice',message:'开始掷骰子',sessionId:this.sessionId})
         }
@@ -65,7 +65,7 @@ export default {
       console.log("limit:",limit);
       if(limit===0){
         //如果无权限操作则等待 WebSocket触发。
-        if(!hasPermission){
+        if(!this.hasPermission){
           return;
         }
         this.dice = (await dice());
@@ -96,7 +96,7 @@ export default {
   },
   async mounted() {
     this.dice=Math.ceil(Math.random()*6);
-
+    this.hasPermission = await hasRolePermission();
     this.player = await getPlayer(this.playerIndex);
     this.sessionId = localStorage.getItem('sessionId');
 
