@@ -62,7 +62,7 @@ export default {
                 return require('@/assets/abacus.svg')
             }
             //TODO 要通过数据库获取
-            return this.playerIndex === 0 ? require('@/assets/player1.svg') : require('@/assets/player2.svg');
+            return [require('@/assets/player1.svg'), require('@/assets/player2.svg'), require('@/assets/player3.svg')][this.playerIndex];
         },
         playerName(){
              console.log('当前玩家索引:', this.playerIndex);
@@ -70,7 +70,7 @@ export default {
                 return '柜坊'
             }
             //TODO 要通过数据库获取
-            return this.playerIndex === 0 ? '舞姬' : '大理寺卿';
+            return ['舞姬', '大理寺卿', '画师'][this.playerIndex];
         }
     }
 }

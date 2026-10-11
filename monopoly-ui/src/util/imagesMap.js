@@ -14,6 +14,7 @@ import building3 from '@/assets/building3.svg'
 import building4 from '@/assets/building4.svg'
 import player1 from '@/assets/player1.svg'
 import player2 from '@/assets/player2.svg'
+import player3 from '@/assets/player3.svg'
  
 export const imageMap = {
     "shop-lv2":shopImg,
@@ -32,4 +33,5 @@ export const imageMap = {
     "building4":building4,
     "player1":player1,
     "player2":player2,
+    "player3":player3
 };

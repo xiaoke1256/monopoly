@@ -93,7 +93,7 @@
                 </div>
                 <div id="other">
                      <div v-for="(player,index) in players" :key="index"  :id="`player${index}`" style="z-index: 10;position: absolute;font-size: 1.5vh;">
-                        <img :src="playerImage(player)" width="5vh" height="5vh" style="width:3.5vh;height:7vh;"/>
+                        <img :src="playerImage(player)"  height="5vh" style="height:7vh;"/>
                     </div>
                 </div>
                

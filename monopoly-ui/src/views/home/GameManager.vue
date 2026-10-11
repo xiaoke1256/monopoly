@@ -32,12 +32,12 @@
             </FormItem>
             <FormItem label="玩家" prop="players">
               <div v-for="(player,index) in createForm.players" :key="index" class="player-row" >
-                <Poptip width="150" class="poptip-flex" placement="right" trigger="hover" transfer>
+                <Poptip class="poptip-flex" placement="right" trigger="hover" transfer>
                   <Select v-model="createForm.players[index].roleId" placeholder="请选择玩家角色"  >
                     <Option v-for="role in roles" :key="role.roleId" :value="role.roleId" >{{ role.name }}</Option>
                   </Select>
                   <template #content>
-                    <Image v-if="getRoleImg(index)" style="width: 100%;aspect-ratio: 1 / 2 ; object-fit: contain " :src="getRoleImg(index)" />
+                    <Image v-if="getRoleImg(index)" style="height: 300px; object-fit: contain " :src="getRoleImg(index)" />
                     <Paragraph class="ivu-mt"></Paragraph>
                   </template>
                 </Poptip>
