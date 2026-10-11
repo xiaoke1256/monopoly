@@ -352,7 +352,7 @@ const initMap = async () => {
           roleId: 2,
           name: '画师',
           image: 'player3',
-          color: 'lightYellow'
+          color: 'lemonchiffon'
         }
       ],
       defaultMoney: { 
