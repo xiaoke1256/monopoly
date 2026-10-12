@@ -15,8 +15,8 @@
         <div v-if="!!userName" class="row">
           <div style="flex:1">邀请玩家：</div><div style="flex:3" >{{ userName }}</div>
         </div>
-        <div v-if="!!mapId" class="row" style="align-items: center;">
-          <Select v-model="roleId" placeholder="请选择玩家角色" style="flex:3">
+        <div v-if="!!mapId" class="row">
+          <Select v-model="roleId" placeholder="请选择玩家角色"  >
             <Option v-for="role in roles" :key="role.roleId" :value="role.roleId" >{{ role.name }}</Option>
           </Select>
           <img v-if="selectedRoleImage" :src="selectedRoleImage" class="role-preview-img" />
@@ -63,6 +63,9 @@ export default {
     }
     if(route.query.roomNo) {
       this.roomNo = route.query.roomNo;
+      this.$nextTick(()=>{
+        this.sendRoomNo();
+      })
     }
   },
   methods:{

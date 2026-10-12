@@ -106,6 +106,11 @@ const GameSchema = new mongoose.Schema({
   playerStatus: { type: String, enum: ['before-dice','after-dice', 'arrive-cell', 'completed'], default: 'before-dice' },
   players: [PlayerSchema],
   events:[EventSchema],
+  observers:[ mongoose.Schema.Types.ObjectId],/**关联UserId */
+  expiresAt: { type: Date },
 });
+
+// TTL 索引：expiresAt 到期后 MongoDB 自动删除文档
+GameSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export default mongoose.model('Game', GameSchema);

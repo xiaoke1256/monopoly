@@ -30,10 +30,19 @@
             <FormItem label="游戏名称" prop="name">
               <Input v-model="createForm.name" />
             </FormItem>
+            <FormItem label="观战模式" prop="observeMode">
+              <Checkbox v-model="createForm.observeMode" :disabled="!createForm.mapId" @change="selectObserveMode" />
+            </FormItem>
+            <FormItem v-if="createForm.observeMode && createForm.roomNo" >
+              <div style="text-align: center;" >
+                <QrcodeVue  :value="joinUrl" />
+              </div>
+              <div style="text-align: center;">邀请码：{{ createForm.roomNo}}</div>
+            </FormItem>
             <FormItem label="玩家" prop="players">
               <div v-for="(player,index) in createForm.players" :key="index" class="player-row" >
                 <Poptip class="poptip-flex" placement="right" trigger="hover" transfer>
-                  <Select v-model="createForm.players[index].roleId" placeholder="请选择玩家角色"  >
+                  <Select v-model="createForm.players[index].roleId" placeholder="请选择玩家角色" transfer  >
                     <Option v-for="role in roles" :key="role.roleId" :value="role.roleId" >{{ role.name }}</Option>
                   </Select>
                   <template #content>
@@ -41,7 +50,7 @@
                     <Paragraph class="ivu-mt"></Paragraph>
                   </template>
                 </Poptip>
-                <Select v-if="createForm.players[index].type!=='other'" class="player-type-select" v-model="createForm.players[index].type"  >
+                <Select v-if="createForm.players[index].type!=='other'" class="player-type-select" v-model="createForm.players[index].type" transfer >
                   <Option v-for="playerType in playerTypes" :key="playerType.code" :value="playerType.code" :disabled="playerType.code==='ai' || playerType.code==='other'" >{{ playerType.name }}</Option>
                 </Select>
                 <div class="player-nickname-div" v-if="createForm.players[index].type==='other'" >{{ createForm.players[index].nickname }}</div>
@@ -49,7 +58,7 @@
                 <div v-if="index==0" class="player-action-placeholder" ></div>
               </div>
               <div style="display:flex;flex-direction:row;justify-content:space-between;gap: 4px;">
-                <Button style="flex: 7;" type="dashed" long icon="md-add" @click="addPlayer" >新增玩家</Button>
+                <Button style="flex: 7;" :disabled="createForm.observeMode" type="dashed" long icon="md-add" @click="addPlayer" >新增玩家</Button>
                 <Poptip style="flex: 1;" trigger="hover" width="100" content="邀请码" transfer>
                   <Button icon="md-barcode" :disabled="!createForm.mapId" @click="showRoomNo" ></Button>
                 </Poptip>
@@ -65,7 +74,7 @@
                 扫描以下二维码，可以加入游戏。
               </div>
               <div>
-                <QrcodeVue v-if="createForm.roomNo" :value="createForm.roomNo" />
+                <QrcodeVue v-if="createForm.roomNo" :value="joinUrl" />
               </div>
               <div>邀请码：{{ createForm.roomNo}}</div>
             </div>
@@ -109,6 +118,7 @@ export default {
         mapId:null,
         name:'',
         roomNo:null,
+        observeMode:false,
         players:[
           {roleId:0,type:'self'}
         ]
@@ -175,79 +185,93 @@ export default {
         this.loading = false;
       }
     },
+    async selectObserveMode(){
+      console.log(this.createForm.observeMode);
+      if(this.createForm.observeMode){
+        this.createForm.players = this.createForm.players.filter((p)=>p.type!=='self');
+        if(!this.createForm.roomNo){
+          await this.createRoomNo()
+        }
+      }else{
+        this.createForm.players.push({roleId:0,type:'self'})
+      }
+    },
     addPlayer(){
       this.createForm.players.push({roleId:0,type:'self'})
     },
     deletePlayer(index){
       this.createForm.players.splice(index, 1);
     },
-    async showRoomNo(){
-      if(!this.createForm.roomNo){
-        this.createForm.roomNo = await generateRoomNo();
-        const roomNo = this.createForm.roomNo;
-        const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-        this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/gm/invite?roomNo=${roomNo}`); 
-        console.log("WebSocket created:",`${protocol}//${location.host}/ws/gm/invite?roomNo=${roomNo}`);
-        this.webSocket.onopen=()=>{
-          console.log('WebSocket connected!');
-        };
-        this.webSocket.onmessage = (event) => {
-          console.log('Received message:', event.data);
-          if(!isValidJSON(event.data)){
+    async createRoomNo(){
+      this.createForm.roomNo = await generateRoomNo();
+      const roomNo = this.createForm.roomNo;
+      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      this.webSocket = new WebSocket(`${protocol}//${location.host}/ws/gm/invite?roomNo=${roomNo}`); 
+      console.log("WebSocket created:",`${protocol}//${location.host}/ws/gm/invite?roomNo=${roomNo}`);
+      this.webSocket.onopen=()=>{
+        console.log('WebSocket connected!');
+      };
+      this.webSocket.onmessage = (event) => {
+        console.log('Received message:', event.data);
+        if(!isValidJSON(event.data)){
+          return;
+        }
+        //1.应该收到连接成功或链接失败的消息
+        //2.接受到请求gameInfo的消息。则须将界面上的游戏信息发送过去。
+        const data = JSON.parse(event.data);
+        const {action,sessionId} = data;
+        console.log("action:",action);
+        console.log("action === 'request-for-gameInfo':",(action === 'request-for-gameInfo') );
+        if(action === 'request-for-gameInfo'){
+          const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+          console.log("userInfo:",userInfo)
+          const requestMsg = {
+            sessionId,
+            data:{
+              userName:userInfo?.nickname,
+              gameName:this.createForm?.name,
+              mapId:this.createForm?.mapId,
+              mapName:this.map?.name,
+            }
+          }
+          this.webSocket.send(JSON.stringify(requestMsg) );
+          console.log('已发送消息：',requestMsg);
+        }
+        //3.接受到成为游戏玩家的消息，则将游戏玩家信息显示到界面。
+        else if(action === 'add-player'){
+          const roomNo = data.roomNo;
+          const mapId = data.mapId;
+          const player = data.player;
+          if(roomNo !== this.createForm.roomNo){
+            console.error("无效roomNo，无须处理：",roomNo);
             return;
           }
-          //1.应该收到连接成功或链接失败的消息
-          //2.接受到请求gameInfo的消息。则须将界面上的游戏信息发送过去。
-          const data = JSON.parse(event.data);
-          const {action,sessionId} = data;
-          console.log("action:",action);
-          console.log("action === 'request-for-gameInfo':",(action === 'request-for-gameInfo') );
-          if(action === 'request-for-gameInfo'){
-            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-            console.log("userInfo:",userInfo)
-            const requestMsg = {
-              sessionId,
-              data:{
-                userName:userInfo?.nickname,
-                gameName:this.createForm?.name,
-                mapId:this.createForm?.mapId,
-                mapName:this.map?.name,
-              }
-            }
-            this.webSocket.send(JSON.stringify(requestMsg) );
-            console.log('已发送消息：',requestMsg);
+          if(mapId !== this.createForm.mapId){
+            console.error("mapId 已修改。",mapId);
+            this.$Message.info('地图发生变动，需重新扫描二维码。');
+            return;
           }
-          //3.接受到成为游戏玩家的消息，则将游戏玩家信息显示到界面。
-          else if(action === 'add-player'){
-            const roomNo = data.roomNo;
-            const mapId = data.mapId;
-            const player = data.player;
-            if(roomNo !== this.createForm.roomNo){
-              console.error("无效roomNo，无须处理：",roomNo);
-              return;
+          this.createForm.players.push({roleId:player.roleId,type:'other',userId:player.userId,nickname:player.nickname,sessionId});
+          const requestMsg = {
+            sessionId,
+            data:{
+              success:true
             }
-            if(mapId !== this.createForm.mapId){
-              console.error("mapId 已修改。",mapId);
-              this.$Message.info('地图发生变动，需重新扫描二维码。');
-              return;
-            }
-            this.createForm.players.push({roleId:player.roleId,type:'other',userId:player.userId,nickname:player.nickname,sessionId});
-            const requestMsg = {
-              sessionId,
-              data:{
-                success:true
-              }
-            }
-            this.webSocket.send(JSON.stringify(requestMsg) );
-            console.log('已发送确认消息:',requestMsg);
           }
-        };
-        this.webSocket.onclose = () => {
-          console.log('WebSocket closed!');
-        };
-        this.webSocket.onerror = (error) => {
-          console.error('WebSocket error:', error);
-        };
+          this.webSocket.send(JSON.stringify(requestMsg) );
+          console.log('已发送确认消息:',requestMsg);
+        }
+      };
+      this.webSocket.onclose = () => {
+        console.log('WebSocket closed!');
+      };
+      this.webSocket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+    },
+    async showRoomNo(){
+      if(!this.createForm.roomNo){
+        await this.createRoomNo()
       }
       this.isShowRoomNo = true;
     },
@@ -263,6 +287,12 @@ export default {
       console.error(e);
     }
     this.webSocket = undefined;
+  },
+  computed:{
+    joinUrl(){
+      const protocol = location.protocol;
+      return `${protocol}//${location.host}/joinGame?roomNo=${this.createForm.roomNo}`
+    }
   },
   watch:{
     "createForm.mapId":function(newVal){

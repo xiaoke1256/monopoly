@@ -47,14 +47,15 @@ export default {
           { min: 6, message: '密码至少6位', trigger: 'blur' },
         ],
       },
+      redirect:undefined
     };
   },
   mounted() {
     const route = useRoute()
     if(route.query.roomNo) {
       this.form.roomNo = route.query.roomNo
-      
     }
+    this.redirect = route.query.redirect
   },
   methods: {
     async handleLogin() {
@@ -72,8 +73,14 @@ export default {
           //跳转向游戏选择页面
           if (res.data.gameId) {
             this.$router.push(`/game`);
-          } else {
+            return;
+          }
+          if(this.redirect){
+            this.$router.push(this.redirect);
+            return;
+          }else {
             this.$router.push('/gameManage');
+            return;
           }
         } else {
           this.$Message.error(res.message || '登录失败');

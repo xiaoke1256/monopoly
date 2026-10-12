@@ -4,9 +4,7 @@ import { randomUUID } from 'crypto';
 import User from '../models/User.js';
 import Game from '../models/Game.js';
 import Session from '../models/Session.js';
-import {JWT_SECRET} from '../config/securityConfig.js';
-
-const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 天
+import {JWT_SECRET,SESSION_TTL_MS} from '../config/securityConfig.js';
 
 // 创建会话的工具函数
 async function createSession(userId,gameId) {

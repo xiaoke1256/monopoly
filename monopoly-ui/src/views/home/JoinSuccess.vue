@@ -38,7 +38,7 @@ export default {
     }
     const token = localStorage.getItem('token');
     if(!token){
-      this.$Message.error({content:'尚未登录，请先登录',onClose:()=>{this.$router.replace('/login');}});
+      this.$Message.error({content:'尚未登录，请先登录',onClose:()=>{this.$router.replace('/login?redirect=/joinGame');}});
     }
     const sessionId = localStorage.getItem('sessionId');
     console.log("sessionId:",sessionId);

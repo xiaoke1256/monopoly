@@ -4,9 +4,10 @@ import Session from '../models/Session.js';
 import TempRoomNo from '../models/TempRoomNo.js';
 import Map from '../models/Map.js';
 import { sendToInviter,sendToInvitee } from "../ws/gameManageWs.js";
+import {SESSION_TTL_MS} from '../config/securityConfig.js';
 
 async function getGamesByUserId(userId) {
-  const games = Game.find({players:{$elemMatch:{userId}}},{ name: 1, _id: 1,roomNo:1,createdAt:1,updatedAt:1 }).sort({ updatedAt: -1 });
+  const games = Game.find({$or:[{players:{$elemMatch:{userId}}},{observers:{$elemMatch:{$eq:userId}}}]},{ name: 1, _id: 1,roomNo:1,createdAt:1,updatedAt:1 }).sort({ updatedAt: -1 });
   return games;
 }
 
@@ -55,7 +56,7 @@ export const startExistGame = async (req, res) => {
 }
 
 const randomRoomNo = ()=>{
-  return Math.floor(Math.random()*Math.pow(16,4)).toString(16).toUpperCase()
+  return Math.floor(Math.random()*Math.pow(16,4)).toString(16).toUpperCase().padStart(4,'0')
 }
 
 export const generateRoomNo = async (req, res)=>{
@@ -79,8 +80,9 @@ export const createGame = async (req, res) => {
   const { name,
     mapId,
     roomNo:roomNoTemp,
-    players:playersTemp
-    } = req.body;
+    players:playersTemp,
+    observeMode
+  } = req.body;
   const map = await Map.findById(mapId);
 
   if(!playersTemp||playersTemp.lenth==0){
@@ -104,10 +106,14 @@ export const createGame = async (req, res) => {
     return {...role,userId:playerUserId,money:map.defaultMoney}
   });
 
+  const observers = observeMode?[userId]:undefined;
+
   const cells = map.cells.map(cell=>{return {...cell,level:1}});
+
+  const expiresAt = new Date(new Date().getTime() + SESSION_TTL_MS);
   //console.log("cells:",cells);
 
-  const game = await Game.create({...map,cells,name,mapId,roomNo,players });
+  const game = await Game.create({...map,cells,name,mapId,roomNo,players,observers,expiresAt });
   
   session.gameId = game._id;
   await session.save();

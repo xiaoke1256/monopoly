@@ -4,6 +4,7 @@ import Chance from '../models/Chance.js';
 import { getCurrentSession,getCurrentUser } from "../utils/security.js";
 import { sleep } from "../utils/concurrency.js";
 import { sendDiceWsMsg } from "../ws/gameWs.js";
+import {SESSION_TTL_MS} from '../config/securityConfig.js';
 
 const getCurrentMap = async (req, res) => {
     try {
@@ -78,6 +79,10 @@ const queryCurrentGame = async (req)=> {
     if (!game) {
         throw new Error("cannot find the game.");
     }
+    //每次访问过期时间都更新一次。
+    const expiresAt = new Date(new Date().getTime() + SESSION_TTL_MS);
+    game.expiresAt = expiresAt;
+    await game.save();
     return game;
 }
 

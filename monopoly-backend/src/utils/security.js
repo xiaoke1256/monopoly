@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import {JWT_SECRET} from '../config/securityConfig.js';
+import {JWT_SECRET,SESSION_TTL_MS} from '../config/securityConfig.js';
 import Session from '../models/Session.js';
 
 export function getCurrentUser(req){
@@ -36,5 +36,8 @@ export async function getCurrentSession(req){
   //console.log("sessionId, userId:",sessionId, userId);
   const session = await Session.findOne({ sessionId, userId });
   //TODO 每次访问一次就把过期时间延后一次
+  const expiresAt = new Date(new Date().getTime() + SESSION_TTL_MS);
+  session.expiresAt = expiresAt;
+  await session.save()
   return session;
 }
