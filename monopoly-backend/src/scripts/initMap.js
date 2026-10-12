@@ -356,14 +356,14 @@ const initMap = async () => {
         }
       ],
       defaultMoney: { 
-        cash1: { type: Number, default: 20 },
-        cash20: { type: Number, default: 4 },
-        cash100: { type: Number, default: 2 },
-        cash200: { type: Number, default: 1 },
-        cash500: { type: Number, default: 1 },
-        cash1000: { type: Number, default: 4 },
-        cash2000: { type: Number, default: 5 },
-        cash5000: { type: Number, default: 1 },
+        cash1: 20,
+        cash20: 4,
+        cash100: 2,
+        cash200: 1,
+        cash500: 1,
+        cash1000: 4,
+        cash2000: 5,
+        cash5000: 1,
       },
 
     });
