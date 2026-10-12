@@ -275,10 +275,150 @@ const initQuestions = async () => {
         },
         {
             mapId: existingMap._id,
-            stem: '唐朝老百姓叫的“大人”是指谁？答对获得500文',
+            stem: '唐朝老百姓叫的"大人"是指谁？答对获得500文',
             options: ['父亲', '母亲', '官员', '老师', '长辈', '朋友'],
             correctOption: '父亲',
             reward: 500
+        },
+        {
+            mapId: existingMap._id,
+            stem: '六次东渡日本传播佛法的唐朝高僧是谁？答对获得1200文',
+            options: ['鉴真', '玄奘', '义净', '法显', '慧能', '达摩'],
+            correctOption: '鉴真',
+            reward: 1200
+        },
+        {
+            mapId: existingMap._id,
+            stem: '唐太宗说"以人为镜，可以明得失"，这里的"人"指的是谁？答对获得1500文',
+            options: ['魏征', '房玄龄', '杜如晦', '长孙无忌', '尉迟恭', '李靖'],
+            correctOption: '魏征',
+            reward: 1500
+        },
+        {
+            mapId: existingMap._id,
+            stem: '唐太宗被周边各族首领尊称为什么？答对获得1500文',
+            options: ['天可汗', '真龙天子', '一代天骄', '神武大帝', '圣神皇帝', '万乘之君'],
+            correctOption: '天可汗',
+            reward: 1500
+        },
+        {
+            mapId: existingMap._id,
+            stem: '现存最早有确切日期的雕版印刷品是哪一部？答对获得1200文',
+            options: ['《金刚经》', '《道德经》', '《论语》', '《史记》', '《资治通鉴》', '《大藏经》'],
+            correctOption: '《金刚经》',
+            reward: 1200
+        },
+        {
+            mapId: existingMap._id,
+            stem: '给唐朝统治以致命打击的农民起义是哪一次？答对获得1500文',
+            options: ['黄巢起义', '陈胜吴广起义', '黄巾起义', '绿林赤眉起义', '瓦岗军起义', '李自成起义'],
+            correctOption: '黄巢起义',
+            reward: 1500
+        },
+        {
+            mapId: existingMap._id,
+            stem: '907年灭掉唐朝、建立后梁的是谁？答对获得1200文',
+            options: ['朱温', '李存勖', '石敬瑭', '郭威', '赵匡胤', '李克用'],
+            correctOption: '朱温',
+            reward: 1200
+        },
+        {
+            mapId: existingMap._id,
+            stem: '唐朝时期，海上丝绸之路的起点港口是哪座城市？答对获得1200文',
+            options: ['广州', '泉州', '宁波', '扬州', '登州', '杭州'],
+            correctOption: '广州',
+            reward: 1200
+        },
+        {
+            mapId: existingMap._id,
+            stem: '唐朝三省六部制中，负责起草皇帝诏令的是哪一省？答对获得1500文',
+            options: ['中书省', '门下省', '尚书省', '秘书省', '内侍省', '枢密院'],
+            correctOption: '中书省',
+            reward: 1500
+        },
+        {
+            mapId: existingMap._id,
+            stem: '被后世尊称为"画圣"的唐朝画家是谁？答对获得1200文',
+            options: ['吴道子', '阎立本', '张萱', '周昉', '顾恺之', '韩干'],
+            correctOption: '吴道子',
+            reward: 1200
+        },
+        {
+            mapId: existingMap._id,
+            stem: '编写《千金方》的唐朝医学家是谁？答对获得1200文',
+            options: ['孙思邈', '张仲景', '华佗', '扁鹊', '李时珍', '葛洪'],
+            correctOption: '孙思邈',
+            reward: 1200
+        },
+        {
+            mapId: existingMap._id,
+            stem: '唐朝在西域设立的最高军政机构叫什么？答对获得1500文',
+            options: ['安西都护府', '北庭都护府', '西域都护府', '安西节度使', '河西节度使', '陇右节度使'],
+            correctOption: '安西都护府',
+            reward: 1500
+        },
+        {
+            mapId: existingMap._id,
+            stem: '唐朝政府设立的管理海外贸易的机构叫什么？答对获得1500文',
+            options: ['市舶司', '宣政院', '理藩院', '海关总署', '外贸局', '互市监'],
+            correctOption: '市舶司',
+            reward: 1500
+        },
+        {
+            mapId: existingMap._id,
+            stem: '唐朝著名天文学家僧一行的主要成就是什么？答对获得1200文',
+            options: ['测量子午线长度', '发明浑仪', '著《甘石星经》', '发现哈雷彗星', '预测日食', '编制授时历'],
+            correctOption: '测量子午线长度',
+            reward: 1200
+        },
+        {
+            mapId: existingMap._id,
+            stem: '融合了印度佛教艺术和中国传统艺术的著名石窟是？答对获得1200文',
+            options: ['莫高窟', '云冈石窟', '龙门石窟', '大足石刻', '乐山大佛', '麦积山石窟'],
+            correctOption: '莫高窟',
+            reward: 1200
+        },
+        {
+            mapId: existingMap._id,
+            stem: '"大漠孤烟直，长河落日圆"出自哪位诗人？答对获得1200文',
+            options: ['王维', '李白', '杜甫', '白居易', '高适', '岑参'],
+            correctOption: '王维',
+            reward: 1200
+        },
+        {
+            mapId: existingMap._id,
+            stem: '"国破山河在，城春草木深"出自哪位诗人？答对获得1500文',
+            options: ['杜甫', '李白', '白居易', '王维', '李商隐', '杜牧'],
+            correctOption: '杜甫',
+            reward: 1500
+        },
+        {
+            mapId: existingMap._id,
+            stem: '"葡萄美酒夜光杯，欲饮琵琶马上催"出自哪位诗人？答对获得1200文',
+            options: ['王翰', '李白', '王维', '岑参', '高适', '王昌龄'],
+            correctOption: '王翰',
+            reward: 1200
+        },
+        {
+            mapId: existingMap._id,
+            stem: '"海内存知己，天涯若比邻"出自哪位诗人？答对获得1200文',
+            options: ['王勃', '李白', '杜甫', '白居易', '王维', '杨炯'],
+            correctOption: '王勃',
+            reward: 1200
+        },
+        {
+            mapId: existingMap._id,
+            stem: '"秦时明月汉时关，万里长征人未还"出自哪位诗人？答对获得1200文',
+            options: ['王昌龄', '李白', '杜甫', '王维', '岑参', '高适'],
+            correctOption: '王昌龄',
+            reward: 1200
+        },
+        {
+            mapId: existingMap._id,
+            stem: '"春蚕到死丝方尽，蜡炬成灰泪始干"出自哪位诗人？答对获得1500文',
+            options: ['李商隐', '杜牧', '温庭筠', '元稹', '白居易', '刘禹锡'],
+            correctOption: '李商隐',
+            reward: 1500
         }
 
     ];
