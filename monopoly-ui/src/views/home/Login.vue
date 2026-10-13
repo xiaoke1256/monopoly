@@ -27,6 +27,7 @@
 <script>
 import { login } from '@/api/authApi';
 import { useRoute } from 'vue-router';
+import { uploadLog } from '@/api/systemApi';
 
 export default {
   name: 'LoginIndex',
@@ -97,8 +98,10 @@ export default {
   computed:{
     registerUrl(){
       if(!this.redirect){
+        uploadLog({logContent:`注册地址：/register`})
         return `/register`
       } else {
+        uploadLog({logContent:`注册地址：/register?redirect=${this.redirect}`})
         return `/register?redirect=${this.redirect}`
       }
       

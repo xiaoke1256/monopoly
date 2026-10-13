@@ -51,7 +51,9 @@ export default {
     const token = localStorage.getItem('token');
     const route = useRoute()
     if(!token){
-      this.$Message.error({content:'尚未登录，请先登录',onClose:()=>{this.$router.replace('/login');}});
+      const roomNo = route.query.roomNo;
+      const url = roomNo?`/login?redirect=/joinGame?roomNo=${roomNo}`:'/login?redirect=/joinGame'
+      this.$Message.error({content:'尚未登录，请先登录',onClose:()=>{this.$router.replace(url);}});
     }
     
     //console.log("route.query.mapId:",route.query.mapId)
