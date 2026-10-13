@@ -3,6 +3,7 @@ import mapRouter from './routes/mapRoute.js';
 import gameRouter from './routes/gameRoute.js';
 import userRouter from './routes/userRoute.js';
 import gameManageRouter from './routes/gameManageRoute.js';
+import systemRouter from './routes/systemRoute.js';
 
 const webRouter = new Router();
 
@@ -14,5 +15,6 @@ webRouter.use('/map', mapRouter);
 webRouter.use('/game', gameRouter);
 webRouter.use('/user', userRouter);
 webRouter.use('/gameManage', gameManageRouter);
+webRouter.use('/system',systemRouter);
 
 export default webRouter;

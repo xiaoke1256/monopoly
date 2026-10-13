@@ -106,6 +106,7 @@ import { animate } from 'animejs';
 import {imageMap} from '../../util/imagesMap.js';
 import { getCurrentGame, getCurrentPlayerIndex } from '@/api/gameApi.js';
 import { setPlayers } from '@/util/playersStorage.js';
+import { uploadLog } from '../../api/systemApi.js'
 
 export default {
     name: 'MapComponent',
@@ -131,6 +132,7 @@ export default {
             try {
                 const gameData = (await getCurrentGame())?.game;
                 console.log('地图数据已读取:', gameData);
+                uploadLog({logContent:`地图数据已读取:${JSON.stringify(gameData)}`})
                 this.currentPlayerIndex = gameData.currentPlayerIndex;
                 this.cells = gameData.cells;
                 this.players = gameData.players;
@@ -140,6 +142,7 @@ export default {
                     this.locatePlayerToBlock(i, this.players[i].position);
                 }
                 console.log('地图数据已读取:', this.cells);
+                uploadLog({logContent:`currentPlayerIndex 已被设定:${this.currentPlayerIndex}`})
             } catch (err) {
                 this.error = err.message;
                 console.error('读取地图数据失败:', err);
