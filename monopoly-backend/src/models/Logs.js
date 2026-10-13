@@ -8,4 +8,6 @@ const LogsSchema = new mongoose.Schema({
     logTime:{type:Date,required: true,default: Date.now}
 });
 
+LogsSchema.index({ logTime: 1 }, { expireAfterSeconds: 7 * 24 * 60 * 60  });
+
 export default mongoose.model('Log', LogsSchema);
