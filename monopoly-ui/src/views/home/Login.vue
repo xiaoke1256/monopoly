@@ -18,7 +18,7 @@
       </Form>
       <div class="footer">
         还没有账号？
-        <router-link to="/register" class="link">去注册</router-link>
+        <router-link :to="registerUrl" class="link">去注册</router-link>
       </div>
     </div>
   </div>
@@ -94,6 +94,16 @@ export default {
       }
     },
   },
+  computed:{
+    registerUrl(){
+      if(!this.redirect){
+        return `/register`
+      } else {
+        return `/register?redirect=${this.redirect}`
+      }
+      
+    }
+  }
 };
 </script>
 

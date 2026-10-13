@@ -29,6 +29,7 @@
 
 <script>
 import { register } from '@/api/authApi';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'RegisterIndex',
@@ -65,7 +66,12 @@ export default {
           { validator: validateConfirm, trigger: 'blur' },
         ],
       },
+      redirect:undefined
     };
+  },
+  mounted(){
+    const route = useRoute()
+    this.redirect = route.query.redirect
   },
   methods: {
     async handleRegister() {
@@ -84,8 +90,15 @@ export default {
           localStorage.setItem('sessionId', res.data.sessionId);
           localStorage.setItem('userInfo', JSON.stringify(res.data.user));
           this.$Message.success('注册成功，欢迎加入！');
-          //跳转到选择游戏的画面
-          this.$router.push('/gameManage');
+          
+          if(this.redirect){
+            this.$router.push(this.redirect);
+            return;
+          }else{
+            //跳转到选择游戏的画面
+            this.$router.push('/gameManage');
+          }
+          
         } else {
           this.$Message.error(res.message || '注册失败');
         }
