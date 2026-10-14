@@ -1,105 +1,107 @@
 <template>
     <div id="map-container" class="map-container">
-            <div id="map-div" class="map-div">
-                <!-- 上边一行 -->
-                <div>
-                    <div class="corner-top-left">
-                        <div class="background" >
-                            <img src="@/assets/building3.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
-                        </div>
-                        <div class="notice">柜坊</div>
-                        
+        <div id="map-div" class="map-div">
+            <!-- 上边一行 -->
+            <div>
+                <div class="corner-top-left">
+                    <div class="background" >
+                        <img src="@/assets/building3.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
                     </div>
+                    <div class="notice">柜坊</div>
                     
                 </div>
-                <div class="top-side">
-                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+1)}`" class="block">
-                        <div class="empty-land" >
-                            <div v-if="cells[key+1]?.type==='property'" style="width:100%;height:100%;">
-                                <div :style="colorStyle(cells[key+1])"></div>
-                            </div>
-                            <img :src="buildingImage(cells[key+1])" width="100%" height="100%" />
-                            <div :style="textStyle(cells[key+1])" v-if="cells[key+1]?.type==='property'" class="notice">{{cells[key+1]?.name}}</div>
+                
+            </div>
+            <div class="top-side">
+                <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+1)}`" class="block">
+                    <div class="empty-land" >
+                        <div v-if="cells[key+1]?.type==='property'" style="width:100%;height:100%;">
+                            <div :style="colorStyle(cells[key+1])"></div>
                         </div>
-                        <div class="road road-bg" style="" >
-                        </div>
+                        <img :src="buildingImage(cells[key+1])" width="100%" height="100%" />
+                        <div :style="textStyle(cells[key+1])" v-if="cells[key+1]?.type==='property'" class="notice">{{cells[key+1]?.name}}</div>
+                    </div>
+                    <div class="road road-bg" style="" >
                     </div>
                 </div>
-                <div>
-                    <div class="corner-top-right">
-                        <div class="background" >
-                            <img src="@/assets/building3.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
+            </div>
+            <div>
+                <div class="corner-top-right">
+                    <div class="background" >
+                        <img src="@/assets/building3.svg" width="100%" height="100%" style="width:100%;height:100%;"/>
+                    </div>
+                    <div class="notice">医馆</div>
+                </div>
+            </div>
+            <!-- 中间一行 -->
+            <div class="side left-side">
+                <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(39-key)}`" class="block">
+                    <div class="road road-bg-v" style="" >
+                    </div>
+                    <div class="empty-land" >
+                        <div v-if="cells[39-key]?.type==='property'" style="width:100%;height:100%;">
+                            <div :style="colorStyle(cells[39-key])"></div>
                         </div>
-                        <div class="notice">医馆</div>
+                        <img :src="buildingImage(cells[39-key])" width="100%" height="100%"/>
+                        <div :style="textStyle(cells[39-key])" v-if="cells[39-key]?.type==='property'" class="notice">{{cells[39-key]?.name}}</div>
                     </div>
                 </div>
-                <!-- 中间一行 -->
-                <div class="side left-side">
-                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(39-key)}`" class="block">
-                        <div class="road road-bg-v" style="" >
+            </div>
+            <div class="center"></div>
+            <div class="side right-side">
+                <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+11)}`" class="block">
+                    <div class="road road-bg-v" style="" >
+                    </div>
+                    <div class="empty-land" >
+                        <div v-if="cells[key+11]?.type==='property'" style="width:100%;height:100%;">
+                            <div :style="colorStyle(cells[key+11])"></div>
                         </div>
-                        <div class="empty-land" >
-                            <div v-if="cells[39-key]?.type==='property'" style="width:100%;height:100%;">
-                                <div :style="colorStyle(cells[39-key])"></div>
-                            </div>
-                            <img :src="buildingImage(cells[39-key])" width="100%" height="100%"/>
-                            <div :style="textStyle(cells[39-key])" v-if="cells[39-key]?.type==='property'" class="notice">{{cells[39-key]?.name}}</div>
-                        </div>
+                        <img :src="buildingImage(cells[key+11])" width="100%" height="100%"/>
+                        <div :style="textStyle(cells[key+11])" v-if="cells[key+11]?.type==='property'" class="notice">{{cells[key+11]?.name}}</div>
                     </div>
                 </div>
-                <div class="center"></div>
-                <div class="side right-side">
-                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+11)}`" class="block">
-                        <div class="road road-bg-v" style="" >
+            </div>
+            <!-- 下边一行 -->
+            <div>
+                <div class="corner-bottom-left">
+                    <div class="background" >
+                        <img src="@/assets/building4.svg" width="66.67%" height="100%" />
+                    </div>
+                    <div class="notice">镖局</div>
+                </div>
+            </div>
+            <div class="bottom-side">
+                <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(29-key)}`" class="block">
+                    <div class="empty-land" >
+                        <div v-if="cells[29-key]?.type==='property'" style="width:100%;height:100%;">
+                            <div :style="colorStyle(cells[29-key])"></div>
                         </div>
-                        <div class="empty-land" >
-                            <div v-if="cells[key+11]?.type==='property'" style="width:100%;height:100%;">
-                                <div :style="colorStyle(cells[key+11])"></div>
-                            </div>
-                            <img :src="buildingImage(cells[key+11])" width="100%" height="100%"/>
-                            <div :style="textStyle(cells[key+11])" v-if="cells[key+11]?.type==='property'" class="notice">{{cells[key+11]?.name}}</div>
-                        </div>
+                        <img :src="buildingImage(cells[29-key])" width="100%" height="100%" />
+                        <div :style="textStyle(cells[29-key])" v-if="cells[29-key]?.type==='property'" class="notice">{{cells[29-key]?.name}}</div>
+                    </div>
+                    <div class="road road-bg" style="" >
                     </div>
                 </div>
-                <!-- 下边一行 -->
-                <div>
-                    <div class="corner-bottom-left">
-                        <div class="background" >
-                            <img src="@/assets/building4.svg" width="66.67%" height="100%" />
-                        </div>
-                        <div class="notice">镖局</div>
+            </div>
+            <div>
+                <div class="corner-bottom-right">
+                    <div class="background" >
+                        <img src="@/assets/building4.svg" width="66.67%" height="100%"/>
                     </div>
+                    <div class="notice">大理寺</div>
                 </div>
-                <div class="bottom-side">
-                    <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(29-key)}`" class="block">
-                        <div class="empty-land" >
-                            <div v-if="cells[29-key]?.type==='property'" style="width:100%;height:100%;">
-                                <div :style="colorStyle(cells[29-key])"></div>
-                            </div>
-                            <img :src="buildingImage(cells[29-key])" width="100%" height="100%" />
-                            <div :style="textStyle(cells[29-key])" v-if="cells[29-key]?.type==='property'" class="notice">{{cells[29-key]?.name}}</div>
-                        </div>
-                        <div class="road road-bg" style="" >
-                        </div>
-                    </div>
+            </div>
+            <div id="other">
+                    <div v-for="(player,index) in players" :key="index"  :id="`player${index}`" style="z-index: 10;position: absolute;font-size: 1.5vh;">
+                    <img :src="playerImage(player)"  height="5vh" style="height:7vh;"/>
                 </div>
-                <div>
-                    <div class="corner-bottom-right">
-                        <div class="background" >
-                            <img src="@/assets/building4.svg" width="66.67%" height="100%"/>
-                        </div>
-                        <div class="notice">大理寺</div>
-                    </div>
-                </div>
-                <div id="other">
-                     <div v-for="(player,index) in players" :key="index"  :id="`player${index}`" style="z-index: 10;position: absolute;font-size: 1.5vh;">
-                        <img :src="playerImage(player)"  height="5vh" style="height:7vh;"/>
-                    </div>
-                </div>
-               
             </div>
             
-        </div>   
+        </div>
+        <div class="map-pad">
+
+        </div>
+    </div>   
 </template>
 <script>
 import { animate } from 'animejs';

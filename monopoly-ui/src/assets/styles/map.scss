@@ -1,22 +1,28 @@
 .map-container{
     height: 100%;
-    aspect-ratio: 100 / 53;
+    aspect-ratio: 100 / 52;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
     //overflow-y: hidden;
     background: #355197;
     margin: auto;
 }
 .map-div {
-    width: 100%;
+    //width: 100%;
+    aspect-ratio: 2 / 1;
     height: 94.34%;
     background-color: lightblue; 
     display: grid;
     grid-template-columns: 12.5% 75% 12.5%;
     grid-template-rows: 12.5% 75% 12.5%;
     position: relative;
+}
+.map-pad {
+    background-color: #D3E6A1;
+    height: 94.34%;
+    width:1.9%;
 }
 .top-side,.bottom-side {
     display: flex;
