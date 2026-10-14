@@ -1,7 +1,7 @@
 <template>
     <Modal
         v-model="showPayModal"
-        width="90%"
+        :width="isMobile?'95%':'90%'"
         class-name="vertical-center-modal"
         @on-ok="pay">
         <div style="height: 100%;padding:4px 0;">
@@ -25,6 +25,7 @@ import { Modal, Button } from 'view-ui-plus';
 import CashBox from './CashBox.vue';
 import { exchange,getPlayer } from '../../api/gameApi.js'
 import { createWebSocket, closeWebSocket,send } from '../../util/socketUtils.js'
+import { isMobile,isLandscape } from '../../util/mobileUtils.js'
 export default {
   name: 'MainIndex',
   emits: ['confirmPay'],
@@ -133,6 +134,9 @@ export default {
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
         console.log("yourPlayer:",this.yourPlayer,"userInfo:",userInfo);
         return this.yourPlayer?.userId === userInfo.id;
+    },
+    isMobile(){
+        return isMobile()&&isLandscape()
     }
   },
   watch:{

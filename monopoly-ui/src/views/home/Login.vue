@@ -133,7 +133,7 @@ export default {
   color: #333;
   font-size: 24px;
 }
-@media (orientation: landscape) and (max-height: 375px) {
+@media (orientation: landscape) and (max-height: 414px) {
   .title {
     font-size: 20px;
     margin-bottom: 28px;

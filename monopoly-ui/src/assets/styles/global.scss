@@ -18,17 +18,32 @@ body, html {
 }
 .vertical-center-modal .ivu-modal{
     top: 0;
+    max-height: 90vh;
+}
+.vertical-center-modal .ivu-modal-body{
+    overflow-y: auto;
 }
 
 .actions {
   margin-top: 8px;
 }
 
-@media (orientation: landscape) and (max-height: 375px) {
+@media (orientation: landscape) and (max-height: 414px) {
   .ivu-form-item {
     margin-bottom: 12px;
   }
   .ivu-form-item-error-tip{
     padding: 0;
+  }
+  .ivu-modal-header{
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .ivu-modal-body{
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+  .ivu-modal{
+    max-height: 95vh;
   }
 }

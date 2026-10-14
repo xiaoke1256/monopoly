@@ -66,3 +66,16 @@
         }
     }
 }
+@media (orientation: landscape) and (max-height: 414px) {
+    .buy-property {
+        .info-card {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between
+        }
+        .info-row {
+             width: 40%;
+        }
+    }
+}
