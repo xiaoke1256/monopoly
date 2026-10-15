@@ -265,6 +265,33 @@ const randomSelectChance = async (game) => {
     const chances = await Chance.find({ mapId: game.mapId });
     const randomIndex = Math.random() * chances.length | 0; // Shuffle the chances
     const chance = chances[randomIndex];
+
+    const algoExpress = chance.payAmountAlgo;
+    if(algoExpress){
+        const match = algoExpress.match(/^(\-|\+)?(\w+)\((\d+)\,(\d+)\)$/);
+        console.log("match:",match)
+        if(match){
+            const [express,sign,funcName,...params]= match;
+            if(funcName==='random'){
+                const minValue = parseInt(params[0]);
+                const maxValue = parseInt(params[1]);
+                if(!(maxValue>minValue)){
+                    throw new Error('表达式定义有误.');
+                }
+                let payAmount = (Math.ceil(Math.random()*(maxValue-minValue))+minValue)
+                payAmount = Math.round(payAmount/5)*5
+                if(sign==='-'){
+                    chance.payAmount = -payAmount;
+                }else{
+                    chance.payAmount = payAmount;
+                }
+            }
+            if(chance.description.includes('${payAmount}')){
+                chance.description = chance.description.replace('${payAmount}',Math.abs(chance.payAmount))
+            }
+        }
+    }
+
     const payments = [];
     if (chance.payFromType === 'all') {
         game.players.forEach((player, index) => {
@@ -325,11 +352,9 @@ const randomSelectChance = async (game) => {
         payments.push({ playerIndex: maxPropertyPlayerIndex, payAmount: chance.payAmount });
     }
 
-    const description = chance.description.includes('${payAmount}')?chance.description.replace('${payAmount}',(Math.ceil(Math.random()*20)+80)*10):chance.description;
-
     const event = {
         actionType: 'getChance',
-        message: description,
+        message: chance.description,
         payAmount: chance.payAmount,
         chance:{...chance.toObject({ getters: true }), payments}
     };

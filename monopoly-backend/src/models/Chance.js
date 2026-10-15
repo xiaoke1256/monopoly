@@ -5,6 +5,7 @@ const ChanceSchema = new mongoose.Schema({
     mapId: { type: mongoose.Schema.Types.ObjectId, ref: 'Map', required: true },
     description: { type: String, required: true },
     payAmount: { type: Number, default: null },
+    payAmountAlgo: { type: String, required: false },/* 比如 random(1000,2000)  表示从1000 到2000之间选一个随机数*/
     payFromType: { type: String, enum: ['all', 'you','min-cash','max-cash','min-property','max-property'], default: 'you' },/* 指玩家 */
     moveTo: { type: Number, default: null },
 });
