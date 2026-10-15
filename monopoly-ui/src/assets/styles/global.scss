@@ -11,6 +11,17 @@ body, html {
   padding: 0;
   height: 100%;
 }
+/* vertical-center-modal 居中 + footer 固定可见方案：
+ * 四层 flex column 约束链，让高度从外层正确传递到内层：
+ * 1. wrap (.vertical-center-modal) — flex 居中，小 Modal 完美居中
+ * 2. .ivu-modal — flex column + max-height:90vh 限高
+ * 3. .ivu-modal-content — flex column，flex:1 填满 modal，min-height:0 允许被压缩
+ * 4. .ivu-modal-body — flex:1 + min-height:0 + overflow-y:auto 可滚动
+ *    header/footer 自然高度不压缩 → 永远可见
+ *
+ * 关键：不能用百分比 height（CSS 规范要求父元素必须有确定 height），
+ * 必须全用 flex 传递约束。
+ */
 .vertical-center-modal{
     display: flex;
     align-items: center;
@@ -18,7 +29,15 @@ body, html {
 }
 .vertical-center-modal .ivu-modal{
     top: 0;
-    max-height: 90vh;
+    max-height: 98vh;
+    display: flex;
+    flex-direction: column;
+}
+.vertical-center-modal .ivu-modal-content{
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
 }
 .vertical-center-modal .ivu-modal-body{
     overflow-y: auto;

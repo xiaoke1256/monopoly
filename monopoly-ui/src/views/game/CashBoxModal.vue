@@ -4,7 +4,7 @@
         :width="isMobile?'95%':'90%'"
         class-name="vertical-center-modal"
         @on-ok="pay">
-        <div style="height: 100%;padding:4px 0;">
+        <div style="padding:4px 0;">
             <CashBox v-if="showPayModal" 
                 :otherPlayerIndex="otherPlayerIndex" 
                 :yourPlayerIndex="yourPlayerIndex" 
