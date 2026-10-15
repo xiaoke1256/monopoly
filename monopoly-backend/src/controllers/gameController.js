@@ -410,6 +410,9 @@ const getCurrentQuestion = async (req, res) => {
 
 const canBankrupt = (game)=>{
     const event = game.events[0];
+    if(!event){
+        return [];
+    }
     if(event.payAmount>0){
         const currentPlayerIndex = game.currentPlayerIndex ;
         console.log(`Player at index ${currentPlayerIndex} `);  
