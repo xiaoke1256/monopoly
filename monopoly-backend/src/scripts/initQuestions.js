@@ -380,6 +380,13 @@ const initQuestions = async () => {
         },
         {
             mapId: existingMap._id,
+            stem: '日本遣唐使阿倍仲麻吕的汉名叫什么？答对获得1200文',
+            options: ['晁衡', '吉备真备' , '空海' , '朝衡' , '藤原清河' , '晁真'],
+            correctOption: '晁衡',
+            reward: 1200
+        },
+        {
+            mapId: existingMap._id,
             stem: '"大漠孤烟直，长河落日圆"出自哪位诗人？答对获得1200文',
             options: ['王维', '李白', '杜甫', '白居易', '高适', '岑参'],
             correctOption: '王维',
