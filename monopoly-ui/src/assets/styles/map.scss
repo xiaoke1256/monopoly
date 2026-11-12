@@ -135,9 +135,15 @@
 
 .map-div{
     .center {
+        position: relative;
         background-color: #D3E6A1;
-        background-image: url('@/assets/center.svg');
-        background-size: cover;
+        img {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width:100%;
+            height: auto;
+        }
     }
 }
 

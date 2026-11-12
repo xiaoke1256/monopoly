@@ -47,7 +47,9 @@
                     </div>
                 </div>
             </div>
-            <div class="center"></div>
+            <div class="center">
+                <img src="@/assets/center.svg" width="100%" />
+            </div>
             <div class="side right-side">
                 <div v-for="key in [...Array(9).keys()]" :key="key" :id="`block-${(key+11)}`" class="block">
                     <div class="road road-bg-v" style="" >
