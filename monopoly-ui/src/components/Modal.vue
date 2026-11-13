@@ -1,5 +1,6 @@
 <template>
     <Modal
+        v-if="show"
         v-model="isVisible"
         footer-hide
         :closable="closable"
@@ -61,8 +62,12 @@ export default {
             console.log('Modal show prop changed to:', newVal);
         },
         isVisible(newVal) {
+            console.log('Modal isVisible changed to:', newVal);
             if (!newVal) {
-                this.$emit('update:show', false);
+                const it = setTimeout(() => {
+                    this.$emit('update:show', false);
+                    it && clearTimeout(it);
+                }, 300); // Delay to allow modal close animation
             }
         }
 

@@ -13,6 +13,7 @@
     </GModal> 
     <GModal
         :show="showDiceModal"
+        :closable="isYourTurn"
         :maskClosable="isYourTurn"
         :playerIndex="currentPlayerIndex"
         @update:show="showDiceModal = $event"
