@@ -11,6 +11,7 @@
             <div style="display:flex;align-items:center;gap:12px;">
                 <PlayerAvatar v-if="isVisible" :playerIndex="playerIndex" />
                 <span style="font-size:20px;font-weight:600;color:#2d8cf0;">{{ title }}</span>
+                <!-- <span>{{ closable }}-{{ maskClosable }}</span> -->
             </div>
         </template>
         <div style="padding:4px 0;">

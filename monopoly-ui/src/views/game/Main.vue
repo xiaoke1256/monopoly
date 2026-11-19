@@ -179,7 +179,9 @@ export default {
                     this.onPlayerMoveComplete();
                     return
                 }
+                console.log('before-dice,变更当前玩家',currentPlayerUserId);
                 this.currentPlayerUserId = currentPlayerUserId;
+                console.log('当前玩家变更后',this.currentPlayerUserId);
                 this.showDiceModal=true;
                 console.log('玩家需要掷骰子',this.showDiceModal);
             } else if (playerStatus==='after-dice'){
@@ -270,7 +272,7 @@ export default {
         this.showQuestionModal = false;
         this.showChanceModal = false;
     },
-    afterPayForProperty({currentPlayerIndex,forUpgrade,isWaiting}){
+    afterPayForProperty({currentPlayerIndex,currentPlayerUserId,forUpgrade,isWaiting}){
         //界面上提示“商铺购买成功”
         this.$Modal.success({
             title: `${forUpgrade?'升级':'购买'}成功`,
@@ -279,6 +281,7 @@ export default {
                 //重新加载地图
                 this.$refs.map.fetchMapData();
                 this.currentPlayerIndex = currentPlayerIndex; // 更新当前玩家索引
+                this.currentPlayerUserId = currentPlayerUserId; // 更新当前玩家的用户ID
                 if(forUpgrade){
                     this.showUpgradePropertyModal = false;
                 }else{
@@ -313,8 +316,8 @@ export default {
         }
         this.showDiceModal = true;
     },
-    afterPayRent({action, message, currentPlayerIndex,isWaiting}) {
-        console.log('支付租金成功:', {action, message, currentPlayerIndex,isWaiting});
+    afterPayRent({action, message, currentPlayerIndex,currentPlayerUserId, isWaiting}) {
+        console.log('支付租金成功:', {action, message, currentPlayerIndex,currentPlayerUserId, isWaiting});
         this.$Modal.success({
             title: '支付成功',
             content: message,
@@ -322,6 +325,7 @@ export default {
                 this.$refs.map.fetchMapData();
                 if(action==='endTurn'){
                     this.currentPlayerIndex = currentPlayerIndex;
+                    this.currentPlayerUserId = currentPlayerUserId;
                 }
                 this.showPayRentModal = false;
                 if(isWaiting){
@@ -397,6 +401,7 @@ export default {
             console.log('回合结束:', data);
             // 处理回合结束后的逻辑，例如切换到下一个玩家
             this.currentPlayerIndex = data.currentPlayerIndex; // 更新当前玩家索引
+            this.currentPlayerUserId = data.currentPlayerUserId; // 更新当前玩家的用户ID
             this.$refs.map.currentPlayerIndex = this.currentPlayerIndex;
             if(data.isGameOver){
                 this.showSuccessModal = true;
@@ -432,7 +437,9 @@ export default {
   },
   computed: {
     isYourTurn(){
+        console.log("in isYourTurn computed property");
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        console.log("currentPlayerUserId:",this.currentPlayerUserId,"userInfo.id:",userInfo.id)
         return this.currentPlayerUserId=== userInfo.id;
     }
   },

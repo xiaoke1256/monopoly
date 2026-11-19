@@ -585,13 +585,14 @@ const endTurn = async (req, res) => {
     }
     //检查切换后玩家是否处于暂停状态？
     const currentPlayer = game.players[game.currentPlayerIndex];
+    const currentPlayerUserId = currentPlayer.userId;
     //是否结束游戏？
     const isGameOver = game.players.filter((player)=>!player.isBankrupt).length<=1
     if (currentPlayer.waitingRound>0){
-        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, isGameOver , currentPlayerIndex: game.currentPlayerIndex });
+        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, isGameOver , currentPlayerIndex: game.currentPlayerIndex,currentPlayerUserId });
     }
 
-    return res.json({ action: 'endTurn', message: 'Turn ended', isGameOver , currentPlayerIndex: game.currentPlayerIndex });
+    return res.json({ action: 'endTurn', message: 'Turn ended', isGameOver , currentPlayerIndex: game.currentPlayerIndex,currentPlayerUserId });
 }
 
 const getPayForPropertyEvent = async (req, res)=>{
@@ -647,10 +648,11 @@ const payForPropertyAndEndTurn = async (req, res) => {
     await game.save();
     //检查切换后玩家是否处于暂停状态？
     const newPlayer = game.players[game.currentPlayerIndex];
+    const currentPlayerUserId = newPlayer.userId;
     if (newPlayer.waitingRound>0){
-        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex });
+        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex,currentPlayerUserId });
     }
-    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
+    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex,currentPlayerUserId });
 }
 
 const cancelBuyPropertyAndEndTurn = async (req, res) => {
@@ -775,10 +777,11 @@ const payForUpgradePropertyAndEndTurn = async (req, res) => {
     await game.save();
     //检查切换后玩家是否处于暂停状态？
     const newPlayer = game.players[game.currentPlayerIndex];
+    const currentPlayerUserId = newPlayer.userId;
     if (newPlayer.waitingRound>0){
-        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex });
+        return res.json({ action: 'endTurn', message: 'Turn ended', isWaiting:true, currentPlayerIndex: game.currentPlayerIndex,currentPlayerUserId });
     }
-    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex });
+    return res.json({ action: 'endTurn', message: 'Turn ended', currentPlayerIndex: game.currentPlayerIndex,currentPlayerUserId });
 }
 
 const getPayRentEvent = async (req, res)=>{
@@ -838,10 +841,11 @@ const payRentAndEndTurn = async (req, res) => {
     await game.save();
     //检查切换后玩家是否处于暂停状态？
     const newPlayer = game.players[game.currentPlayerIndex];
+    const currentPlayerUserId = newPlayer.userId;
     if (newPlayer.waitingRound>0){
-        return res.json({ action: 'endTurn', message: `您已成功支付租金 ${rentAmount} 文！`, isWaiting:true, currentPlayerIndex: game.currentPlayerIndex });
+        return res.json({ action: 'endTurn', message: `您已成功支付租金 ${rentAmount} 文！`, isWaiting:true, currentPlayerIndex: game.currentPlayerIndex,currentPlayerUserId });
     }
-    return res.json({ action: 'endTurn', message: `您已成功支付租金 ${rentAmount} 文！`, currentPlayerIndex: game.currentPlayerIndex });
+    return res.json({ action: 'endTurn', message: `您已成功支付租金 ${rentAmount} 文！`, currentPlayerIndex: game.currentPlayerIndex,currentPlayerUserId });
 }
 
 const payForSecurityCompany = async (req, res) => {
