@@ -341,13 +341,14 @@ export default {
         this.showMessageModal = false;
         this.endTurn();
     },
-    closeMessageModal({action, currentPlayerIndex,isWaiting,message}) {
+    closeMessageModal({action, currentPlayerIndex,currentPlayerUserId,isWaiting,message}) {
         const doClose = ()=>{
             if(action==='endTurn' && currentPlayerIndex!=undefined){
                 //需要切换玩家
                 console.log("here .....")
                 this.$refs.map.fetchMapData();
                 this.currentPlayerIndex = currentPlayerIndex;
+                this.currentPlayerUserId = currentPlayerUserId;
                 if(isWaiting){
                     this.showMessageModal = false;
                     this.onPlayerMoveComplete();
@@ -367,8 +368,7 @@ export default {
         
         if (message){
             this.$Modal.success({
-                title: '',
-                content: message,
+                title: message,
                 onOk: doClose
             });
         }else{

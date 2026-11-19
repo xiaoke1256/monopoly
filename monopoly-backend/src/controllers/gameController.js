@@ -1143,6 +1143,8 @@ const consumeMessage = async (req, res) => {
             if (newPlayer.waitingRound>0){
                 ret.isWaiting=true;
             }
+            const newPlayerUserId = newPlayer.userId;
+            ret.currentPlayerUserId = newPlayerUserId;
             return res.json(ret); 
         }else{
             //game.playerStatus = 'completed';
