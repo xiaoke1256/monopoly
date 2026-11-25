@@ -30,8 +30,33 @@ export default {
     },
   },
   created() {
-    //TODO 向后台校验一下token是否存在，不存在则直接从localStorage删除掉
+    const token = localStorage.getItem('token');
     const info = localStorage.getItem('userInfo');
+
+    // 解码 JWT payload 检查 exp 是否过期
+    const isTokenExpired = (t) => {
+      if (!t) return true;
+      try {
+        const payload = JSON.parse(
+          decodeURIComponent(atob(t.split('.')[1])
+            .split('')
+            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join(''))
+        );
+        return payload.exp * 1000 < Date.now();
+      } catch {
+        return true;
+      }
+    };
+
+    if (isTokenExpired(token)) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('sessionId');
+      localStorage.removeItem('userInfo');
+      this.userInfo = null;
+      return;
+    }
+
     if (info) {
       try {
         this.userInfo = JSON.parse(info);
