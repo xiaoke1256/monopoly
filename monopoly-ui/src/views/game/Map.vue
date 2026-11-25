@@ -139,7 +139,7 @@ export default {
                 uploadLog({logContent:`地图数据已读取:${JSON.stringify(gameData)}`})
                 this.currentPlayerIndex = gameData.currentPlayerIndex;
                 this.cells = gameData.cells;
-                this.players = gameData.players;
+                this.players = gameData.players.filter(player => !player.isBankrupt)
                 setPlayers(this.players);
                 console.log('玩家数据已读取:', this.players);
                 for(let i = 0; i < this.players.length; i++){
