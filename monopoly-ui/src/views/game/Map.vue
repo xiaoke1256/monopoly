@@ -94,7 +94,7 @@
                 </div>
             </div>
             <div id="other">
-                    <div v-for="(player,index) in players" :key="index"  :id="`player${index}`" style="z-index: 10;position: absolute;font-size: 1.5vh;">
+                <div v-for="(player,index) in players" :key="index"  :id="`player${index}`" :style="playerStyle(player)">
                     <img :src="playerImage(player)"  height="5vh" style="height:7vh;"/>
                 </div>
             </div>
@@ -291,6 +291,11 @@ export default {
             }
             const newPosition = (curPosition + 1)%this.cells.length;
             const location = this.getLocationOfPlayer(this.currentPlayerIndex, newPosition);
+            if (newPosition==0 || newPosition==20 /* 左上角或右下角 */) {
+                this.players[this.currentPlayerIndex].position = newPosition;
+            }else{
+                this.players[this.currentPlayerIndex].position = curPosition;
+            }
             playerDiv.style.position = 'absolute';
             animate(`#player${this.currentPlayerIndex}`, {
                 top: location.top + 'px',
@@ -347,10 +352,30 @@ export default {
             return cell.buildStyle[`lv${cell.level}`].textStyle;
         },
         colorStyle(cell){
-            return {...cell.buildStyle[`lv${cell.level}`].colorStyle,background:this.buildingColor(cell)};
+            let zIndex = 10;
+            if(cell.position>10 && cell.position<=20){
+                zIndex = 20;
+            }else if(cell.position>30 && cell.position<=40){
+                zIndex = 20;
+            }
+            else if(cell.position>=20 && cell.position<=30){
+                zIndex = 30;
+            }
+            return {...cell.buildStyle[`lv${cell.level}`].colorStyle,background:this.buildingColor(cell),zIndex};
         },
         playerImage(player){
             return imageMap[player?.image];
+        },
+        playerStyle(player){
+            let zIndex = 10;
+            if(player.position>=20 && player.position<=30){
+                zIndex = 30;
+            }
+            return {
+                zIndex,
+                position: "absolute",
+                fontSize: "1.5vh"
+            };
         }
     }
 }
